@@ -8,9 +8,12 @@ import Draggable from '../components/Draggable.jsx';
 
 export const Demo = fastMemo(() => {
   const elements = [
-    { x: 50, y: 50, color: 'lightgreen', content: 'Element 1' },
-    { x: 150, y: 100, color: 'lightcoral', content: 'Element 2' },
-    { x: 250, y: 150, color: 'lightblue', content: 'Element 3', width: '120px', height: '120px' },
+    { color: 'lightgreen', content: 'Item 1' },
+    { color: 'lightcoral', content: 'Item 2' },
+    { color: 'lightblue', content: 'Item 3' },
+    { color: 'lightyellow', content: 'Item 4' },
+    { color: 'lightpink', content: 'Item 5' },
+    { color: 'lightgray', content: 'Item 6' },
   ];
 
   return (
