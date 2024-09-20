@@ -6,6 +6,7 @@ const ELEMENT_WIDTH = 120; // Fixed width for elements
 const ELEMENT_HEIGHT = 120; // Fixed height for elements
 const SPACING = 20; // Spacing between elements
 const ITEMS_PER_ROW = 3; // Number of items per row
+const ANIMATION_DURATION = 300;
 
 const calculateStandardPositions = elArray => {
   return elArray.map((item, index) => {
@@ -22,7 +23,6 @@ const Draggable = ({ elements: initialElements }) => {
 
   const [elements, setElements] = useState(calculateStandardPositions(initialElements));
   const [dragging, setDragging] = useState(null); // Stores the index of the element being dragged
-  const [draggingItem, setDraggingItem] = useState(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const handleMouseDown = (e, index) => {
@@ -32,10 +32,14 @@ const Draggable = ({ elements: initialElements }) => {
     const boundary = boundaryRef.current.getBoundingClientRect();
     setOffset({ x: e.clientX - element.left, y: e.clientY - element.top });
 
-    setDraggingItem({
-      ...elements[index],
-      x: element.left - boundary.left,
-      y: element.top - boundary.top,
+    setElements(prev => {
+      const updatedElements = [...elements];
+      updatedElements[index] = {
+        ...prev[index],
+        x: element.left - boundary.left,
+        y: element.top - boundary.top,
+      };
+      return updatedElements;
     });
   };
 
@@ -46,7 +50,15 @@ const Draggable = ({ elements: initialElements }) => {
       let newX = e.clientX - boundary.left - offset.x;
       let newY = e.clientY - boundary.top - offset.y;
 
-      setDraggingItem({ ...draggingItem, x: newX, y: newY });
+      setElements(prev => {
+        const updatedElements = [...elements];
+        updatedElements[dragging] = {
+          ...prev[dragging],
+          x: newX,
+          y: newY,
+        };
+        return updatedElements;
+      });
     }
   };
 
@@ -54,12 +66,11 @@ const Draggable = ({ elements: initialElements }) => {
     if (dragging !== null) {
       reorderElements(dragging); // Reorder and calculate new positions
       setDragging(null);
-      setDraggingItem(null);
     }
   };
 
   const reorderElements = draggedIndex => {
-    const closestIndex = findClosestIndex(draggingItem.x, draggingItem.y);
+    const closestIndex = findClosestIndex(elements[draggedIndex].x, elements[draggedIndex].y);
 
     // Reorder the elements based on the closest index by placing the dragged element in the new position
     const updatedElements = [...elements];
@@ -67,8 +78,16 @@ const Draggable = ({ elements: initialElements }) => {
     updatedElements.splice(closestIndex, 0, draggedElement); // Insert it at the new closest position
 
     const withPositions = calculateStandardPositions(updatedElements);
+    const obj = {};
+    withPositions.forEach(item => {
+      obj[item.content] = item;
+    });
     // Update the elements array and recalculate positions
-    setElements(withPositions);
+    setElements(elements.map(e => ({ ...e, x: obj[e.content].x, y: obj[e.content].y })));
+
+    setTimeout(() => {
+      setElements(withPositions);
+    }, ANIMATION_DURATION);
   };
 
   const findClosestIndex = (x, y) => {
@@ -110,7 +129,7 @@ const Draggable = ({ elements: initialElements }) => {
       {elements.map((element, index) => (
         <div
           key={element.content}
-          className={`draggable`}
+          className="draggable"
           style={{
             position: 'absolute',
             left: `${element.x}px`,
@@ -119,30 +138,17 @@ const Draggable = ({ elements: initialElements }) => {
             height: `${ELEMENT_HEIGHT}px`,
             backgroundColor: element.color || 'lightblue',
             cursor: 'move',
+            zIndex: dragging === index ? 2 : 1,
+            transition:
+              dragging === index
+                ? 'none'
+                : `left ${ANIMATION_DURATION}ms ease-in-out, top ${ANIMATION_DURATION}ms ease-in-out`,
           }}
           onMouseDown={e => handleMouseDown(e, index)}
         >
           {element.content}
         </div>
       ))}
-
-      {dragging !== null && draggingItem !== null && (
-        <div
-          className={`draggable`}
-          style={{
-            position: 'absolute',
-            left: `${draggingItem.x}px`,
-            top: `${draggingItem.y}px`,
-            width: `${ELEMENT_WIDTH}px`,
-            height: `${ELEMENT_HEIGHT}px`,
-            backgroundColor: draggingItem.color || 'lightblue',
-            cursor: 'move',
-            transition: 'none',
-          }}
-        >
-          {elements[dragging].content}
-        </div>
-      )}
     </div>
   );
 };

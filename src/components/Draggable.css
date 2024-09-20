@@ -18,12 +18,4 @@
   text-align: center;
   user-select: none;
   opacity: 1;
-  transition:
-    left 1s ease-in-out,
-    top 1s ease-in-out;
-}
-
-.dragging {
-  z-index: 10; /* Bring the dragged element to the front */
-  opacity: 0.5;
 }
