@@ -1,0 +1,15 @@
+body.peng-scaling-1 .radix-themes {
+  --scaling: 1 !important;
+}
+
+body.peng-scaling-1-1 .radix-themes {
+  --scaling: 1.1 !important;
+}
+
+body.peng-scaling-1-25 .radix-themes {
+  --scaling: 1.25 !important;
+}
+
+body.peng-scaling-1-5 .radix-themes {
+  --scaling: 1.5 !important;
+}

@@ -1,0 +1,18 @@
+.boundary {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  border: 2px solid black;
+  margin: 20px auto;
+}
+
+.draggable {
+  position: absolute;
+  cursor: move;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightblue;
+  color: black;
+  text-align: center;
+}

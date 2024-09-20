@@ -1,0 +1,8 @@
+/* iOS no bouncing */
+body,
+.page-container,
+.page,
+.page-content {
+  max-height: 100vh;
+  -webkit-overflow-scrolling: touch;
+}

@@ -1,0 +1,3 @@
+.rt-Separator:where(.rt-r-orientation-horizontal) {
+  height: 2px;
+}
