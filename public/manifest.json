@@ -1,8 +1,8 @@
 {
-  "name": "eeasy",
-  "short_name": "eeasy",
+  "name": "easyy",
+  "short_name": "easyy",
   "background_color": "white",
-  "theme_color": "#5474EC",
+  "theme_color": "#006400",
   "display": "standalone",
   "start_url": "/",
   "scope": "/",

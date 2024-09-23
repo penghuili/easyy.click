@@ -19,4 +19,9 @@ export const apps = {
     color: '#5474EC',
     api: 'simplestcam',
   },
+  ['easyy.click']: {
+    name: 'easyy.click',
+    color: '#006400',
+    api: 'easyyclick',
+  },
 };

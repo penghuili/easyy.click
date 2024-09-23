@@ -23,5 +23,12 @@
     "react/prop-types": 0,
     "react/no-unescaped-entities": 0,
     "react/display-name": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   }
 }

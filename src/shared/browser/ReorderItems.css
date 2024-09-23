@@ -1,0 +1,51 @@
+.reorder-items-container {
+  height: var(--reorder-items-height, 70vh);
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 2px solid var(--reorder-items-border-color, #dbd8e0);
+  padding: 8px;
+}
+
+.reorder-items-content {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 100%;
+}
+
+.reorder-items-draggable {
+  position: absolute;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  user-select: none;
+  opacity: 1;
+  background-color: var(--reorder-items-background-color, white);
+  border: 1px solid var(--reorder-items-border-color, #dbd8e0);
+  border-radius: 8px;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.reorder-items-drag-handle {
+  cursor: grab;
+  font-size: 20px;
+  user-select: none;
+  margin-right: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.reorder-items-drag-handle:active {
+  cursor: grabbing;
+}
+
+.reorder-items-drag-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}

@@ -1,3 +1,5 @@
 export const localStorageKeys = {
-  texts: 'eeasy-texts',
+  notes: 'easyy-notes',
+  links: 'easyy-links',
+  activeTab: 'easyy-active-tab',
 };

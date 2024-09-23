@@ -19,6 +19,10 @@ uploadStatic();
 
 uploadIndex();
 
+if (!process.env.DISABLE_VERSION_JSON) {
+  uploadVersionJson();
+}
+
 deleteOldVersion();
 
 function updateOrAddEnvVariable(key, value) {
@@ -66,6 +70,36 @@ function uploadIndex() {
     `aws s3 cp dist/index.html ${process.env.S3_URL}/index.html --cache-control max-age=0,no-store`
   );
   console.log('Upload index.html to S3 completed.');
+}
+
+function uploadVersionJson() {
+  console.log('Uploading version json to S3...');
+  const newVersionMessage = process.argv[2];
+  const json = newVersionMessage
+    ? `{"version": "${version}", "changes": "${newVersionMessage}"}`
+    : `{"version": "${version}"}`;
+
+  execSync(`echo '${json}' > dist/version.json`);
+
+  execSync(
+    `aws s3 cp dist/version.json ${process.env.S3_URL}/version.json --cache-control max-age=0,no-store`
+  );
+
+  if (newVersionMessage) {
+    const dbItem = {
+      id: { S: 'admin' },
+      sortKey: { S: `version_${version}` },
+      version: { S: version },
+      changes: { S: newVersionMessage },
+    };
+    execSync(
+      `aws dynamodb put-item --table-name ${process.env.DYNAMODB_TABLE} --item "${JSON.stringify(
+        dbItem
+      ).replace(/"/g, '\\"')}"`
+    );
+  }
+
+  console.log('Upload version json to S3 completed.');
 }
 
 function deleteOldVersion() {

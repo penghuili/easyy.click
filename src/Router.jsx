@@ -1,19 +1,92 @@
 import React from 'react';
 import { BabyRoutes } from 'react-baby-router';
+import fastMemo from 'react-fast-memo';
+import { useCat } from 'usecat';
 
+import { PageLoading } from './components/PageLoading.jsx';
+import { PrepareData } from './components/PrepareData.jsx';
 import { isMobileWidth } from './lib/device.js';
+import { isLoggedInCat, useIsEmailVerified } from './shared/browser/store/sharedCats.js';
+import { initEffect } from './shared/browser/store/sharedEffects.js';
+import { Account } from './views/Account.jsx';
+import { ChangeEmail } from './views/ChangeEmail.jsx';
+import { ChangePassword } from './views/ChangePassword.jsx';
 import { Demo } from './views/Demo.jsx';
-import { TextAdd } from './views/TextAdd.jsx';
-import { TextDetails } from './views/TextDetails.jsx';
-import { Texts } from './views/Texts.jsx';
+import { LinkAdd } from './views/LinkAdd.jsx';
+import { LinkDetails } from './views/LinkDetails.jsx';
+import { LinksReorder } from './views/LinksReorder.jsx';
+import { NoteAdd } from './views/NoteAdd.jsx';
+import { NoteDetails } from './views/NoteDetails.jsx';
+import { Notes } from './views/Notes.jsx';
+import { NotesReorder } from './views/NotesReorder.jsx';
+import { ResetPassword } from './views/ResetPassword.jsx';
+import { Security } from './views/Security.jsx';
+import { Settings } from './views/Settings.jsx';
+import { SignIn } from './views/SignIn.jsx';
+import { SignUp } from './views/SignUp.jsx';
+import { Verify2FA } from './views/Verify2FA.jsx';
+import { VerifyEmail } from './views/VerifyEmail.jsx';
+import { Welcome } from './views/Welcome.jsx';
 
-const routes = {
-  '/texts/add': TextAdd,
-  '/texts/details': TextDetails,
-  '/demo': Demo,
-  '/': Texts,
-};
+async function load() {
+  initEffect();
+}
 
 export function Router() {
-  return <BabyRoutes routes={routes} enableAnimation={isMobileWidth()} />;
+  return (
+    <PrepareData load={load} source="Router">
+      <AllRoutes />
+    </PrepareData>
+  );
 }
+
+const publicRoutes = {
+  '/sign-up': SignUp,
+  '/sign-in': SignIn,
+  '/sign-in/2fa': Verify2FA,
+  '/reset-password': ResetPassword,
+
+  '/': Welcome,
+};
+const verifyEmailRoutes = {
+  '/security/email': ChangeEmail,
+  '/': VerifyEmail,
+};
+const loggedInRoutes = {
+  '/notes/add': NoteAdd,
+  '/notes/details': NoteDetails,
+  '/notes/reorder': NotesReorder,
+
+  '/links/add': LinkAdd,
+  '/links/details': LinkDetails,
+  '/links/reorder': LinksReorder,
+
+  '/demo': Demo,
+
+  '/account': Account,
+  '/security': Security,
+  '/security/email': ChangeEmail,
+  '/security/password': ChangePassword,
+  '/settings': Settings,
+
+  '/': Notes,
+};
+
+const AllRoutes = fastMemo(() => {
+  const isLoggedIn = useCat(isLoggedInCat);
+  const isVerified = useIsEmailVerified();
+
+  if (isLoggedIn) {
+    if (isVerified === undefined) {
+      return <PageLoading />;
+    }
+
+    if (!isVerified) {
+      return <BabyRoutes routes={verifyEmailRoutes} enableAnimation={isMobileWidth()} />;
+    }
+
+    return <BabyRoutes routes={loggedInRoutes} enableAnimation={isMobileWidth()} />;
+  }
+
+  return <BabyRoutes routes={publicRoutes} enableAnimation={isMobileWidth()} />;
+});
