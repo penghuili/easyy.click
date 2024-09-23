@@ -1,4 +1,4 @@
-import { Button, TabPane, Tabs } from '@nutui/nutui-react';
+import { Button, Grid, TabPane, Tabs } from '@nutui/nutui-react';
 import { RiAddLine, RiUser2Line } from '@remixicon/react';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
@@ -14,6 +14,8 @@ import { PrepareData } from '../components/PrepareData.jsx';
 import { Text } from '../components/Text.jsx';
 import { localStorageKeys } from '../lib/constants.js';
 import { copyToClipboard } from '../lib/copyToClipboard';
+import { ellipsisStyle } from '../lib/styles.js';
+import { isMobileBrowser } from '../shared/browser/device.js';
 import { LocalStorage } from '../shared/browser/LocalStorage.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { linksCat } from '../store/link/linkCats.js';
@@ -92,17 +94,19 @@ const NoteItems = fastMemo(() => {
 
   return (
     <>
-      {notes.map(item => (
-        <Text
-          key={item.sortKey}
-          as="span"
-          onClick={() => handleCopy(item)}
-          style={{ display: 'inline-block', margin: '0 1rem 1rem 0', cursor: 'pointer' }}
-        >
-          {item.title}
-        </Text>
-      ))}
-
+      <Grid columns={isMobileBrowser() ? 2 : 3}>
+        {notes.map(item => (
+          <Grid.Item key={item.sortKey} style={{ overflow: 'hidden' }}>
+            <Text
+              as="span"
+              onClick={() => handleCopy(item)}
+              style={{ ...ellipsisStyle, display: 'inline-block', cursor: 'pointer' }}
+            >
+              {item.title}
+            </Text>
+          </Grid.Item>
+        ))}
+      </Grid>
       <Flex m="2rem 0 0" align="start">
         <Button onClick={() => navigateTo('/notes/reorder')}>Edit notes</Button>
       </Flex>
@@ -119,18 +123,23 @@ const LinkItems = fastMemo(() => {
 
   return (
     <>
-      {links.map(item => (
-        <Link
-          key={item.sortKey}
-          href={item.link}
-          target="_blank"
-          m="0 1rem 1rem 0"
-          style={{ display: 'inline-flex', alignItems: 'center' }}
-        >
-          <Favicon url={item.link} />
-          {item.title}
-        </Link>
-      ))}
+      <Grid columns={isMobileBrowser() ? 2 : 3}>
+        {links.map(item => (
+          <Grid.Item key={item.sortKey} style={{ overflow: 'hidden' }}>
+            <Link
+              href={item.link}
+              target="_blank"
+              style={{
+                ...ellipsisStyle,
+                display: 'inline-block',
+              }}
+            >
+              <Favicon url={item.link} />
+              {item.title}
+            </Link>
+          </Grid.Item>
+        ))}
+      </Grid>
 
       <Flex m="2rem 0 0" align="start">
         <Button onClick={() => navigateTo('/links/reorder')}>Edit links</Button>

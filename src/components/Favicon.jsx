@@ -1,26 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 
 export function Favicon({ url }) {
-  const link = useMemo(() => {
-    return `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(url)}`;
-  }, [url]);
-
-  const [isSuccessful, setIsSuccessful] = useState(undefined);
+  const favLink = `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(url)}`;
 
   return (
     <img
-      src={link}
+      src={favLink}
       style={{
-        display: isSuccessful ? 'inline-block' : 'none',
+        display: 'inline-block',
         marginRight: '0.25rem',
         width: '16px',
         height: '16px',
-      }}
-      onLoad={() => {
-        setIsSuccessful(true);
-      }}
-      onError={() => {
-        setIsSuccessful(false);
       }}
     />
   );
