@@ -4,6 +4,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { Flex } from '../components/Flex.jsx';
+import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { Text } from '../components/Text.jsx';
 import { isChangingEmailCat, userCat } from '../shared/browser/store/sharedCats';
@@ -123,7 +124,7 @@ export const ChangeEmail = fastMemo(() => {
   }
 
   return (
-    <>
+    <PageContent>
       <PageHeader title="Change email" isLoading={isChanging} hasBack />
 
       <Text>Current email: {user?.email}</Text>
@@ -131,6 +132,6 @@ export const ChangeEmail = fastMemo(() => {
       {renderTriggerForm()}
 
       {renderSaveForm()}
-    </>
+    </PageContent>
   );
 });

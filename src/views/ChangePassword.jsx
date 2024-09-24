@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
 import { isChangingPasswordCat } from '../shared/browser/store/sharedCats';
 import { changePasswordEffect } from '../shared/browser/store/sharedEffects';
@@ -23,7 +24,7 @@ export const ChangePassword = fastMemo(() => {
   }
 
   return (
-    <>
+    <PageContent>
       <PageHeader title="Change password" isLoading={isChanging} hasBack />
 
       <Form
@@ -63,6 +64,6 @@ export const ChangePassword = fastMemo(() => {
           />
         </Form.Item>
       </Form>
-    </>
+    </PageContent>
   );
 });

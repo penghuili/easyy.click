@@ -82,11 +82,32 @@ const AllRoutes = fastMemo(() => {
     }
 
     if (!isVerified) {
-      return <BabyRoutes routes={verifyEmailRoutes} enableAnimation={isMobileWidth()} />;
+      return (
+        <BabyRoutes
+          routes={verifyEmailRoutes}
+          enableAnimation={isMobileWidth()}
+          bgColor="white"
+          maxWidth="600px"
+        />
+      );
     }
 
-    return <BabyRoutes routes={loggedInRoutes} enableAnimation={isMobileWidth()} />;
+    return (
+      <BabyRoutes
+        routes={loggedInRoutes}
+        enableAnimation={isMobileWidth()}
+        bgColor="white"
+        maxWidth="600px"
+      />
+    );
   }
 
-  return <BabyRoutes routes={publicRoutes} enableAnimation={isMobileWidth()} />;
+  return (
+    <BabyRoutes
+      routes={publicRoutes}
+      enableAnimation={isMobileWidth()}
+      bgColor="white"
+      maxWidth="600px"
+    />
+  );
 });

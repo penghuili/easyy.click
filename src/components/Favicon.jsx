@@ -11,6 +11,8 @@ export function Favicon({ url }) {
         marginRight: '0.25rem',
         width: '16px',
         height: '16px',
+        position: 'relative',
+        top: 4,
       }}
     />
   );

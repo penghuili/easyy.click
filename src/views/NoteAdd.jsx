@@ -4,6 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { isCreatingNoteCat } from '../store/note/noteCats.js';
 import { createNoteEffect } from '../store/note/noteEffect';
@@ -20,7 +21,7 @@ export const NoteAdd = fastMemo(() => {
   }, [title, text]);
 
   return (
-    <>
+    <PageContent>
       <PageHeader title="Add note" isLoading={isCreating} hasBack />
 
       <Form
@@ -45,6 +46,6 @@ export const NoteAdd = fastMemo(() => {
           />
         </Form.Item>
       </Form>
-    </>
+    </PageContent>
   );
 });

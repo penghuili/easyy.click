@@ -4,6 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
+import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { noteCat } from '../store/note/noteCats.js';
@@ -24,9 +25,11 @@ export const NoteDetails = fastMemo(({ queryParams: { noteId } }) => {
 
   return (
     <PrepareData load={load}>
-      <PageHeader title="Edit note" hasBack />
+      <PageContent>
+        <PageHeader title="Edit note" hasBack />
 
-      <NoteForm noteId={noteId} />
+        <NoteForm noteId={noteId} />
+      </PageContent>
     </PrepareData>
   );
 });

@@ -8,6 +8,7 @@ import { useCat } from 'usecat';
 import { DeleteAccountLink } from '../components/DeleteAccountLink';
 import { ItemsWrapper } from '../components/ItemsWrapper';
 import { LogoutLink } from '../components/LogoutLink';
+import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
 import {
   isDeletingAccountCat,
@@ -20,7 +21,7 @@ export const Security = fastMemo(() => {
   const isDeletingAccount = useCat(isDeletingAccountCat);
 
   return (
-    <>
+    <PageContent>
       <PageHeader
         title="Security"
         hasBack
@@ -48,6 +49,6 @@ export const Security = fastMemo(() => {
 
         <DeleteAccountLink />
       </ItemsWrapper>
-    </>
+    </PageContent>
   );
 });

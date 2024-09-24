@@ -5,6 +5,7 @@ import { useCat } from 'usecat';
 
 import { errorCssColor } from '../components/AppWrapper';
 import { Flex } from '../components/Flex';
+import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
 import { RouteLink } from '../components/RouteLink';
 import { Text } from '../components/Text';
@@ -33,7 +34,7 @@ export const SignIn = fastMemo(() => {
   }
 
   return (
-    <>
+    <PageContent>
       <PageHeader title="Sign in" isLoading={isSigningIn} hasBack />
 
       <Form
@@ -76,6 +77,6 @@ export const SignIn = fastMemo(() => {
           />
         </Form.Item>
       </Form>
-    </>
+    </PageContent>
   );
 });

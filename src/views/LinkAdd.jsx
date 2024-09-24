@@ -4,6 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { isCreatingLinkCat } from '../store/link/linkCats.js';
 import { createLinkEffect } from '../store/link/linkEffect.js';
@@ -20,7 +21,7 @@ export const LinkAdd = fastMemo(() => {
   }, [title, link]);
 
   return (
-    <>
+    <PageContent>
       <PageHeader title="Add link" isLoading={isCreating} hasBack />
 
       <Form
@@ -39,6 +40,6 @@ export const LinkAdd = fastMemo(() => {
           <TextArea placeholder="Link" maxLength={-1} value={link} onChange={setLink} rows={6} />
         </Form.Item>
       </Form>
-    </>
+    </PageContent>
   );
 });

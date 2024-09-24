@@ -4,6 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
+import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { linkCat } from '../store/link/linkCats.js';
@@ -24,9 +25,11 @@ export const LinkDetails = fastMemo(({ queryParams: { linkId } }) => {
 
   return (
     <PrepareData load={load}>
-      <PageHeader title="Edit link" hasBack />
+      <PageContent>
+        <PageHeader title="Edit link" hasBack />
 
-      <LinkForm linkId={linkId} />
+        <LinkForm linkId={linkId} />
+      </PageContent>
     </PrepareData>
   );
 });

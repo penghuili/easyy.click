@@ -5,6 +5,7 @@ import { useCat } from 'usecat';
 
 import { Flex } from '../components/Flex.jsx';
 import { LogoutLink } from '../components/LogoutLink.jsx';
+import { PageContent } from '../components/PageContent.jsx';
 import { RouteLink } from '../components/RouteLink.jsx';
 import { Text } from '../components/Text.jsx';
 import { appName, logo } from '../shared/browser/initShared.js';
@@ -30,7 +31,7 @@ export const VerifyEmail = fastMemo(() => {
   }
 
   return (
-    <>
+    <PageContent>
       <Flex direction="row" align="center" p="2rem 0 0" gap="2">
         <Avatar src={logo} shape="square" background="transparent" />{' '}
         <Text as="h2" size="6" m="0 0 0 1rem">
@@ -78,6 +79,6 @@ export const VerifyEmail = fastMemo(() => {
           <Input placeholder="Code" value={code} onChange={setCode} />
         </Form.Item>
       </Form>
-    </>
+    </PageContent>
   );
 });

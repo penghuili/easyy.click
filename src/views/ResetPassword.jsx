@@ -5,6 +5,7 @@ import fastMemo from 'react-fast-memo';
 
 import { Flex } from '../components/Flex';
 import { ItemsWrapper } from '../components/ItemsWrapper';
+import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
 import { RouteLink } from '../components/RouteLink';
 import { setToastEffect } from '../shared/browser/store/sharedEffects';
@@ -125,7 +126,7 @@ export const ResetPassword = fastMemo(() => {
   }
 
   return (
-    <>
+    <PageContent>
       <PageHeader title="Reset password" isLoading={isTriggering || isSaving} hasBack />
 
       <ItemsWrapper>
@@ -137,6 +138,6 @@ export const ResetPassword = fastMemo(() => {
           <RouteLink to="/sign-up">No account? Sign up</RouteLink>
         </Flex>
       </ItemsWrapper>
-    </>
+    </PageContent>
   );
 });

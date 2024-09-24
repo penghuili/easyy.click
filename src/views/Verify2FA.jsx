@@ -5,6 +5,7 @@ import { useCat } from 'usecat';
 
 import { errorCssColor } from '../components/AppWrapper';
 import { Flex } from '../components/Flex';
+import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
 import { RouteLink } from '../components/RouteLink';
 import { Text } from '../components/Text';
@@ -31,7 +32,7 @@ export const Verify2FA = fastMemo(() => {
   }
 
   return (
-    <>
+    <PageContent>
       <PageHeader title="2-factor Authentication" isLoading={isVerifying} hasBack />
 
       <Text>Enter the code from your authenticator app</Text>
@@ -54,6 +55,6 @@ export const Verify2FA = fastMemo(() => {
           <Input placeholder="Code" value={code} onChange={setCode} />
         </Form.Item>
       </Form>
-    </>
+    </PageContent>
   );
 });

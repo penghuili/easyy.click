@@ -7,6 +7,7 @@ import { useCat } from 'usecat';
 
 import { ItemsWrapper } from '../components/ItemsWrapper.jsx';
 import { LogoutLink } from '../components/LogoutLink.jsx';
+import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { copyToClipboard } from '../shared/browser/copyToClipboard';
@@ -17,27 +18,29 @@ import { formatDateTime } from '../shared/js/date';
 export const Account = fastMemo(() => {
   return (
     <PrepareData>
-      <Header />
+      <PageContent>
+        <Header />
 
-      <AccountInfo />
+        <AccountInfo />
 
-      <ItemsWrapper align="start">
-        <BabyLink to="/security">
-          <Button fill="none" icon={<RiShieldCheckLine />}>
-            Security
-          </Button>
-        </BabyLink>
+        <ItemsWrapper align="start">
+          <BabyLink to="/security">
+            <Button fill="none" icon={<RiShieldCheckLine />}>
+              Security
+            </Button>
+          </BabyLink>
 
-        <BabyLink to="/settings">
-          <Button fill="none" icon={<RiSettings3Line />}>
-            Settings
-          </Button>
-        </BabyLink>
-      </ItemsWrapper>
+          <BabyLink to="/settings">
+            <Button fill="none" icon={<RiSettings3Line />}>
+              Settings
+            </Button>
+          </BabyLink>
+        </ItemsWrapper>
 
-      <ItemsWrapper align="start">
-        <LogoutLink />
-      </ItemsWrapper>
+        <ItemsWrapper align="start">
+          <LogoutLink />
+        </ItemsWrapper>
+      </PageContent>
     </PrepareData>
   );
 });

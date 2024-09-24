@@ -6,17 +6,9 @@ import fastMemo from 'react-fast-memo';
 
 import { calculateItemPosition } from '../js/position';
 import { isMobileWidth } from './device';
-import { getScrollbarWidth } from './getScrollbarWidth';
 
 const SPACING = 20; // Spacing between elements
 const ITEMS_PER_ROW = isMobileWidth() ? 2 : 3; // Number of items per row
-const ELEMENT_WIDTH =
-  (Math.min(window.innerWidth, 600) -
-    getScrollbarWidth() -
-    16 -
-    20 -
-    SPACING * (ITEMS_PER_ROW - 1)) /
-  ITEMS_PER_ROW; // Fixed width for elements
 const ELEMENT_HEIGHT = 48; // Fixed height for elements
 const ANIMATION_DURATION = 300;
 const SCROLL_THRESHOLD = 50; // Distance from the top/bottom edge to start scrolling
@@ -24,11 +16,11 @@ const SCROLL_SPEED = 5; // Speed of auto-scrolling
 
 let isScrolling = false;
 
-const calculateStandardPositions = elArray => {
+const calculateStandardPositions = (elArray, itemWidth) => {
   return elArray.map((item, index) => {
     const row = Math.floor(index / ITEMS_PER_ROW);
     const col = index % ITEMS_PER_ROW;
-    const x = col * (ELEMENT_WIDTH + SPACING);
+    const x = col * (itemWidth + SPACING);
     const y = row * (ELEMENT_HEIGHT + SPACING);
     return { ...item, x, y };
   });
@@ -36,53 +28,33 @@ const calculateStandardPositions = elArray => {
 
 export const ReorderItems = fastMemo(
   ({ items, renderItem, onReorder, onClickItem, reverse, height, bgColor, borderColor }) => {
-    const boundaryRef = useRef(null);
     const containerRef = useRef(null);
+    const contentRef = useRef(null);
 
-    const [itemsWithPosition, setItemsWithPosition] = useState(calculateStandardPositions(items));
+    const [itemWidth, setItemWidth] = useState(null);
+
+    const [itemsWithPosition, setItemsWithPosition] = useState([]);
     const [dragging, setDragging] = useState(null); // Stores the index of the element being dragged
     const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-    const boundaryHeight = useMemo(() => {
+    const contentHeight = useMemo(() => {
       const rows = Math.ceil(items.length / ITEMS_PER_ROW);
       return rows * (ELEMENT_HEIGHT + SPACING) - SPACING;
     }, [items]);
-
-    // Handling drag start (for both mouse and touch events)
-    const handleDragStart = (e, index) => {
-      e.preventDefault(); // Prevent default touch behavior
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      setDragging(index);
-
-      const element = e.target.closest('.reorder-items-draggable').getBoundingClientRect();
-      const boundary = boundaryRef.current.getBoundingClientRect();
-      setOffset({ x: clientX - element.left, y: clientY - element.top });
-
-      setItemsWithPosition(prev => {
-        const updatedElements = [...itemsWithPosition];
-        updatedElements[index] = {
-          ...prev[index],
-          x: element.left - boundary.left,
-          y: element.top - boundary.top,
-        };
-        return updatedElements;
-      });
-    };
 
     // Handling dragging (for both mouse and touch events)
     const handleDragMove = e => {
       if (dragging !== null) {
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        const boundary = boundaryRef.current.getBoundingClientRect();
+        const contentBoundary = contentRef.current.getBoundingClientRect();
         const container = containerRef.current;
 
-        let newX = clientX - boundary.left - offset.x;
-        let newY = clientY - boundary.top - offset.y;
+        let newX = clientX - contentBoundary.left - offset.x;
+        let newY = clientY - contentBoundary.top - offset.y;
         // Ensure the dragged element doesn't leave the boundary
-        newX = Math.max(0, Math.min(newX, boundary.width - ELEMENT_WIDTH));
-        newY = Math.max(0, Math.min(newY, boundary.height - ELEMENT_HEIGHT));
+        newX = Math.max(0, Math.min(newX, contentBoundary.width - itemWidth));
+        newY = Math.max(0, Math.min(newY, contentBoundary.height - ELEMENT_HEIGHT));
 
         setItemsWithPosition(prev => {
           const updatedElements = [...itemsWithPosition];
@@ -160,7 +132,7 @@ export const ReorderItems = fastMemo(
       const [draggedElement] = updatedElements.splice(draggedIndex, 1); // Remove the dragged element
       updatedElements.splice(closestIndex, 0, draggedElement); // Insert it at the new closest position
 
-      const elementsWithPosition = calculateStandardPositions(updatedElements);
+      const elementsWithPosition = calculateStandardPositions(updatedElements, itemWidth);
       const obj = {};
       elementsWithPosition.forEach(item => {
         obj[item.sortKey] = item;
@@ -192,7 +164,7 @@ export const ReorderItems = fastMemo(
       itemsWithPosition.forEach((_, index) => {
         const row = Math.floor(index / ITEMS_PER_ROW);
         const col = index % ITEMS_PER_ROW;
-        const gridX = col * (ELEMENT_WIDTH + SPACING);
+        const gridX = col * (itemWidth + SPACING);
         const gridY = row * (ELEMENT_HEIGHT + SPACING);
 
         const distance = Math.sqrt((x - gridX) ** 2 + (y - gridY) ** 2);
@@ -206,8 +178,18 @@ export const ReorderItems = fastMemo(
     };
 
     useEffect(() => {
-      setItemsWithPosition(calculateStandardPositions(items));
-    }, [items]);
+      if (contentRef.current?.offsetWidth) {
+        setItemWidth(
+          (contentRef.current.offsetWidth - SPACING * (ITEMS_PER_ROW - 1) - 2) / ITEMS_PER_ROW
+        );
+      }
+    }, []);
+
+    useEffect(() => {
+      if (items?.length && itemWidth) {
+        setItemsWithPosition(calculateStandardPositions(items, itemWidth));
+      }
+    }, [items, itemWidth]);
 
     useEffect(() => {
       // Clean up scrolling on unmount
@@ -230,45 +212,99 @@ export const ReorderItems = fastMemo(
         onTouchEnd={handleDragEnd}
       >
         <div
-          ref={boundaryRef}
+          ref={contentRef}
           className="reorder-items-content"
           style={{
-            height: boundaryHeight,
+            height: contentHeight,
           }}
         >
-          {itemsWithPosition.map((element, index) => (
-            <div
-              key={element.sortKey}
-              className="reorder-items-draggable"
-              style={{
-                left: element.x,
-                top: `${element.y}px`,
-                width: ELEMENT_WIDTH,
-                height: `${ELEMENT_HEIGHT}px`,
-                zIndex: dragging === index ? 2 : 1,
-                transition:
-                  dragging === index
-                    ? 'none'
-                    : `left ${ANIMATION_DURATION}ms ease-in-out, top ${ANIMATION_DURATION}ms ease-in-out`,
-
-                ...(bgColor ? { '--reorder-items-background-color': bgColor } : {}),
-                ...(borderColor ? { '--reorder-items-border-color': bgColor } : {}),
-              }}
-            >
-              <span
-                className="reorder-items-drag-handle"
-                onMouseDown={e => handleDragStart(e, index)}
-                onTouchStart={e => handleDragStart(e, index)}
-              >
-                <RiDraggable />
-              </span>
-              <span className="reorder-items-drag-content" onClick={() => onClickItem(element)}>
-                {renderItem(element)}
-              </span>
-            </div>
-          ))}
+          {!!itemsWithPosition.length && (
+            <Items
+              items={itemsWithPosition}
+              itemWidth={itemWidth}
+              renderItem={renderItem}
+              contentRef={contentRef}
+              draggingIndex={dragging}
+              onDraggingIndexChange={setDragging}
+              onOffsetChange={setOffset}
+              onItemsChange={setItemsWithPosition}
+              onClickItem={onClickItem}
+              bgColor={bgColor}
+              borderColor={borderColor}
+            />
+          )}
         </div>
       </div>
     );
+  }
+);
+
+const Items = fastMemo(
+  ({
+    items,
+    itemWidth,
+    renderItem,
+    contentRef,
+    draggingIndex,
+    onDraggingIndexChange,
+    onOffsetChange,
+    onItemsChange,
+    onClickItem,
+    bgColor,
+    borderColor,
+  }) => {
+    // Handling drag start (for both mouse and touch events)
+    const handleDragStart = (e, index) => {
+      e.preventDefault(); // Prevent default touch behavior
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      onDraggingIndexChange(index);
+
+      const element = e.target.closest('.reorder-items-draggable').getBoundingClientRect();
+      const contentBoundary = contentRef.current.getBoundingClientRect();
+      onOffsetChange({ x: clientX - element.left, y: clientY - element.top });
+
+      onItemsChange(prev => {
+        const updatedElements = [...items];
+        updatedElements[index] = {
+          ...prev[index],
+          x: element.left - contentBoundary.left,
+          y: element.top - contentBoundary.top,
+        };
+        return updatedElements;
+      });
+    };
+
+    return items.map((element, index) => (
+      <div
+        key={element.sortKey}
+        className="reorder-items-draggable"
+        style={{
+          left: element.x,
+          top: `${element.y}px`,
+          width: itemWidth,
+          height: `${ELEMENT_HEIGHT}px`,
+          zIndex: draggingIndex === index ? 2 : 1,
+          transition:
+            draggingIndex === index
+              ? 'none'
+              : `left ${ANIMATION_DURATION}ms ease-in-out, top ${ANIMATION_DURATION}ms ease-in-out`,
+
+          ...(bgColor ? { '--reorder-items-background-color': bgColor } : {}),
+          ...(borderColor ? { '--reorder-items-border-color': bgColor } : {}),
+        }}
+      >
+        <span
+          className="reorder-items-drag-handle"
+          onMouseDown={e => handleDragStart(e, index)}
+          onTouchStart={e => handleDragStart(e, index)}
+        >
+          <RiDraggable />
+        </span>
+        <span className="reorder-items-drag-content" onClick={() => onClickItem(element)}>
+          {renderItem(element)}
+        </span>
+      </div>
+    ));
   }
 );

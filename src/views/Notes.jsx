@@ -8,6 +8,7 @@ import { useCat } from 'usecat';
 import { Favicon } from '../components/Favicon.jsx';
 import { Flex } from '../components/Flex.jsx';
 import { Link } from '../components/Link.jsx';
+import { PageContent } from '../components/PageContent.jsx';
 import { PageEmpty } from '../components/PageEmpty.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
@@ -52,30 +53,32 @@ export const Notes = fastMemo(() => {
 
   return (
     <PrepareData load={load}>
-      <PageHeader
-        title={
-          <Tabs value={tab} onChange={handleChangeTab}>
-            <TabPane key="links" value="links" title="Links"></TabPane>
-            <TabPane key="notes" value="notes" title="Notes"></TabPane>
-          </Tabs>
-        }
-        right={
-          <>
-            <Button type="primary" fill="none" icon={<RiAddLine />} onClick={handleAdd} />
+      <PageContent>
+        <PageHeader
+          title={
+            <Tabs value={tab} onChange={handleChangeTab}>
+              <TabPane key="links" value="links" title="Links"></TabPane>
+              <TabPane key="notes" value="notes" title="Notes"></TabPane>
+            </Tabs>
+          }
+          right={
+            <>
+              <Button type="primary" fill="none" icon={<RiAddLine />} onClick={handleAdd} />
 
-            <Button
-              type="primary"
-              fill="none"
-              icon={<RiUser2Line />}
-              onClick={() => {
-                navigateTo(`/account`);
-              }}
-            />
-          </>
-        }
-      />
+              <Button
+                type="primary"
+                fill="none"
+                icon={<RiUser2Line />}
+                onClick={() => {
+                  navigateTo(`/account`);
+                }}
+              />
+            </>
+          }
+        />
 
-      {isNotes ? <NoteItems /> : <LinkItems />}
+        {isNotes ? <NoteItems /> : <LinkItems />}
+      </PageContent>
     </PrepareData>
   );
 });

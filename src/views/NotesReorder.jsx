@@ -4,6 +4,7 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
+import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { Text } from '../components/Text.jsx';
@@ -33,21 +34,23 @@ export const NotesReorder = fastMemo(() => {
 
   return (
     <PrepareData load={load}>
-      <PageHeader title="Reorder notes" isLoading={isLoading || isUpdating} hasBack />
+      <PageContent>
+        <PageHeader title="Reorder notes" isLoading={isLoading || isUpdating} hasBack />
 
-      <Text m="0 0 1rem">Drag to reorder, click to edit.</Text>
+        <Text m="0 0 1rem">Drag to reorder, click to edit.</Text>
 
-      <ReorderItems
-        items={notes}
-        onReorder={handleReorder}
-        reverse
-        renderItem={item => item.title}
-        onClickItem={item => {
-          activeNoteCat.set(item);
-        }}
-      />
+        <ReorderItems
+          items={notes}
+          onReorder={handleReorder}
+          reverse
+          renderItem={item => item.title}
+          onClickItem={item => {
+            activeNoteCat.set(item);
+          }}
+        />
 
-      <Actions />
+        <Actions />
+      </PageContent>
     </PrepareData>
   );
 });
