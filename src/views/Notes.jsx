@@ -1,4 +1,4 @@
-import { Button, Grid, TabPane, Tabs } from '@nutui/nutui-react';
+import { Button, Ellipsis, Grid, TabPane, Tabs } from '@nutui/nutui-react';
 import { RiAddLine, RiUser2Line } from '@remixicon/react';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
@@ -12,10 +12,8 @@ import { PageContent } from '../components/PageContent.jsx';
 import { PageEmpty } from '../components/PageEmpty.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
-import { Text } from '../components/Text.jsx';
 import { localStorageKeys } from '../lib/constants.js';
 import { copyToClipboard } from '../lib/copyToClipboard';
-import { ellipsisStyle } from '../lib/styles.js';
 import { isMobileBrowser } from '../shared/browser/device.js';
 import { LocalStorage } from '../shared/browser/LocalStorage.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
@@ -100,13 +98,15 @@ const NoteItems = fastMemo(() => {
       <Grid columns={isMobileBrowser() ? 2 : 3}>
         {notes.map(item => (
           <Grid.Item key={item.sortKey} style={{ overflow: 'hidden' }}>
-            <Text
-              as="span"
+            <Ellipsis
               onClick={() => handleCopy(item)}
-              style={{ ...ellipsisStyle, display: 'inline-block', cursor: 'pointer' }}
-            >
-              {item.title}
-            </Text>
+              content={item.title}
+              direction="end"
+              rows="2"
+              style={{
+                cursor: 'pointer',
+              }}
+            />
           </Grid.Item>
         ))}
       </Grid>
@@ -133,12 +133,18 @@ const LinkItems = fastMemo(() => {
               href={item.link}
               target="_blank"
               style={{
-                ...ellipsisStyle,
-                display: 'inline-block',
+                display: 'inline-flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
               <Favicon url={item.link} />
-              {item.title}
+              <Ellipsis
+                content={item.title}
+                direction="end"
+                rows="2"
+                style={{ textAlign: 'center' }}
+              />
             </Link>
           </Grid.Item>
         ))}
