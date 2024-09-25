@@ -5,7 +5,7 @@ import { goBack, navigateTo } from 'react-baby-router';
 
 import { logo } from '../shared/browser/initShared.js';
 
-export function PageHeader({ title, right, isLoading, hasBack }) {
+export function PageHeader({ title, titleAlign = 'center', right, isLoading, hasBack }) {
   const handleClick = useCallback(() => {
     if (hasBack) {
       goBack();
@@ -23,7 +23,7 @@ export function PageHeader({ title, right, isLoading, hasBack }) {
   }, [hasBack]);
 
   return (
-    <NavBar back={iconElement} onBackClick={handleClick} right={right}>
+    <NavBar titleAlign={titleAlign} back={iconElement} onBackClick={handleClick} right={right}>
       {title} {isLoading && <Loading type="spinner" />}
     </NavBar>
   );

@@ -34,6 +34,7 @@ const savedTab = LocalStorage.get(localStorageKeys.activeTab);
 export const Notes = fastMemo(() => {
   const [tab, setTab] = useState(savedTab || 'links');
   const isNotes = tab === 'notes';
+  const expiresAt = useExpiresAt();
 
   const handleChangeTab = useCallback(
     newTab => {
@@ -61,6 +62,7 @@ export const Notes = fastMemo(() => {
               <TabPane key="notes" value="notes" title="Notes"></TabPane>
             </Tabs>
           }
+          titleAlign={expiresAt ? 'center' : 'left'}
           right={
             <>
               <UpgradeButton />
