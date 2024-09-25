@@ -13,9 +13,9 @@ disablePullToRefresh();
 initShared({
   logo: '/icons/icon-192.png',
   app: apps['easyy.click'].name,
-  privacyUrl: 'https://notenote.cc/privacy/',
-  termsUrl: 'https://notenote.cc/terms/',
-  showNewVersion: false,
+  privacyUrl: 'https://easyy.click/privacy',
+  termsUrl: 'https://easyy.click/terms',
+  showNewVersion: true,
 });
 
 function App() {

@@ -48,6 +48,18 @@ export const SignUp = fastMemo(() => {
 
             {!!errorMessage && <Text color={errorCssColor}>{errorMessage}</Text>}
 
+            <Text m="0.5rem 0 0" size="3">
+              * By clicking Sign up, you have read and agreed to the{' '}
+              <Link label="privacy policy" href={privacyUrl} target="_blank">
+                privacy policy
+              </Link>{' '}
+              and{' '}
+              <Link label="terms" href={termsUrl} target="_blank">
+                terms
+              </Link>
+              .
+            </Text>
+
             <RouteLink to="/sign-in" m="1rem 0 0">
               Already have account? Sign in
             </RouteLink>
@@ -72,18 +84,6 @@ export const SignUp = fastMemo(() => {
             onChange={setPassword}
             rules={[{ required: true, message: 'Please input your password.' }]}
           />
-
-          <Text m="0.5rem 0 0" size="3">
-            * By clicking Sign up, you have read and agreed to the{' '}
-            <Link label="privacy policy" href={privacyUrl} target="_blank">
-              privacy policy
-            </Link>{' '}
-            and{' '}
-            <Link label="terms" href={termsUrl} target="_blank">
-              terms
-            </Link>
-            .
-          </Text>
         </Form.Item>
       </Form>
     </PageContent>
