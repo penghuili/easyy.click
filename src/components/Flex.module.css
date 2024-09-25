@@ -1,9 +1,10 @@
-.flex {
+.pengFlex {
   display: flex;
-  flex-direction: var(--flex-direction, row);
-  justify-content: var(--flex-justify, flex-start);
-  align-items: var(--flex-align, stretch);
-  gap: var(--flex-gap, 0);
-  margin: var(--flex-margin, 0);
-  padding: var(--flex-padding, 0);
+  flex-direction: var(--peng-flex-direction, row);
+  justify-content: var(--peng-flex-justify, flex-start);
+  align-items: var(--peng-flex-align, stretch);
+  flex-wrap: var(--peng-flex-wrap, nowrap);
+  gap: var(--peng-flex-gap, 0);
+  margin: var(--peng-flex-margin, 0);
+  padding: var(--peng-flex-padding, 0);
 }

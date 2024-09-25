@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isChangingPasswordCat } from '../shared/browser/store/sharedCats';
 import { changePasswordEffect } from '../shared/browser/store/sharedEffects';
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import './Text.css';
 
-import styles from './Text.module.css';
+import React from 'react';
 
 export const fontSizes = {
   1: 'var(--nutui-font-size-1)',
@@ -15,16 +15,26 @@ export const fontSizes = {
   10: 'var(--nutui-font-size-10)',
 };
 
-export function Text({ as: Component = 'p', children, onClick, style, color, size = '4', m }) {
+export function Text({
+  as: Component = 'p',
+  children,
+  onClick,
+  style,
+  color,
+  size = '4',
+  align,
+  m,
+}) {
   return (
     <Component
-      className={styles.text}
+      className="pengText"
       onClick={onClick}
       style={{
+        ...(color ? { '--peng-text-color': color } : {}),
+        ...(fontSizes[size] ? { '--peng-text-size': fontSizes[size] } : {}),
+        ...(align ? { '--peng-text-align': align } : {}),
+        ...(m ? { '--peng-text-margin': m } : {}),
         ...(style || {}),
-        ...(color ? { '--text-color': color } : {}),
-        ...(fontSizes[size] ? { '--text-size': fontSizes[size] } : {}),
-        ...(m ? { '--text-margin': m } : {}),
       }}
     >
       {children}

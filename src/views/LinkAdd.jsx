@@ -4,8 +4,8 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isCreatingLinkCat } from '../store/link/linkCats.js';
 import { createLinkEffect } from '../store/link/linkEffect.js';
 

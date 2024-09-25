@@ -3,10 +3,10 @@ import React from 'react';
 
 import { Flex } from '../components/Flex';
 import { ItemsWrapper } from '../components/ItemsWrapper';
-import { PageContent } from '../components/PageContent';
 import { RouteLink } from '../components/RouteLink';
 import { Text } from '../components/Text';
 import { logo } from '../shared/browser/initShared';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 
 export function Welcome() {
   return (

@@ -8,7 +8,6 @@ import { useCat } from 'usecat';
 import { Favicon } from '../components/Favicon.jsx';
 import { Flex } from '../components/Flex.jsx';
 import { Link } from '../components/Link.jsx';
-import { PageContent } from '../components/PageContent.jsx';
 import { PageEmpty } from '../components/PageEmpty.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
@@ -16,6 +15,9 @@ import { localStorageKeys } from '../lib/constants.js';
 import { copyToClipboard } from '../lib/copyToClipboard';
 import { isMobileBrowser } from '../shared/browser/device.js';
 import { LocalStorage } from '../shared/browser/LocalStorage.js';
+import { PageContent } from '../shared/browser/PageContent.jsx';
+import { Shine } from '../shared/browser/Shine.jsx';
+import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { linksCat } from '../store/link/linkCats.js';
 import { fetchLinksEffect } from '../store/link/linkEffect.js';
@@ -61,6 +63,8 @@ export const Notes = fastMemo(() => {
           }
           right={
             <>
+              <UpgradeButton />
+
               <Button type="primary" fill="none" icon={<RiAddLine />} onClick={handleAdd} />
 
               <Button
@@ -78,6 +82,28 @@ export const Notes = fastMemo(() => {
         {isNotes ? <NoteItems /> : <LinkItems />}
       </PageContent>
     </PrepareData>
+  );
+});
+
+const UpgradeButton = fastMemo(() => {
+  const expiresAt = useExpiresAt();
+
+  if (expiresAt === 'forever') {
+    return null;
+  }
+
+  return (
+    <Button
+      type="primary"
+      size="small"
+      onClick={() => {
+        navigateTo('/upgrade');
+      }}
+      style={{ marginRight: '0.5rem', position: 'relative', overflow: 'hidden' }}
+    >
+      Upgrade
+      <Shine />
+    </Button>
   );
 });
 

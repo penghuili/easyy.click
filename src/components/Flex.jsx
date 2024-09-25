@@ -15,19 +15,24 @@ const aligns = {
   center: 'center',
   stretch: 'stretch',
 };
+const wraps = {
+  nowrap: 'nowrap',
+  wrap: 'wrap',
+};
 
-export function Flex({ children, style, direction = 'column', justify, align, gap, m, p }) {
+export function Flex({ children, style, direction = 'column', justify, align, wrap, gap, m, p }) {
   return (
     <div
-      className={styles.flex}
+      className={styles.pengFlex}
       style={{
         ...(style || {}),
-        ...(direction ? { '--flex-direction': direction } : {}),
-        ...(justifies[justify] ? { '--flex-justify': justifies[justify] } : {}),
-        ...(aligns[align] ? { '--flex-align': aligns[align] } : {}),
-        ...(gap ? { '--flex-gap': gap } : {}),
-        ...(m ? { '--flex-margin': m } : {}),
-        ...(p ? { '--flex-padding': p } : {}),
+        ...(direction ? { '--peng-flex-direction': direction } : {}),
+        ...(justifies[justify] ? { '--peng-flex-justify': justifies[justify] } : {}),
+        ...(aligns[align] ? { '--peng-flex-align': aligns[align] } : {}),
+        ...(wraps[wrap] ? { '--peng-flex-wrap': wraps[wrap] } : {}),
+        ...(gap ? { '--peng-flex-gap': gap } : {}),
+        ...(m ? { '--peng-flex-margin': m } : {}),
+        ...(p ? { '--peng-flex-padding': p } : {}),
       }}
     >
       {children}

@@ -6,8 +6,14 @@ import { useCat } from 'usecat';
 import { PageLoading } from './components/PageLoading.jsx';
 import { PrepareData } from './components/PrepareData.jsx';
 import { isMobileWidth } from './lib/device.js';
-import { isLoggedInCat, useIsEmailVerified } from './shared/browser/store/sharedCats.js';
+import {
+  isLoggedInCat,
+  useExpiresAt,
+  useFreeTrialsUntil,
+  useIsEmailVerified,
+} from './shared/browser/store/sharedCats.js';
 import { initEffect } from './shared/browser/store/sharedEffects.js';
+import { formatDate } from './shared/js/date.js';
 import { Account } from './views/Account.jsx';
 import { ChangeEmail } from './views/ChangeEmail.jsx';
 import { ChangePassword } from './views/ChangePassword.jsx';
@@ -24,6 +30,7 @@ import { Security } from './views/Security.jsx';
 import { Settings } from './views/Settings.jsx';
 import { SignIn } from './views/SignIn.jsx';
 import { SignUp } from './views/SignUp.jsx';
+import { Upgrade } from './views/Upgrade.jsx';
 import { Verify2FA } from './views/Verify2FA.jsx';
 import { VerifyEmail } from './views/VerifyEmail.jsx';
 import { Welcome } from './views/Welcome.jsx';
@@ -52,6 +59,9 @@ const verifyEmailRoutes = {
   '/security/email': ChangeEmail,
   '/': VerifyEmail,
 };
+const upgradeRoutes = {
+  '/': Upgrade,
+};
 const loggedInRoutes = {
   '/notes/add': NoteAdd,
   '/notes/details': NoteDetails,
@@ -69,12 +79,16 @@ const loggedInRoutes = {
   '/security/password': ChangePassword,
   '/settings': Settings,
 
+  '/upgrade': Upgrade,
+
   '/': Notes,
 };
 
 const AllRoutes = fastMemo(() => {
   const isLoggedIn = useCat(isLoggedInCat);
   const isVerified = useIsEmailVerified();
+  const freeTrialUntil = useFreeTrialsUntil();
+  const expiresAt = useExpiresAt();
 
   if (isLoggedIn) {
     if (isVerified === undefined) {
@@ -86,7 +100,18 @@ const AllRoutes = fastMemo(() => {
         <BabyRoutes
           routes={verifyEmailRoutes}
           enableAnimation={isMobileWidth()}
-          bgColor="white"
+          bgColor="var(--color-background)"
+          maxWidth="600px"
+        />
+      );
+    }
+
+    if (!expiresAt && (!freeTrialUntil || freeTrialUntil < formatDate(new Date()))) {
+      return (
+        <BabyRoutes
+          routes={upgradeRoutes}
+          enableAnimation={isMobileWidth()}
+          bgColor="var(--color-background)"
           maxWidth="600px"
         />
       );
@@ -96,7 +121,7 @@ const AllRoutes = fastMemo(() => {
       <BabyRoutes
         routes={loggedInRoutes}
         enableAnimation={isMobileWidth()}
-        bgColor="white"
+        bgColor="var(--color-background)"
         maxWidth="600px"
       />
     );
@@ -106,7 +131,7 @@ const AllRoutes = fastMemo(() => {
     <BabyRoutes
       routes={publicRoutes}
       enableAnimation={isMobileWidth()}
-      bgColor="white"
+      bgColor="var(--color-background)"
       maxWidth="600px"
     />
   );

@@ -8,8 +8,8 @@ import { useCat } from 'usecat';
 import { DeleteAccountLink } from '../components/DeleteAccountLink';
 import { ItemsWrapper } from '../components/ItemsWrapper';
 import { LogoutLink } from '../components/LogoutLink';
-import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import {
   isDeletingAccountCat,
   isLoggingOutFromAllDevicesCat,

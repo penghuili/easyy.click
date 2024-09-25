@@ -4,9 +4,9 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
-import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import { noteCat } from '../store/note/noteCats.js';
 import { fetchNoteEffect, updateNoteEffect } from '../store/note/noteEffect';
 

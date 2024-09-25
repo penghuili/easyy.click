@@ -4,9 +4,9 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { Flex } from '../components/Flex.jsx';
-import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { Text } from '../components/Text.jsx';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isChangingEmailCat, userCat } from '../shared/browser/store/sharedCats';
 import { changeEmailEffect, setToastEffect } from '../shared/browser/store/sharedEffects';
 import { changeEmailTrigger } from '../shared/browser/store/sharedNetwork';

@@ -4,10 +4,10 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
-import { PageContent } from '../components/PageContent.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { Text } from '../components/Text.jsx';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderItems } from '../shared/browser/ReorderItems.jsx';
 import { isLoadingNotesCat, isUpdatingNoteCat, notesCat } from '../store/note/noteCats.js';
 import { deleteNoteEffect, fetchNotesEffect, updateNoteEffect } from '../store/note/noteEffect.js';

@@ -5,10 +5,10 @@ import { useCat } from 'usecat';
 
 import { errorCssColor } from '../components/AppWrapper';
 import { Flex } from '../components/Flex';
-import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
 import { RouteLink } from '../components/RouteLink';
 import { Text } from '../components/Text';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import { authErrorCat, isSigningInCat } from '../shared/browser/store/sharedCats';
 import { clearAuthErrorEffect, signInEffect } from '../shared/browser/store/sharedEffects';
 

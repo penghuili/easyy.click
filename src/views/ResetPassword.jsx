@@ -5,9 +5,9 @@ import fastMemo from 'react-fast-memo';
 
 import { Flex } from '../components/Flex';
 import { ItemsWrapper } from '../components/ItemsWrapper';
-import { PageContent } from '../components/PageContent';
 import { PageHeader } from '../components/PageHeader';
 import { RouteLink } from '../components/RouteLink';
+import { PageContent } from '../shared/browser/PageContent.jsx';
 import { setToastEffect } from '../shared/browser/store/sharedEffects';
 import { resetPasswordSave, resetPasswordTrigger } from '../shared/browser/store/sharedNetwork';
 import { toastTypes } from '../shared/browser/Toast';

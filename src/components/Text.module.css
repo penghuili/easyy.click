@@ -1,5 +1,0 @@
-.text {
-  font-size: var(--text-size, var(--nutui-font-size-4));
-  color: var(--text-color, var(--nutui-gray-7));
-  margin: var(--text-margin, 0);
-}
