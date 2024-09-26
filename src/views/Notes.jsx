@@ -1,5 +1,5 @@
 import { Button, Ellipsis, Grid, TabPane, Tabs } from '@nutui/nutui-react';
-import { RiAddLine, RiUser2Line } from '@remixicon/react';
+import { RiUser2Line } from '@remixicon/react';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -7,6 +7,7 @@ import { useCat } from 'usecat';
 
 import { Favicon } from '../components/Favicon.jsx';
 import { Flex } from '../components/Flex.jsx';
+import { FloatAction } from '../components/FloatAction.jsx';
 import { Link } from '../components/Link.jsx';
 import { PageEmpty } from '../components/PageEmpty.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
@@ -54,6 +55,8 @@ export const Notes = fastMemo(() => {
 
   return (
     <PrepareData load={load}>
+      <FloatAction onClick={handleAdd} />
+
       <PageContent>
         <PageHeader
           title={
@@ -66,8 +69,6 @@ export const Notes = fastMemo(() => {
           right={
             <>
               <UpgradeButton />
-
-              <Button type="primary" fill="none" icon={<RiAddLine />} onClick={handleAdd} />
 
               <Button
                 type="primary"
