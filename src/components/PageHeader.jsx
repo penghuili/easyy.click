@@ -25,17 +25,9 @@ export function PageHeader({ title, titleAlign = 'center', right, isLoading, has
 
   return (
     <>
-      <NavBar
-        fixed
-        titleAlign={titleAlign}
-        back={iconElement}
-        onBackClick={handleClick}
-        right={right}
-      >
+      <NavBar titleAlign={titleAlign} back={iconElement} onBackClick={handleClick} right={right}>
         {title} {isLoading && <Loading type="spinner" />}
       </NavBar>
-
-      <div style={{ height: 64 }} />
 
       <NewVersionAvailable />
     </>
