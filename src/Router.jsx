@@ -7,6 +7,7 @@ import { PageLoading } from './components/PageLoading.jsx';
 import { PrepareData } from './components/PrepareData.jsx';
 import { isMobileWidth } from './lib/device.js';
 import {
+  isLoadingSettingsCat,
   isLoggedInCat,
   useExpiresAt,
   useFreeTrialsUntil,
@@ -87,6 +88,7 @@ const loggedInRoutes = {
 const AllRoutes = fastMemo(() => {
   const isLoggedIn = useCat(isLoggedInCat);
   const isVerified = useIsEmailVerified();
+  const isLoadingSettings = useCat(isLoadingSettingsCat);
   const freeTrialUntil = useFreeTrialsUntil();
   const expiresAt = useExpiresAt();
 
@@ -104,6 +106,10 @@ const AllRoutes = fastMemo(() => {
           maxWidth="600px"
         />
       );
+    }
+
+    if (isLoadingSettings) {
+      return <PageLoading />;
     }
 
     if (!expiresAt && (!freeTrialUntil || freeTrialUntil < formatDate(new Date()))) {

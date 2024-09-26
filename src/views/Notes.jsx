@@ -20,9 +20,9 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
-import { linksCat } from '../store/link/linkCats.js';
+import { isLoadingLinksCat, linksCat } from '../store/link/linkCats.js';
 import { fetchLinksEffect } from '../store/link/linkEffect.js';
-import { notesCat } from '../store/note/noteCats.js';
+import { isLoadingNotesCat, notesCat } from '../store/note/noteCats.js';
 import { fetchNotesEffect } from '../store/note/noteEffect.js';
 
 async function load() {
@@ -33,9 +33,11 @@ async function load() {
 const savedTab = LocalStorage.get(localStorageKeys.activeTab);
 
 export const Notes = fastMemo(() => {
+  const isLoadingNotes = useCat(isLoadingNotesCat);
+  const isLoadingLinks = useCat(isLoadingLinksCat);
+
   const [tab, setTab] = useState(savedTab || 'links');
   const isNotes = tab === 'notes';
-  const expiresAt = useExpiresAt();
 
   const handleChangeTab = useCallback(
     newTab => {
@@ -65,7 +67,7 @@ export const Notes = fastMemo(() => {
               <TabPane key="notes" value="notes" title="Notes"></TabPane>
             </Tabs>
           }
-          titleAlign={expiresAt ? 'center' : 'left'}
+          isLoading={isLoadingNotes || isLoadingLinks}
           right={
             <>
               <UpgradeButton />
