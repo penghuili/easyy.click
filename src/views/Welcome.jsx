@@ -1,15 +1,22 @@
-import { Avatar } from '@nutui/nutui-react';
-import React from 'react';
+import { Avatar, Button } from '@nutui/nutui-react';
+import React, { useCallback } from 'react';
+import { BabyLink } from 'react-baby-router';
 
 import { Flex } from '../components/Flex';
 import { ItemsWrapper } from '../components/ItemsWrapper';
 import { Link } from '../components/Link.jsx';
-import { RouteLink } from '../components/RouteLink';
 import { Text } from '../components/Text';
-import { logo, privacyUrl, termsUrl } from '../shared/browser/initShared';
+import { copyToClipboard } from '../lib/copyToClipboard.js';
+import { logo } from '../shared/browser/initShared';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 
 export function Welcome() {
+  const handleCopyEmail = useCallback(async () => {
+    await copyToClipboard('peng@tuta.com');
+    setToastEffect('Contact email is copied!');
+  }, []);
+
   return (
     <PageContent>
       <ItemsWrapper>
@@ -29,19 +36,33 @@ export function Welcome() {
       </ItemsWrapper>
 
       <ItemsWrapper align="start">
-        <RouteLink to="/sign-up">Sign up</RouteLink>
-        <RouteLink to="/sign-in">Sign in</RouteLink>
+        <BabyLink to="/sign-up">
+          <Button fill="solid">Sign up</Button>
+        </BabyLink>
+        <BabyLink to="/sign-in">
+          <Button fill="outline">Sign in</Button>
+        </BabyLink>
       </ItemsWrapper>
 
       <ItemsWrapper align="start">
-        <Link href={privacyUrl} target="_blank">
+        <Link href="https://easyy.click/encryption/" target="_blank" rel="noreferrer">
+          Encryption
+        </Link>
+
+        <Link href="https://github.com/penghuili/easyy.click" target="_blank" rel="noreferrer">
+          Source code
+        </Link>
+
+        <Link href="https://easyy.click/privacy" target="_blank" rel="noreferrer">
           Privacy
         </Link>
-        <Link href={termsUrl} target="_blank">
+
+        <Link href="https://easyy.click/terms" target="_blank" rel="noreferrer">
           Terms
         </Link>
-        <Link href="https://easyy.click/contact/" target="_blank">
-          Contact
+
+        <Link onClick={handleCopyEmail} style={{ cursor: 'pointer' }}>
+          Contact: peng@tuta.com
         </Link>
       </ItemsWrapper>
     </PageContent>

@@ -9,6 +9,7 @@ import { ItemsWrapper } from '../components/ItemsWrapper.jsx';
 import { LogoutLink } from '../components/LogoutLink.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
+import { PublicLinks } from '../components/PublicLinks.jsx';
 import { copyToClipboard } from '../shared/browser/copyToClipboard';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import {
@@ -43,6 +44,8 @@ export const Account = fastMemo(() => {
             </Button>
           </BabyLink>
         </ItemsWrapper>
+
+        <PublicLinks />
 
         <ItemsWrapper align="start">
           <LogoutLink />
