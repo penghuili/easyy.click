@@ -2,6 +2,7 @@ import { RiCheckLine } from '@remixicon/react';
 import React from 'react';
 
 import { classNames } from '../shared/browser/classNames.js';
+import { Countdown } from '../shared/browser/CountDown.jsx';
 import { Flex } from './Flex.jsx';
 import styles from './Prices.module.css';
 import { Text } from './Text.jsx';
@@ -21,7 +22,7 @@ export const Prices = React.memo(() => {
       <Text m="0.5rem 0" size="7" color="white">
         Pay once, use forever
       </Text>
-      <Flex direction="row" align="center" m="0 0 1rem">
+      <Flex direction="row" align="center" m="0">
         <span
           style={{
             fontSize: '2rem',
@@ -32,8 +33,13 @@ export const Prices = React.memo(() => {
           $9
         </span>
         <Text size="7" color="white">
-          <del>$19</del> for early users
+          <del>$19</del> for You
         </Text>
+      </Flex>
+
+      <Flex m="1rem 0 1.5rem" align="center">
+        Ends in:
+        <Countdown targetDate="2024-10-12" />
       </Flex>
 
       <Flex direction="column" align="start" m="0">

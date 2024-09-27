@@ -9,6 +9,7 @@ import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { Prices } from '../components/Prices.jsx';
 import { Text } from '../components/Text.jsx';
+import { hasValidFreeTrial } from '../lib/hasValidFreeTrial.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt, useFreeTrialsUntil } from '../shared/browser/store/sharedCats.js';
@@ -38,7 +39,13 @@ const Header = fastMemo(() => {
   const freeTrialUntil = useFreeTrialsUntil();
   const isTrying = useCat(isFreeTryingCat);
 
-  return <PageHeader title="Upgrade easyy.click" isLoading={isTrying} hasBack={!!freeTrialUntil} />;
+  return (
+    <PageHeader
+      title="Upgrade easyy.click"
+      isLoading={isTrying}
+      hasBack={hasValidFreeTrial(freeTrialUntil)}
+    />
+  );
 });
 
 const Intro = fastMemo(() => {

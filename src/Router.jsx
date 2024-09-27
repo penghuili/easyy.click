@@ -6,6 +6,7 @@ import { useCat } from 'usecat';
 import { PageLoading } from './components/PageLoading.jsx';
 import { PrepareData } from './components/PrepareData.jsx';
 import { isMobileWidth } from './lib/device.js';
+import { hasValidFreeTrial } from './lib/hasValidFreeTrial.js';
 import {
   isLoadingSettingsCat,
   isLoggedInCat,
@@ -14,7 +15,6 @@ import {
   useIsEmailVerified,
 } from './shared/browser/store/sharedCats.js';
 import { initEffect } from './shared/browser/store/sharedEffects.js';
-import { formatDate } from './shared/js/date.js';
 import { Account } from './views/Account.jsx';
 import { ChangeEmail } from './views/ChangeEmail.jsx';
 import { ChangePassword } from './views/ChangePassword.jsx';
@@ -112,7 +112,7 @@ const AllRoutes = fastMemo(() => {
       return <PageLoading />;
     }
 
-    if (!expiresAt && (!freeTrialUntil || freeTrialUntil < formatDate(new Date()))) {
+    if (!expiresAt || !hasValidFreeTrial(freeTrialUntil)) {
       return (
         <BabyRoutes
           routes={upgradeRoutes}
