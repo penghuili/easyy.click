@@ -112,7 +112,7 @@ const AllRoutes = fastMemo(() => {
       return <PageLoading />;
     }
 
-    if (!expiresAt || !hasValidFreeTrial(freeTrialUntil)) {
+    if (!expiresAt && !hasValidFreeTrial(freeTrialUntil)) {
       return (
         <BabyRoutes
           routes={upgradeRoutes}
