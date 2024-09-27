@@ -26,8 +26,8 @@ import { isLoadingNotesCat, notesCat } from '../store/note/noteCats.js';
 import { fetchNotesEffect } from '../store/note/noteEffect.js';
 
 async function load(force) {
-  await fetchNotesEffect(force);
-  await fetchLinksEffect(force);
+  fetchNotesEffect(force);
+  fetchLinksEffect(force);
 }
 
 const savedTab = LocalStorage.get(localStorageKeys.activeTab);

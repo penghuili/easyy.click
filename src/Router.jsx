@@ -10,6 +10,7 @@ import { hasValidFreeTrial } from './lib/hasValidFreeTrial.js';
 import {
   isLoadingSettingsCat,
   isLoggedInCat,
+  settingsCat,
   useExpiresAt,
   useFreeTrialsUntil,
   useIsEmailVerified,
@@ -89,6 +90,7 @@ const AllRoutes = fastMemo(() => {
   const isLoggedIn = useCat(isLoggedInCat);
   const isVerified = useIsEmailVerified();
   const isLoadingSettings = useCat(isLoadingSettingsCat);
+  const settings = useCat(settingsCat);
   const freeTrialUntil = useFreeTrialsUntil();
   const expiresAt = useExpiresAt();
 
@@ -108,7 +110,7 @@ const AllRoutes = fastMemo(() => {
       );
     }
 
-    if (isLoadingSettings) {
+    if (isLoadingSettings && !settings) {
       return <PageLoading />;
     }
 
