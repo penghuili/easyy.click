@@ -33,11 +33,17 @@ export const LinkAdd = fastMemo(() => {
         }
         onFinish={handleSave}
       >
-        <Form.Item label="Title" name="title">
-          <Input placeholder="Title" value={title} onChange={setTitle} autoFocus />
+        <Form.Item label="Link name" name="title">
+          <Input placeholder="ChatGPT, Youtube, etc" value={title} onChange={setTitle} autoFocus />
         </Form.Item>
         <Form.Item label="Link" name="link">
-          <TextArea placeholder="Link" maxLength={-1} value={link} onChange={setLink} rows={6} />
+          <TextArea
+            placeholder="https://example.com"
+            maxLength={-1}
+            value={link}
+            onChange={setLink}
+            rows={6}
+          />
         </Form.Item>
       </Form>
     </PageContent>

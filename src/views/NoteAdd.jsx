@@ -33,10 +33,10 @@ export const NoteAdd = fastMemo(() => {
         }
         onFinish={handleSave}
       >
-        <Form.Item label="Title" name="title">
-          <Input placeholder="Title" value={title} onChange={setTitle} />
+        <Form.Item label="Note name" name="title">
+          <Input placeholder="Give your note a name" value={title} onChange={setTitle} />
         </Form.Item>
-        <Form.Item label="Text" name="text">
+        <Form.Item label="Note" name="text">
           <TextArea
             placeholder="What do you want to copy?"
             maxLength={-1}

@@ -1,6 +1,8 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { settingsCat } from '../../shared/browser/store/sharedCats';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
+import { fetchSettings } from '../../shared/browser/store/sharedNetwork';
 import { orderByPosition } from '../../shared/js/position';
 import {
   isCreatingNoteCat,
@@ -13,7 +15,7 @@ import {
 } from './noteCats';
 import { createNote, deleteNote, fetchNote, fetchNotes, updateNote } from './noteNetwork';
 
-export async function fetchNotesEffect() {
+export async function fetchNotesEffect(force) {
   if (!notesCat.get()?.length) {
     const cachedNotes = LocalStorage.get(localStorageKeys.notes);
     if (cachedNotes?.length) {
@@ -21,7 +23,17 @@ export async function fetchNotesEffect() {
     }
   }
 
-  forceFetchNotesEffect();
+  if (force) {
+    forceFetchNotesEffect();
+  } else {
+    const { data: settings } = await fetchSettings();
+    const savedChangedAt = LocalStorage.get(localStorageKeys.notesChangedAt);
+    if (settings?.notesChangedAt > savedChangedAt) {
+      forceFetchNotesEffect();
+      LocalStorage.set(localStorageKeys.notesChangedAt, settings.notesChangedAt);
+      settingsCat.set(settings);
+    }
+  }
 }
 
 async function forceFetchNotesEffect() {

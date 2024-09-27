@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@nutui/nutui-react": "2.6.19",
+    "@nutui/nutui-react": "2.6.21",
     "@remixicon/react": "4.2.0",
     "date-fns": "3.6.0",
     "file-saver": "2.0.5",

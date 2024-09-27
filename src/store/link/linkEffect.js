@@ -1,6 +1,8 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { settingsCat } from '../../shared/browser/store/sharedCats';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
+import { fetchSettings } from '../../shared/browser/store/sharedNetwork';
 import { orderByPosition } from '../../shared/js/position';
 import {
   isCreatingLinkCat,
@@ -13,7 +15,7 @@ import {
 } from './linkCats';
 import { createLink, deleteLink, fetchLink, fetchLinks, updateLink } from './linkNetwork';
 
-export async function fetchLinksEffect() {
+export async function fetchLinksEffect(force) {
   if (!linksCat.get()?.length) {
     const cachedLinks = LocalStorage.get(localStorageKeys.links);
     if (cachedLinks?.length) {
@@ -21,7 +23,17 @@ export async function fetchLinksEffect() {
     }
   }
 
-  forceFetchLinksEffect();
+  if (force) {
+    forceFetchLinksEffect();
+  } else {
+    const { data: settings } = await fetchSettings();
+    const savedChangedAt = LocalStorage.get(localStorageKeys.linksChangedAt);
+    if (settings?.linksChangedAt > savedChangedAt) {
+      forceFetchLinksEffect();
+      LocalStorage.set(localStorageKeys.linksChangedAt, settings.linksChangedAt);
+      settingsCat.set(settings);
+    }
+  }
 }
 
 async function forceFetchLinksEffect() {

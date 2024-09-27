@@ -1,5 +1,5 @@
 import { Button, Ellipsis, Grid, TabPane, Tabs } from '@nutui/nutui-react';
-import { RiUser2Line } from '@remixicon/react';
+import { RiRefreshLine, RiUser2Line } from '@remixicon/react';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -25,9 +25,9 @@ import { fetchLinksEffect } from '../store/link/linkEffect.js';
 import { isLoadingNotesCat, notesCat } from '../store/note/noteCats.js';
 import { fetchNotesEffect } from '../store/note/noteEffect.js';
 
-async function load() {
-  await fetchNotesEffect();
-  await fetchLinksEffect();
+async function load(force) {
+  await fetchNotesEffect(force);
+  await fetchLinksEffect(force);
 }
 
 const savedTab = LocalStorage.get(localStorageKeys.activeTab);
@@ -55,6 +55,11 @@ export const Notes = fastMemo(() => {
     }
   }, [isNotes]);
 
+  const handleRefresh = useCallback(() => {
+    load(true);
+  }, []);
+
+  const isLoading = isLoadingNotes || isLoadingLinks;
   return (
     <PrepareData load={load}>
       <FloatAction onClick={handleAdd} />
@@ -62,10 +67,20 @@ export const Notes = fastMemo(() => {
       <PageContent>
         <PageHeader
           title={
-            <Tabs value={tab} onChange={handleChangeTab}>
-              <TabPane key="links" value="links" title="Links"></TabPane>
-              <TabPane key="notes" value="notes" title="Notes"></TabPane>
-            </Tabs>
+            <>
+              <Tabs value={tab} onChange={handleChangeTab}>
+                <TabPane key="links" value="links" title="Links"></TabPane>
+                <TabPane key="notes" value="notes" title="Notes"></TabPane>
+              </Tabs>
+              {!isLoading && (
+                <Button
+                  type="primary"
+                  fill="none"
+                  icon={<RiRefreshLine />}
+                  onClick={handleRefresh}
+                />
+              )}
+            </>
           }
           isLoading={isLoadingNotes || isLoadingLinks}
           right={
@@ -121,7 +136,7 @@ const NoteItems = fastMemo(() => {
   }, []);
 
   if (!notes.length) {
-    return <PageEmpty>No notes.</PageEmpty>;
+    return <PageEmpty>Which notes do you copy paste regularly?</PageEmpty>;
   }
 
   return (
@@ -152,7 +167,7 @@ const LinkItems = fastMemo(() => {
   const links = useCat(linksCat);
 
   if (!links.length) {
-    return <PageEmpty>No links.</PageEmpty>;
+    return <PageEmpty>Which pages do you revisit regularly?</PageEmpty>;
   }
 
   return (
