@@ -1,8 +1,6 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
-import { settingsCat } from '../../shared/browser/store/sharedCats';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
-import { fetchSettings } from '../../shared/browser/store/sharedNetwork';
 import { orderByPosition } from '../../shared/js/position';
 import {
   isCreatingLinkCat,
@@ -23,16 +21,10 @@ export async function fetchLinksEffect(force) {
     }
   }
 
-  if (force) {
-    forceFetchLinksEffect();
+  if (force || !linksCat.get()?.length) {
+    await forceFetchLinksEffect();
   } else {
-    const { data: settings } = await fetchSettings();
-    const savedChangedAt = LocalStorage.get(localStorageKeys.linksChangedAt);
-    if (settings?.linksChangedAt > savedChangedAt) {
-      forceFetchLinksEffect();
-      LocalStorage.set(localStorageKeys.linksChangedAt, settings.linksChangedAt);
-      settingsCat.set(settings);
-    }
+    forceFetchLinksEffect();
   }
 }
 
@@ -58,10 +50,10 @@ export async function fetchLinkEffect(linkId) {
   isLoadingLinkCat.set(false);
 }
 
-export async function createLinkEffect(title, link) {
+export async function createLinkEffect(title, link, groupId) {
   isCreatingLinkCat.set(true);
 
-  const { data } = await createLink({ title, link });
+  const { data } = await createLink({ title, link, groupId });
   if (data) {
     updateLinksState(data, 'create');
     setToastEffect('Created!');
@@ -70,10 +62,13 @@ export async function createLinkEffect(title, link) {
   isCreatingLinkCat.set(false);
 }
 
-export async function updateLinkEffect(linkId, { encryptedPassword, title, link, position }) {
+export async function updateLinkEffect(
+  linkId,
+  { encryptedPassword, title, link, groupId, position }
+) {
   isUpdatingLinkCat.set(true);
 
-  const { data } = await updateLink(linkId, { encryptedPassword, title, link, position });
+  const { data } = await updateLink(linkId, { encryptedPassword, title, link, groupId, position });
   if (data) {
     updateLinksState(data, 'update');
     setToastEffect('Updated!');

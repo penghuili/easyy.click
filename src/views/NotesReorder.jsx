@@ -1,26 +1,22 @@
-import { ActionSheet } from '@nutui/nutui-react';
-import React, { useCallback } from 'react';
-import { navigateTo } from 'react-baby-router';
+import React, { useCallback, useEffect } from 'react';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
-import { PrepareData } from '../components/PrepareData.jsx';
-import { Text } from '../components/Text.jsx';
+import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { ReorderItems } from '../shared/browser/ReorderItems.jsx';
-import { isLoadingNotesCat, isUpdatingNoteCat, notesCat } from '../store/note/noteCats.js';
-import { deleteNoteEffect, fetchNotesEffect, updateNoteEffect } from '../store/note/noteEffect.js';
-
-async function load() {
-  await fetchNotesEffect();
-}
+import { ReorderGroupItems } from '../shared/browser/ReorderGroupItems.jsx';
+import { isLoadingNotesCat, isUpdatingNoteCat, useNoteGroups } from '../store/note/noteCats.js';
+import { fetchNotesEffect, updateNoteEffect } from '../store/note/noteEffect.js';
+import { isLoadingNoteGroupsCat } from '../store/noteGroup/noteGroupCats.js';
+import { fetchNoteGroupsEffect } from '../store/noteGroup/noteGroupEffect.js';
 
 const activeNoteCat = createCat(null);
 
 export const NotesReorder = fastMemo(() => {
   const isLoading = useCat(isLoadingNotesCat);
-  const notes = useCat(notesCat);
+  const isLoadingGroups = useCat(isLoadingNoteGroupsCat);
+  const { groups: noteGroups } = useNoteGroups();
   const isUpdating = useCat(isUpdatingNoteCat);
 
   const handleReorder = useCallback(({ item }) => {
@@ -28,63 +24,34 @@ export const NotesReorder = fastMemo(() => {
       updateNoteEffect(item.sortKey, {
         encryptedPassword: item.encryptedPassword,
         position: item.position,
+        groupId: item.groupId === noGroupSortKey ? null : item.groupId,
       });
     }
   }, []);
 
-  return (
-    <PrepareData load={load}>
-      <PageContent>
-        <PageHeader title="Reorder notes" isLoading={isLoading || isUpdating} hasBack />
-
-        <Text m="0 0 1rem">Drag to reorder, click to edit.</Text>
-
-        <ReorderItems
-          items={notes}
-          onReorder={handleReorder}
-          reverse
-          renderItem={item => item.title}
-          onClickItem={item => {
-            activeNoteCat.set(item);
-          }}
-        />
-
-        <Actions />
-      </PageContent>
-    </PrepareData>
-  );
-});
-
-const Actions = fastMemo(() => {
-  const activeNote = useCat(activeNoteCat);
-
-  const options = [
-    {
-      name: 'Edit',
-      onClick: () => {
-        navigateTo(`/notes/details?noteId=${activeNote?.sortKey}`);
-      },
-    },
-    {
-      name: 'Delete',
-      danger: true,
-      onClick: () => {
-        deleteNoteEffect(activeNote?.sortKey);
-      },
-    },
-  ];
-
-  const handleSelectAction = option => {
-    option.onClick();
-    activeNoteCat.set(null);
-  };
+  useEffect(() => {
+    fetchNotesEffect();
+    fetchNoteGroupsEffect();
+  }, []);
 
   return (
-    <ActionSheet
-      visible={!!activeNote}
-      options={options}
-      onSelect={handleSelectAction}
-      onCancel={() => activeNoteCat.set(null)}
-    />
+    <PageContent paddingBottom="0">
+      <PageHeader
+        title="Reorder notes"
+        isLoading={isLoading || isLoadingGroups || isUpdating}
+        hasBack
+      />
+
+      <ReorderGroupItems
+        groupItems={noteGroups}
+        onReorder={handleReorder}
+        reverse
+        renderItem={item => item.title}
+        onClickItem={item => {
+          activeNoteCat.set(item);
+        }}
+        height={`calc(100vh - 70px)`}
+      />
+    </PageContent>
   );
 });

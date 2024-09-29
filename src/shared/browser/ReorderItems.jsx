@@ -4,10 +4,9 @@ import { RiDraggable } from '@remixicon/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 
-import { calculateItemPosition } from '../js/position';
+import { calculateItemPosition, moveItem } from '../js/position';
 import { isMobileWidth } from './device';
 
-const SPACING = 20; // Spacing between elements
 const ITEMS_PER_ROW = isMobileWidth() ? 2 : 3; // Number of items per row
 const ELEMENT_HEIGHT = 48; // Fixed height for elements
 const ANIMATION_DURATION = 300;
@@ -16,14 +15,17 @@ const SCROLL_SPEED = 5; // Speed of auto-scrolling
 
 let isScrolling = false;
 
-const calculateStandardPositions = (elArray, itemWidth) => {
-  return elArray.map((item, index) => {
+const calculatePositions = (elArray, itemWidth) => {
+  const obj = {};
+  elArray.forEach((item, index) => {
     const row = Math.floor(index / ITEMS_PER_ROW);
     const col = index % ITEMS_PER_ROW;
-    const x = col * (itemWidth + SPACING);
-    const y = row * (ELEMENT_HEIGHT + SPACING);
-    return { ...item, x, y };
+    const x = col * itemWidth;
+    const y = row * ELEMENT_HEIGHT;
+    obj[item.sortKey] = { x, y };
   });
+
+  return obj;
 };
 
 export const ReorderItems = fastMemo(
@@ -31,15 +33,16 @@ export const ReorderItems = fastMemo(
     const containerRef = useRef(null);
     const contentRef = useRef(null);
 
-    const [itemWidth, setItemWidth] = useState(null);
+    const [innerItems, setInnerItems] = useState(items);
+    const [itemWidth, setItemWidth] = useState(160);
+    const [positions, setPositions] = useState({});
 
-    const [itemsWithPosition, setItemsWithPosition] = useState([]);
     const [dragging, setDragging] = useState(null); // Stores the index of the element being dragged
     const [offset, setOffset] = useState({ x: 0, y: 0 });
 
     const contentHeight = useMemo(() => {
       const rows = Math.ceil(items.length / ITEMS_PER_ROW);
-      return rows * (ELEMENT_HEIGHT + SPACING) - SPACING;
+      return rows * ELEMENT_HEIGHT;
     }, [items]);
 
     // Handling dragging (for both mouse and touch events)
@@ -56,14 +59,15 @@ export const ReorderItems = fastMemo(
         newX = Math.max(0, Math.min(newX, contentBoundary.width - itemWidth));
         newY = Math.max(0, Math.min(newY, contentBoundary.height - ELEMENT_HEIGHT));
 
-        setItemsWithPosition(prev => {
-          const updatedElements = [...itemsWithPosition];
-          updatedElements[dragging] = {
-            ...prev[dragging],
-            x: newX,
-            y: newY,
+        const item = innerItems[dragging];
+        setPositions(prev => {
+          return {
+            ...prev,
+            [item.sortKey]: {
+              x: newX,
+              y: newY,
+            },
           };
-          return updatedElements;
         });
 
         // Handle auto-scrolling if near top/bottom
@@ -92,13 +96,15 @@ export const ReorderItems = fastMemo(
         const scroll = () => {
           if (isScrolling) {
             container.scrollTop += speed;
-            setItemsWithPosition(prev => {
-              const updatedElements = [...itemsWithPosition];
-              updatedElements[dragging] = {
-                ...prev[dragging],
-                y: prev[dragging].y + speed,
+            const item = innerItems[dragging];
+            setPositions(prev => {
+              return {
+                ...prev,
+                [item.sortKey]: {
+                  ...prev[dragging],
+                  y: prev[dragging].y + speed,
+                },
               };
-              return updatedElements;
             });
             requestAnimationFrame(scroll); // Continue scrolling while dragging
           }
@@ -122,77 +128,80 @@ export const ReorderItems = fastMemo(
     };
 
     const reorderElements = draggedIndex => {
-      const closestIndex = findClosestIndex(
-        itemsWithPosition[draggedIndex].x,
-        itemsWithPosition[draggedIndex].y
+      const item = innerItems[draggedIndex];
+      const closestResult = findClosestIndex(
+        positions[item.sortKey].x,
+        positions[item.sortKey].y,
+        item.sortKey
       );
 
-      // Reorder the elements based on the closest index by placing the dragged element in the new position
-      const updatedElements = [...itemsWithPosition];
-      const [draggedElement] = updatedElements.splice(draggedIndex, 1); // Remove the dragged element
-      updatedElements.splice(closestIndex, 0, draggedElement); // Insert it at the new closest position
-
-      const elementsWithPosition = calculateStandardPositions(updatedElements, itemWidth);
-      const obj = {};
-      elementsWithPosition.forEach(item => {
-        obj[item.sortKey] = item;
-      });
-      // Update the elements array and recalculate positions
-      setItemsWithPosition(
-        itemsWithPosition.map(e => ({ ...e, x: obj[e.sortKey].x, y: obj[e.sortKey].y }))
+      const updatedElements = moveItem(
+        innerItems,
+        draggedIndex,
+        closestResult.isAfterItem ? closestResult.itemIndex + 1 : closestResult.itemIndex
       );
+
+      const newPositions = calculatePositions(updatedElements, itemWidth);
+      setPositions(newPositions);
 
       setTimeout(() => {
-        setItemsWithPosition(elementsWithPosition);
+        let itemIndex = closestResult.isAfterItem
+          ? closestResult.itemIndex + 1
+          : closestResult.itemIndex;
+        const lastIndex = updatedElements.length - 1;
+        if (itemIndex > lastIndex) {
+          itemIndex = lastIndex;
+        }
+
         const newPosition = calculateItemPosition(
-          elementsWithPosition,
-          closestIndex - 1,
-          closestIndex + 1,
+          updatedElements,
+          itemIndex - 1,
+          itemIndex + 1,
           reverse
         );
         onReorder({
-          item: { ...elementsWithPosition[closestIndex], position: newPosition },
-          newItems: elementsWithPosition,
+          item: { ...updatedElements[itemIndex], position: newPosition },
         });
       }, ANIMATION_DURATION);
     };
 
-    const findClosestIndex = (x, y) => {
+    const findClosestIndex = (x, y, itemId) => {
       let minDistance = Infinity;
-      let closestIndex = 0;
+      let minY = Infinity;
+      let itemIndex = 0;
+      let isAfterItem = false;
 
-      itemsWithPosition.forEach((_, index) => {
-        const row = Math.floor(index / ITEMS_PER_ROW);
-        const col = index % ITEMS_PER_ROW;
-        const gridX = col * (itemWidth + SPACING);
-        const gridY = row * (ELEMENT_HEIGHT + SPACING);
+      innerItems.forEach((i, index) => {
+        if (i.sortKey === itemId) {
+          return;
+        }
+        const itemX = positions[i.sortKey].x;
+        const itemY = positions[i.sortKey].y;
 
-        const distance = Math.sqrt((x - gridX) ** 2 + (y - gridY) ** 2);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = index;
+        if (Math.abs(itemY - y) <= minY) {
+          minY = Math.abs(itemY - y);
+
+          const distance = Math.sqrt((x - itemX) ** 2 + (y - itemY) ** 2);
+          if (itemX === 0 || distance < minDistance) {
+            minDistance = distance;
+            itemIndex = index;
+            isAfterItem = x > itemX + itemWidth / 2;
+          }
         }
       });
 
-      return closestIndex;
+      return { itemIndex, isAfterItem };
     };
 
     useEffect(() => {
-      if (contentRef.current?.offsetWidth) {
-        setItemWidth(
-          (contentRef.current.offsetWidth - SPACING * (ITEMS_PER_ROW - 1) - 2) / ITEMS_PER_ROW
-        );
-      }
-    }, []);
+      const iWidth = (contentRef.current.offsetWidth - 2) / ITEMS_PER_ROW;
+      setItemWidth(iWidth);
+
+      setPositions(calculatePositions(items, iWidth));
+      setInnerItems(items);
+    }, [items]);
 
     useEffect(() => {
-      if (items?.length && itemWidth) {
-        setItemsWithPosition(calculateStandardPositions(items, itemWidth));
-      }
-    }, [items, itemWidth]);
-
-    useEffect(() => {
-      // Clean up scrolling on unmount
       return () => {
         cancelScroll();
       };
@@ -218,16 +227,17 @@ export const ReorderItems = fastMemo(
             height: contentHeight,
           }}
         >
-          {!!itemsWithPosition.length && (
+          {!!innerItems.length && (
             <Items
-              items={itemsWithPosition}
+              items={innerItems}
+              positions={positions}
               itemWidth={itemWidth}
               renderItem={renderItem}
               contentRef={contentRef}
               draggingIndex={dragging}
               onDraggingIndexChange={setDragging}
               onOffsetChange={setOffset}
-              onItemsChange={setItemsWithPosition}
+              onPositionsChange={setPositions}
               onClickItem={onClickItem}
               bgColor={bgColor}
               borderColor={borderColor}
@@ -242,13 +252,14 @@ export const ReorderItems = fastMemo(
 const Items = fastMemo(
   ({
     items,
+    positions,
     itemWidth,
     renderItem,
     contentRef,
     draggingIndex,
     onDraggingIndexChange,
     onOffsetChange,
-    onItemsChange,
+    onPositionsChange,
     onClickItem,
     bgColor,
     borderColor,
@@ -264,26 +275,26 @@ const Items = fastMemo(
       const contentBoundary = contentRef.current.getBoundingClientRect();
       onOffsetChange({ x: clientX - element.left, y: clientY - element.top });
 
-      onItemsChange(prev => {
-        const updatedElements = [...items];
-        updatedElements[index] = {
-          ...prev[index],
-          x: element.left - contentBoundary.left,
-          y: element.top - contentBoundary.top,
+      onPositionsChange(prev => {
+        return {
+          ...prev,
+          [items[index].sortKey]: {
+            x: element.left - contentBoundary.left,
+            y: element.top - contentBoundary.top,
+          },
         };
-        return updatedElements;
       });
     };
 
-    return items.map((element, index) => (
+    return items.map((item, index) => (
       <div
-        key={element.sortKey}
+        key={item.sortKey}
         className="reorder-items-draggable"
         style={{
-          left: element.x,
-          top: `${element.y}px`,
+          left: positions[item.sortKey]?.x,
+          top: positions[item.sortKey]?.y,
           width: itemWidth,
-          height: `${ELEMENT_HEIGHT}px`,
+          height: ELEMENT_HEIGHT,
           zIndex: draggingIndex === index ? 2 : 1,
           transition:
             draggingIndex === index
@@ -301,8 +312,15 @@ const Items = fastMemo(
         >
           <RiDraggable />
         </span>
-        <span className="reorder-items-drag-content" onClick={() => onClickItem(element)}>
-          {renderItem(element)}
+        <span
+          className="reorder-items-drag-content"
+          onClick={() => {
+            if (onClickItem) {
+              onClickItem(item);
+            }
+          }}
+        >
+          {renderItem(item)}
         </span>
       </div>
     ));

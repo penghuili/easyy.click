@@ -22,9 +22,15 @@ import { ChangePassword } from './views/ChangePassword.jsx';
 import { Demo } from './views/Demo.jsx';
 import { LinkAdd } from './views/LinkAdd.jsx';
 import { LinkDetails } from './views/LinkDetails.jsx';
+import { LinkGroupAdd } from './views/LinkGroupAdd.jsx';
+import { LinkGroupDetails } from './views/LinkGroupDetails.jsx';
+import { LinkGroupsReorder } from './views/LinkGroupsReorder.jsx';
 import { LinksReorder } from './views/LinksReorder.jsx';
 import { NoteAdd } from './views/NoteAdd.jsx';
 import { NoteDetails } from './views/NoteDetails.jsx';
+import { NoteGroupAdd } from './views/NoteGroupAdd.jsx';
+import { NoteGroupDetails } from './views/NoteGroupDetails.jsx';
+import { NoteGroupsReorder } from './views/NoteGroupsReorder.jsx';
 import { Notes } from './views/Notes.jsx';
 import { NotesReorder } from './views/NotesReorder.jsx';
 import { ResetPassword } from './views/ResetPassword.jsx';
@@ -69,9 +75,17 @@ const loggedInRoutes = {
   '/notes/details': NoteDetails,
   '/notes/reorder': NotesReorder,
 
+  '/note-groups/add': NoteGroupAdd,
+  '/note-groups/details': NoteGroupDetails,
+  '/note-groups/reorder': NoteGroupsReorder,
+
   '/links/add': LinkAdd,
   '/links/details': LinkDetails,
   '/links/reorder': LinksReorder,
+
+  '/link-groups/add': LinkGroupAdd,
+  '/link-groups/details': LinkGroupDetails,
+  '/link-groups/reorder': LinkGroupsReorder,
 
   '/demo': Demo,
 

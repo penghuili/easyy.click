@@ -4,6 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
+import { LinkGroupSelector } from '../components/LinkGroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -12,6 +13,7 @@ import { fetchLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
 
 const titleCat = createCat('');
 const linkValueCat = createCat('');
+const groupIdCat = createCat('');
 
 export const LinkDetails = fastMemo(({ queryParams: { linkId } }) => {
   const load = useCallback(async () => {
@@ -20,6 +22,7 @@ export const LinkDetails = fastMemo(({ queryParams: { linkId } }) => {
     if (link) {
       titleCat.set(link.title);
       linkValueCat.set(link.link);
+      groupIdCat.set(link.groupId);
     }
   }, [linkId]);
 
@@ -39,15 +42,28 @@ const LinkForm = fastMemo(({ linkId }) => {
 
   const title = useCat(titleCat);
   const linkValue = useCat(linkValueCat);
+  const groupId = useCat(groupIdCat);
 
   const handleSave = useCallback(async () => {
     await updateLinkEffect(linkId, {
       encryptedPassword: link.encryptedPassword,
       title,
       link: linkValue,
+      groupId,
     });
     goBack();
-  }, [linkId, link.encryptedPassword, title, linkValue]);
+  }, [linkId, link.encryptedPassword, title, linkValue, groupId]);
+
+  const handleUpdateGroup = useCallback(
+    async newGroupId => {
+      groupIdCat.set(newGroupId);
+      await updateLinkEffect(linkId, {
+        encryptedPassword: link.encryptedPassword,
+        groupId: newGroupId,
+      });
+    },
+    [linkId, link.encryptedPassword]
+  );
 
   if (!link) {
     return null;
@@ -57,24 +73,29 @@ const LinkForm = fastMemo(({ linkId }) => {
     <Form
       initialValues={{ title: link.title, link: link.link }}
       labelPosition="top"
+      divider
       footer={
         <Button nativeType="submit" type="primary" disabled={!title || !linkValue}>
-          Save
+          Update link
         </Button>
       }
       onFinish={handleSave}
     >
-      <Form.Item label="Title" name="title">
-        <Input placeholder="Title" value={title} onChange={titleCat.set} />
+      <Form.Item label="Link name" name="title">
+        <Input placeholder="ChatGPT, Youtube, etc" value={title} onChange={titleCat.set} />
       </Form.Item>
       <Form.Item label="Link" name="link">
         <TextArea
-          placeholder="Link"
+          placeholder="https://example.com"
           maxLength={-1}
           rows={6}
           value={linkValue}
           onChange={linkValueCat.set}
         />
+      </Form.Item>
+
+      <Form.Item label="Tag" name="tag">
+        <LinkGroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
       </Form.Item>
     </Form>
   );

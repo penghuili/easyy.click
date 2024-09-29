@@ -44,3 +44,37 @@ export function orderByPosition(items, reverse) {
   }
   return reordered;
 }
+
+export function moveItem(items, fromIndex, toIndex) {
+  const innerToIndex = toIndex > items.length - 1 ? items.length - 1 : toIndex;
+
+  const newItems = [];
+  items.forEach((i, iIndex) => {
+    if (iIndex === innerToIndex) {
+      if (innerToIndex > fromIndex) {
+        newItems.push(i);
+        newItems.push(items[fromIndex]);
+      } else {
+        newItems.push(items[fromIndex]);
+        newItems.push(i);
+      }
+    } else if (iIndex !== fromIndex) {
+      newItems.push(i);
+    }
+  });
+  return newItems;
+}
+
+export function addItem(items, index, item) {
+  const newItems = [];
+  items.forEach((i, iIndex) => {
+    if (iIndex === index) {
+      newItems.push(item);
+    }
+    newItems.push(i);
+  });
+  if (index > items.length - 1) {
+    newItems.push(item);
+  }
+  return newItems;
+}

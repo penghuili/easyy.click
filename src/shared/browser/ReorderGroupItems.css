@@ -1,19 +1,19 @@
-.reorder-items-container {
-  height: var(--reorder-items-height, 70vh);
+.reorder-group-items-container {
+  height: var(--reorder-group-items-height, 70vh);
   overflow-y: auto;
   border-radius: 8px;
-  border: 2px solid var(--reorder-items-border-color, #dbd8e0);
+  border: 2px solid var(--reorder-group-items-border-color, #dbd8e0);
   padding: 8px;
 }
 
-.reorder-items-content {
+.reorder-group-items-content {
   position: relative;
   overflow: hidden;
   width: 100%;
   min-height: 100%;
 }
 
-.reorder-items-draggable {
+.reorder-group-items-draggable {
   position: absolute;
   display: flex;
   justify-content: flex-start;
@@ -21,13 +21,13 @@
   text-align: center;
   user-select: none;
   opacity: 1;
-  background-color: var(--reorder-items-background-color, white);
-  border: 1px solid var(--reorder-items-border-color, #dbd8e0);
+  background-color: var(--reorder-group-items-background-color, white);
+  border: 1px solid var(--reorder-group-items-border-color, #dbd8e0);
   padding: 0.5rem;
   box-sizing: border-box;
 }
 
-.reorder-items-drag-handle {
+.reorder-group-items-drag-handle {
   cursor: grab;
   font-size: 20px;
   user-select: none;
@@ -38,11 +38,11 @@
   height: 20px;
 }
 
-.reorder-items-drag-handle:active {
+.reorder-group-items-drag-handle:active {
   cursor: grabbing;
 }
 
-.reorder-items-drag-content {
+.reorder-group-items-drag-content {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

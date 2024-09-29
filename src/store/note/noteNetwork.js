@@ -45,7 +45,7 @@ export async function fetchNote(noteId) {
   }
 }
 
-export async function createNote({ title, text }) {
+export async function createNote({ title, text, groupId }) {
   try {
     const password = generatePassword(20, true);
     const encryptedPassword = await encryptMessageAsymmetric(
@@ -63,6 +63,7 @@ export async function createNote({ title, text }) {
       encryptedPassword,
       title: encryptedTitle,
       text: encryptedText,
+      groupId,
     });
 
     const decrypted = await decryptNote(data);
@@ -73,7 +74,7 @@ export async function createNote({ title, text }) {
   }
 }
 
-export async function updateNote(noteId, { encryptedPassword, title, text, position }) {
+export async function updateNote(noteId, { encryptedPassword, title, text, groupId, position }) {
   try {
     const encryptedTitle = await encryptMessageWithEncryptedPassword(encryptedPassword, title);
     const encryptedText = await encryptMessageWithEncryptedPassword(encryptedPassword, text);
@@ -82,6 +83,7 @@ export async function updateNote(noteId, { encryptedPassword, title, text, posit
       title: encryptedTitle,
       text: encryptedText,
       position,
+      groupId,
     });
 
     const decrypted = await decryptNote(data);

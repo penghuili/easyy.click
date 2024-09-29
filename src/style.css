@@ -74,3 +74,6 @@ body * {
 .nut-tabs-titles-item:hover {
   cursor: pointer;
 }
+.form-layout-top .nut-form-item-label {
+  font-weight: bold;
+}

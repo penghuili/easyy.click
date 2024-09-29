@@ -23,6 +23,7 @@ export function Text({
   color,
   size = '4',
   align,
+  bold,
   m,
 }) {
   return (
@@ -35,6 +36,7 @@ export function Text({
         ...(align ? { '--peng-text-align': align } : {}),
         ...(m ? { '--peng-text-margin': m } : {}),
         ...(style || {}),
+        fontWeight: bold ? 'bold' : 'normal',
       }}
     >
       {children}

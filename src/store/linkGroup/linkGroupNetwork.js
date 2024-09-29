@@ -1,4 +1,4 @@
-import { generateLinkSortKey } from '../../lib/generateSortKey';
+import { generateLinkGroupSortKey } from '../../lib/generateSortKey';
 import { LocalStorage } from '../../lib/LocalStorage';
 import { HTTP } from '../../shared/browser/HTTP';
 import { appName } from '../../shared/browser/initShared';
@@ -13,12 +13,12 @@ import { generatePassword } from '../../shared/js/generatePassword';
 import { orderByPosition } from '../../shared/js/position';
 import { encryptMessageWithEncryptedPassword } from '../note/noteNetwork';
 
-export async function fetchLinks() {
+export async function fetchLinkGroups() {
   try {
-    const links = await HTTP.get(appName, `/v1/links`);
+    const groups = await HTTP.get(appName, `/v1/link-groups`);
     const decrypted = await Promise.all(
-      links.map(async link => {
-        return await decryptLink(link);
+      groups.map(async item => {
+        return await decryptLinkGroup(item);
       })
     );
     const sorted = orderByPosition(decrypted, true);
@@ -32,10 +32,10 @@ export async function fetchLinks() {
   }
 }
 
-export async function fetchLink(linkId) {
+export async function fetchLinkGroup(linkGroupId) {
   try {
-    const link = await HTTP.get(appName, `/v1/links/${linkId}`);
-    const decrypted = await decryptLink(link);
+    const group = await HTTP.get(appName, `/v1/link-groups/${linkGroupId}`);
+    const decrypted = await decryptLinkGroup(group);
 
     return {
       data: decrypted,
@@ -46,7 +46,7 @@ export async function fetchLink(linkId) {
   }
 }
 
-export async function createLink({ title, link, groupId }) {
+export async function createLinkGroup({ title }) {
   try {
     const password = generatePassword(20, true);
     const encryptedPassword = await encryptMessageAsymmetric(
@@ -54,20 +54,17 @@ export async function createLink({ title, link, groupId }) {
       password
     );
     const encryptedTitle = title ? await encryptMessageSymmetric(password, title) : title;
-    const encryptedLink = link ? await encryptMessageSymmetric(password, link) : link;
 
     const timestamp = Date.now();
 
-    const data = await HTTP.post(appName, `/v1/links`, {
-      sortKey: generateLinkSortKey(timestamp),
+    const data = await HTTP.post(appName, `/v1/link-groups`, {
+      sortKey: generateLinkGroupSortKey(timestamp),
       timestamp,
       encryptedPassword,
       title: encryptedTitle,
-      link: encryptedLink,
-      groupId,
     });
 
-    const decrypted = await decryptLink(data);
+    const decrypted = await decryptLinkGroup(data);
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -75,19 +72,16 @@ export async function createLink({ title, link, groupId }) {
   }
 }
 
-export async function updateLink(linkId, { encryptedPassword, title, link, groupId, position }) {
+export async function updateLinkGroup(linkGroupId, { encryptedPassword, title, position }) {
   try {
     const encryptedTitle = await encryptMessageWithEncryptedPassword(encryptedPassword, title);
-    const encryptedLink = await encryptMessageWithEncryptedPassword(encryptedPassword, link);
 
-    const data = await HTTP.put(appName, `/v1/links/${linkId}`, {
+    const data = await HTTP.put(appName, `/v1/link-groups/${linkGroupId}`, {
       title: encryptedTitle,
-      link: encryptedLink,
       position,
-      groupId,
     });
 
-    const decrypted = await decryptLink(data);
+    const decrypted = await decryptLinkGroup(data);
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -95,9 +89,9 @@ export async function updateLink(linkId, { encryptedPassword, title, link, group
   }
 }
 
-export async function deleteLink(linkId) {
+export async function deleteLinkGroup(linkGroupId) {
   try {
-    const data = await HTTP.delete(appName, `/v1/links/${linkId}`);
+    const data = await HTTP.delete(appName, `/v1/link-groups/${linkGroupId}`);
 
     return { data, error: null };
   } catch (error) {
@@ -105,18 +99,15 @@ export async function deleteLink(linkId) {
   }
 }
 
-async function decryptLink(link) {
+async function decryptLinkGroup(group) {
   const decryptedPassword = await decryptMessageAsymmetric(
     LocalStorage.get(sharedLocalStorageKeys.privateKey),
-    link.encryptedPassword
+    group.encryptedPassword
   );
 
-  const decryptedTitle = link.title
-    ? await decryptMessageSymmetric(decryptedPassword, link.title)
-    : link.title;
-  const decryptedLink = link.link
-    ? await decryptMessageSymmetric(decryptedPassword, link.link)
-    : link.link;
+  const decryptedTitle = group.title
+    ? await decryptMessageSymmetric(decryptedPassword, group.title)
+    : group.title;
 
-  return { ...link, title: decryptedTitle, link: decryptedLink };
+  return { ...group, title: decryptedTitle };
 }

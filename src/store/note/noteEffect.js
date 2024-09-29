@@ -1,8 +1,6 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
-import { settingsCat } from '../../shared/browser/store/sharedCats';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
-import { fetchSettings } from '../../shared/browser/store/sharedNetwork';
 import { orderByPosition } from '../../shared/js/position';
 import {
   isCreatingNoteCat,
@@ -23,16 +21,10 @@ export async function fetchNotesEffect(force) {
     }
   }
 
-  if (force) {
-    forceFetchNotesEffect();
+  if (force || !notesCat.get()?.length) {
+    await forceFetchNotesEffect();
   } else {
-    const { data: settings } = await fetchSettings();
-    const savedChangedAt = LocalStorage.get(localStorageKeys.notesChangedAt);
-    if (settings?.notesChangedAt > savedChangedAt) {
-      forceFetchNotesEffect();
-      LocalStorage.set(localStorageKeys.notesChangedAt, settings.notesChangedAt);
-      settingsCat.set(settings);
-    }
+    forceFetchNotesEffect();
   }
 }
 
@@ -58,10 +50,10 @@ export async function fetchNoteEffect(noteId) {
   isLoadingNoteCat.set(false);
 }
 
-export async function createNoteEffect(title, text) {
+export async function createNoteEffect(title, text, groupId) {
   isCreatingNoteCat.set(true);
 
-  const { data } = await createNote({ title, text });
+  const { data } = await createNote({ title, text, groupId });
   if (data) {
     updateNotesState(data, 'create');
     setToastEffect('Created!');
@@ -70,10 +62,13 @@ export async function createNoteEffect(title, text) {
   isCreatingNoteCat.set(false);
 }
 
-export async function updateNoteEffect(noteId, { encryptedPassword, title, text, position }) {
+export async function updateNoteEffect(
+  noteId,
+  { encryptedPassword, title, text, groupId, position }
+) {
   isUpdatingNoteCat.set(true);
 
-  const { data } = await updateNote(noteId, { encryptedPassword, title, text, position });
+  const { data } = await updateNote(noteId, { encryptedPassword, title, text, groupId, position });
   if (data) {
     updateNotesState(data, 'update');
     setToastEffect('Updated!');

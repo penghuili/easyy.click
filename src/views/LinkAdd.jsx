@@ -4,21 +4,26 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { LinkGroupSelector } from '../components/LinkGroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
+import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isCreatingLinkCat } from '../store/link/linkCats.js';
 import { createLinkEffect } from '../store/link/linkEffect.js';
 
-export const LinkAdd = fastMemo(() => {
+export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) => {
   const isCreating = useCat(isCreatingLinkCat);
 
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
+  const [groupId, setGroupId] = useState(
+    groupIdInQuery && groupIdInQuery !== noGroupSortKey ? groupIdInQuery : ''
+  );
 
   const handleSave = useCallback(async () => {
-    await createLinkEffect(title, link);
+    await createLinkEffect(title, link, groupId);
     goBack();
-  }, [title, link]);
+  }, [title, link, groupId]);
 
   return (
     <PageContent>
@@ -26,9 +31,10 @@ export const LinkAdd = fastMemo(() => {
 
       <Form
         labelPosition="top"
+        divider
         footer={
           <Button nativeType="submit" type="primary" disabled={!link || !title || isCreating}>
-            Save
+            Add link
           </Button>
         }
         onFinish={handleSave}
@@ -44,6 +50,10 @@ export const LinkAdd = fastMemo(() => {
             onChange={setLink}
             rows={6}
           />
+        </Form.Item>
+
+        <Form.Item label="Tag" name="tag">
+          <LinkGroupSelector groupId={groupId} onSelect={setGroupId} />
         </Form.Item>
       </Form>
     </PageContent>

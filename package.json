@@ -53,7 +53,8 @@
     "cs": "cp -a ../private-sharedjs/scripts/copy-shared.js scripts/copy-shared.js && node scripts/copy-shared.js",
     "start": "npm run cs && vite",
     "build": "npm run cs && vite build",
-    "dd": "node ./scripts/upload.js",
+    "dt": "node ./scripts/update-build-env.js dev && node ./scripts/upload.js",
+    "dp": "node ./scripts/update-build-env.js prod && node ./scripts/upload.js",
     "lint": "eslint .",
     "ana": "vite --profile",
     "rr": "node scripts/react-versions.js"
