@@ -20,6 +20,7 @@ import { Account } from './views/Account.jsx';
 import { ChangeEmail } from './views/ChangeEmail.jsx';
 import { ChangePassword } from './views/ChangePassword.jsx';
 import { Demo } from './views/Demo.jsx';
+import { Home } from './views/Home.jsx';
 import { LinkAdd } from './views/LinkAdd.jsx';
 import { LinkDetails } from './views/LinkDetails.jsx';
 import { LinkGroupAdd } from './views/LinkGroupAdd.jsx';
@@ -31,7 +32,6 @@ import { NoteDetails } from './views/NoteDetails.jsx';
 import { NoteGroupAdd } from './views/NoteGroupAdd.jsx';
 import { NoteGroupDetails } from './views/NoteGroupDetails.jsx';
 import { NoteGroupsReorder } from './views/NoteGroupsReorder.jsx';
-import { Notes } from './views/Notes.jsx';
 import { NotesReorder } from './views/NotesReorder.jsx';
 import { ResetPassword } from './views/ResetPassword.jsx';
 import { Security } from './views/Security.jsx';
@@ -97,7 +97,7 @@ const loggedInRoutes = {
 
   '/upgrade': Upgrade,
 
-  '/': Notes,
+  '/': Home,
 };
 
 const AllRoutes = fastMemo(() => {

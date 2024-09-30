@@ -1,5 +1,11 @@
 import { Button, TabPane, Tabs } from '@nutui/nutui-react';
-import { RiRefreshLine, RiUser3Line } from '@remixicon/react';
+import {
+  RiEmotionHappyLine,
+  RiEmotionLaughLine,
+  RiEmotionLine,
+  RiRefreshLine,
+} from '@remixicon/react';
+import { format } from 'date-fns';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -31,7 +37,7 @@ async function load(force) {
 
 const savedTab = LocalStorage.get(localStorageKeys.activeTab);
 
-export const Notes = fastMemo(() => {
+export const Home = fastMemo(() => {
   const [tab, setTab] = useState(savedTab || 'links');
   const isNotes = tab === 'notes';
 
@@ -95,7 +101,7 @@ const Header = fastMemo(({ tab, onTabChange }) => {
           <Button
             type="primary"
             fill="none"
-            icon={<RiUser3Line />}
+            icon={<AccountIcon />}
             onClick={() => {
               navigateTo('/account');
             }}
@@ -104,6 +110,23 @@ const Header = fastMemo(({ tab, onTabChange }) => {
       }
     />
   );
+});
+
+const AccountIcon = fastMemo(() => {
+  const weekday = format(new Date(), 'EEEEEE');
+  if (weekday === 'Sa' || weekday === 'Su') {
+    return <RiEmotionLaughLine />;
+  }
+
+  const time = format(new Date(), 'HH:mm');
+  if (time < '12:00') {
+    return <RiEmotionHappyLine />;
+  }
+  if (time < '18:00') {
+    return <RiEmotionLine />;
+  }
+
+  return <RiEmotionLaughLine />;
 });
 
 const UpgradeButton = fastMemo(() => {
