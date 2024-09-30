@@ -75,7 +75,10 @@ export async function createLink({ title, link, groupId }) {
   }
 }
 
-export async function updateLink(linkId, { encryptedPassword, title, link, groupId, position }) {
+export async function updateLink(
+  linkId,
+  { encryptedPassword, title, link, groupId, position, count }
+) {
   try {
     const encryptedTitle = await encryptMessageWithEncryptedPassword(encryptedPassword, title);
     const encryptedLink = await encryptMessageWithEncryptedPassword(encryptedPassword, link);
@@ -85,6 +88,7 @@ export async function updateLink(linkId, { encryptedPassword, title, link, group
       link: encryptedLink,
       position,
       groupId,
+      count,
     });
 
     const decrypted = await decryptLink(data);

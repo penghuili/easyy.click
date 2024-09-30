@@ -8,13 +8,14 @@ import { createCat, useCat } from 'usecat';
 import { noGroupSortKey } from '../lib/constants.js';
 import { isMobileBrowser } from '../shared/browser/device.js';
 import { isDeletingLinkCat, useLinkGroups } from '../store/link/linkCats.js';
-import { deleteLinkEffect } from '../store/link/linkEffect.js';
+import { deleteLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
 import { Flex } from './Flex.jsx';
 import { Link } from './Link.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
 import { Text } from './Text.jsx';
+import { Top10Links } from './Top10Links.jsx';
 
 const activeLinkCat = createCat(null);
 const showActionSheetCat = createCat(false);
@@ -39,6 +40,8 @@ export const LinkItems = fastMemo(() => {
           Update tags
         </Button>
       </Flex>
+
+      <Top10Links />
 
       {linkGroups.map(group => (
         <div key={group.sortKey} style={{ marginBottom: '2rem' }}>
@@ -70,6 +73,12 @@ export const LinkItems = fastMemo(() => {
                       display: 'inline-flex',
                       flexDirection: 'column',
                       alignItems: 'center',
+                    }}
+                    onClick={() => {
+                      updateLinkEffect(link.sortKey, {
+                        count: (link.count || 0) + 1,
+                        showSuccess: false,
+                      });
                     }}
                   >
                     <Favicon url={link.link} />

@@ -64,14 +64,23 @@ export async function createLinkEffect(title, link, groupId) {
 
 export async function updateLinkEffect(
   linkId,
-  { encryptedPassword, title, link, groupId, position }
+  { encryptedPassword, title, link, groupId, position, count, showSuccess = true }
 ) {
   isUpdatingLinkCat.set(true);
 
-  const { data } = await updateLink(linkId, { encryptedPassword, title, link, groupId, position });
+  const { data } = await updateLink(linkId, {
+    encryptedPassword,
+    title,
+    link,
+    groupId,
+    position,
+    count,
+  });
   if (data) {
     updateLinksState(data, 'update');
-    setToastEffect('Updated!');
+    if (showSuccess) {
+      setToastEffect('Updated!');
+    }
   }
 
   isUpdatingLinkCat.set(false);

@@ -43,3 +43,14 @@ export function useLinkGroups() {
     links,
   };
 }
+
+export function useTop10Links() {
+  const links = useCat(linksCat);
+
+  return useMemo(() => {
+    return (links || [])
+      .filter(link => link.count > 0)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+  }, [links]);
+}
