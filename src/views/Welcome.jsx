@@ -61,6 +61,10 @@ export function Welcome() {
           Terms
         </Link>
 
+        <Link href="https://x.com/easyydotclick" target="_blank" rel="noreferrer">
+          x.com
+        </Link>
+
         <Link onClick={handleCopyEmail} style={{ cursor: 'pointer' }}>
           Contact: peng@tuta.com
         </Link>

@@ -1,6 +1,0 @@
-.pengText {
-  font-size: var(--peng-text-size, var(--nutui-font-size-4));
-  color: var(--peng-text-color, var(--nutui-gray-7));
-  text-align: var(--peng-text-align, left);
-  margin: var(--peng-text-margin, 0);
-}

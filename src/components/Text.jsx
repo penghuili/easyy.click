@@ -1,5 +1,3 @@
-import './Text.css';
-
 import React from 'react';
 
 export const fontSizes = {
@@ -28,14 +26,13 @@ export function Text({
 }) {
   return (
     <Component
-      className="pengText"
       onClick={onClick}
       style={{
-        ...(color ? { '--peng-text-color': color } : {}),
-        ...(fontSizes[size] ? { '--peng-text-size': fontSizes[size] } : {}),
-        ...(align ? { '--peng-text-align': align } : {}),
-        ...(m ? { '--peng-text-margin': m } : {}),
         ...(style || {}),
+        color: color || 'var(--nutui-gray-7)',
+        fontSize: fontSizes[size] || 'var(--nutui-font-size-4)',
+        textAlign: align || 'left',
+        margin: m || '0',
         fontWeight: bold ? 'bold' : 'normal',
       }}
     >

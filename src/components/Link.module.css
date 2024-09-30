@@ -1,9 +1,7 @@
 .link {
   display: inline-block;
   text-decoration: none;
-  font-size: var(--link-size, var(--nutui-font-size-4));
   color: var(--nutui-color-primary);
-  margin: var(--link-margin, 0);
 }
 .link:hover {
   text-decoration: underline;

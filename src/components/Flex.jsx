@@ -1,7 +1,5 @@
 import React from 'react';
 
-import styles from './Flex.module.css';
-
 const justifies = {
   start: 'flex-start',
   end: 'flex-end',
@@ -19,9 +17,9 @@ const aligns = {
 export function Flex({ children, style, direction = 'column', justify, align, wrap, gap, m, p }) {
   return (
     <div
-      className={styles.pengFlex}
       style={{
         ...(style || {}),
+        display: 'flex',
         flexDirection: direction === 'row' ? 'row' : 'column',
         justifyContent: justifies[justify] || justifies.start,
         alignItems: aligns[align] || aligns.stretch,

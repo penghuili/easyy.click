@@ -6,6 +6,7 @@ import {
   RiLockLine,
   RiMailLine,
   RiServiceLine,
+  RiTwitterXLine,
 } from '@remixicon/react';
 import React, { useCallback } from 'react';
 import fastMemo from 'react-fast-memo';
@@ -49,6 +50,12 @@ export const PublicLinks = fastMemo(() => {
       <a href="https://easyy.click/terms" target="_blank" rel="noreferrer">
         <Button fill="none" icon={<RiServiceLine />}>
           Terms
+        </Button>
+      </a>
+
+      <a href="https://x.com/easyydotclick" target="_blank" rel="noreferrer">
+        <Button fill="none" icon={<RiTwitterXLine />}>
+          x.com
         </Button>
       </a>
 
