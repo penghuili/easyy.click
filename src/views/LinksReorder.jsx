@@ -23,6 +23,7 @@ export const LinksReorder = fastMemo(() => {
         encryptedPassword: item.encryptedPassword,
         position: item.position,
         groupId: item.groupId === noGroupSortKey ? null : item.groupId,
+        successMessage: 'Updated!',
       });
     }
   }, []);

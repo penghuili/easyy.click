@@ -51,6 +51,7 @@ const LinkForm = fastMemo(({ linkId }) => {
       title,
       link: linkValue,
       groupId,
+      successMessage: 'Encrypted and saved safely in Franfurt!',
     });
     goBack();
   }, [linkId, link.encryptedPassword, title, linkValue, groupId]);
@@ -61,6 +62,7 @@ const LinkForm = fastMemo(({ linkId }) => {
       await updateLinkEffect(linkId, {
         encryptedPassword: link.encryptedPassword,
         groupId: newGroupId,
+        successMessage: 'Updated!',
       });
     },
     [linkId, link.encryptedPassword]

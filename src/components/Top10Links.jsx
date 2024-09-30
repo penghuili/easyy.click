@@ -53,7 +53,6 @@ export const Top10Links = fastMemo(() => {
           onClick={() => {
             updateLinkEffect(link.sortKey, {
               count: (link.count || 0) + 1,
-              showSuccess: false,
             });
           }}
         >

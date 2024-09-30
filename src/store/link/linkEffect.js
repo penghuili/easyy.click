@@ -56,7 +56,7 @@ export async function createLinkEffect(title, link, groupId) {
   const { data } = await createLink({ title, link, groupId });
   if (data) {
     updateLinksState(data, 'create');
-    setToastEffect('Created!');
+    setToastEffect('Encrypted and saved safely in Franfurt!');
   }
 
   isCreatingLinkCat.set(false);
@@ -64,7 +64,7 @@ export async function createLinkEffect(title, link, groupId) {
 
 export async function updateLinkEffect(
   linkId,
-  { encryptedPassword, title, link, groupId, position, count, showSuccess = true }
+  { encryptedPassword, title, link, groupId, position, count, successMessage }
 ) {
   isUpdatingLinkCat.set(true);
 
@@ -78,8 +78,8 @@ export async function updateLinkEffect(
   });
   if (data) {
     updateLinksState(data, 'update');
-    if (showSuccess) {
-      setToastEffect('Updated!');
+    if (successMessage) {
+      setToastEffect(successMessage);
     }
   }
 

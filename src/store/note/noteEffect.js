@@ -56,7 +56,7 @@ export async function createNoteEffect(title, text, groupId) {
   const { data } = await createNote({ title, text, groupId });
   if (data) {
     updateNotesState(data, 'create');
-    setToastEffect('Created!');
+    setToastEffect('Encrypted and saved safely in Franfurt!');
   }
 
   isCreatingNoteCat.set(false);
@@ -64,14 +64,16 @@ export async function createNoteEffect(title, text, groupId) {
 
 export async function updateNoteEffect(
   noteId,
-  { encryptedPassword, title, text, groupId, position }
+  { encryptedPassword, title, text, groupId, position, successMessage }
 ) {
   isUpdatingNoteCat.set(true);
 
   const { data } = await updateNote(noteId, { encryptedPassword, title, text, groupId, position });
   if (data) {
     updateNotesState(data, 'update');
-    setToastEffect('Updated!');
+    if (successMessage) {
+      setToastEffect(successMessage);
+    }
   }
 
   isUpdatingNoteCat.set(false);

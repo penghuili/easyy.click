@@ -45,7 +45,12 @@ const NoteForm = fastMemo(({ noteId }) => {
   const groupId = useCat(groupIdCat);
 
   const handleSave = useCallback(async () => {
-    await updateNoteEffect(noteId, { encryptedPassword: note.encryptedPassword, title, text });
+    await updateNoteEffect(noteId, {
+      encryptedPassword: note.encryptedPassword,
+      title,
+      text,
+      successMessage: 'Encrypted and saved safely in Franfurt!',
+    });
     goBack();
   }, [noteId, note.encryptedPassword, title, text]);
 
@@ -55,6 +60,7 @@ const NoteForm = fastMemo(({ noteId }) => {
       await updateNoteEffect(noteId, {
         encryptedPassword: note.encryptedPassword,
         groupId: newGroupId,
+        successMessage: 'Updated!',
       });
     },
     [noteId, note.encryptedPassword]
