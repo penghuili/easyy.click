@@ -140,7 +140,6 @@ const NoteActions = fastMemo(() => {
     <>
       <ActionSheet
         visible={showActionSheet}
-        title={activeNote?.title}
         options={options}
         onSelect={handleSelectAction}
         onCancel={() => showActionSheetCat.set(false)}

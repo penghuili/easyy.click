@@ -8,7 +8,7 @@ import { LinkGroupSelector } from '../components/LinkGroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { linkCat } from '../store/link/linkCats.js';
+import { isUpdatingLinkCat, linkCat } from '../store/link/linkCats.js';
 import { fetchLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
 
 const titleCat = createCat('');
@@ -39,6 +39,7 @@ export const LinkDetails = fastMemo(({ queryParams: { linkId } }) => {
 
 const LinkForm = fastMemo(({ linkId }) => {
   const link = useCat(linkCat);
+  const isUpdating = useCat(isUpdatingLinkCat);
 
   const title = useCat(titleCat);
   const linkValue = useCat(linkValueCat);
@@ -75,7 +76,7 @@ const LinkForm = fastMemo(({ linkId }) => {
       labelPosition="top"
       divider
       footer={
-        <Button nativeType="submit" type="primary" disabled={!title || !linkValue}>
+        <Button nativeType="submit" type="primary" disabled={!title || !linkValue || isUpdating}>
           Update link
         </Button>
       }

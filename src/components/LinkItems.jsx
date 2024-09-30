@@ -141,7 +141,6 @@ const LinkActions = fastMemo(() => {
     <>
       <ActionSheet
         visible={showActionSheet}
-        title={activeLink?.title}
         options={options}
         onSelect={handleSelectAction}
         onCancel={() => showActionSheetCat.set(false)}
