@@ -8,9 +8,9 @@ export function Link({ href, onClick, target, children, style, size = '4', m }) 
     <a
       className={styles.link}
       style={{
-        ...(style || {}),
         fontSize: fontSizes[size] || 'var(--nutui-font-size-4)',
         margin: m || '0',
+        ...(style || {}),
       }}
       href={href}
       target={target}

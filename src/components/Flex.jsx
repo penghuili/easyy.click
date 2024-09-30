@@ -18,7 +18,6 @@ export function Flex({ children, style, direction = 'column', justify, align, wr
   return (
     <div
       style={{
-        ...(style || {}),
         display: 'flex',
         flexDirection: direction === 'row' ? 'row' : 'column',
         justifyContent: justifies[justify] || justifies.start,
@@ -27,6 +26,7 @@ export function Flex({ children, style, direction = 'column', justify, align, wr
         gap: gap || '0',
         margin: m || '0',
         padding: p || '0',
+        ...(style || {}),
       }}
     >
       {children}

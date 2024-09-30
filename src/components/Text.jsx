@@ -28,12 +28,12 @@ export function Text({
     <Component
       onClick={onClick}
       style={{
-        ...(style || {}),
         color: color || 'var(--nutui-gray-7)',
         fontSize: fontSizes[size] || 'var(--nutui-font-size-4)',
         textAlign: align || 'left',
         margin: m || '0',
         fontWeight: bold ? 'bold' : 'normal',
+        ...(style || {}),
       }}
     >
       {children}
