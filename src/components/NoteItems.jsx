@@ -34,15 +34,19 @@ export const NoteItems = fastMemo(() => {
   return (
     <>
       <Flex direction="row" wrap="wrap" gap="1rem" m="0 0 1.5rem">
-        <Button onClick={() => navigateTo('/notes/reorder')} size="mini">
-          Reorder notes
-        </Button>
+        {notes.length > 1 && (
+          <Button onClick={() => navigateTo('/notes/reorder')} size="mini">
+            Reorder notes
+          </Button>
+        )}
         <Button onClick={() => navigateTo('/note-groups/add')} size="mini">
           Add tag
         </Button>
-        <Button onClick={() => navigateTo('/note-groups/reorder')} size="mini">
-          Update tags
-        </Button>
+        {noteGroups.length > 1 && (
+          <Button onClick={() => navigateTo('/note-groups/reorder')} size="mini">
+            Update tags
+          </Button>
+        )}
       </Flex>
 
       {noteGroups.map(group => (

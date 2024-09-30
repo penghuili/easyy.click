@@ -30,15 +30,19 @@ export const LinkItems = fastMemo(() => {
   return (
     <>
       <Flex direction="row" wrap="wrap" gap="1rem" m="0 0 1.5rem">
-        <Button onClick={() => navigateTo('/links/reorder')} size="mini">
-          Reorder links
-        </Button>
+        {links.length > 1 && (
+          <Button onClick={() => navigateTo('/links/reorder')} size="mini">
+            Reorder links
+          </Button>
+        )}
         <Button onClick={() => navigateTo('/link-groups/add')} size="mini">
           Add tag
         </Button>
-        <Button onClick={() => navigateTo('/link-groups/reorder')} size="mini">
-          Update tags
-        </Button>
+        {linkGroups.length > 1 && (
+          <Button onClick={() => navigateTo('/link-groups/reorder')} size="mini">
+            Update tags
+          </Button>
+        )}
       </Flex>
 
       <Top10Links />
