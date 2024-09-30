@@ -46,8 +46,9 @@ export const Top10Links = fastMemo(() => {
           target="_blank"
           style={{
             display: 'inline-flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'baseline',
           }}
           onClick={() => {
             updateLinkEffect(link.sortKey, {
@@ -56,7 +57,10 @@ export const Top10Links = fastMemo(() => {
             });
           }}
         >
-          {link.title} ({link.count})
+          {link.title}
+          <Text as="span" size="2">
+            ({link.count})
+          </Text>
         </Link>
       ))}
     </Flex>
