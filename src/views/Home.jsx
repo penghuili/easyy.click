@@ -6,7 +6,7 @@ import {
   RiRefreshLine,
 } from '@remixicon/react';
 import { format } from 'date-fns';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -113,12 +113,24 @@ const Header = fastMemo(({ tab, onTabChange }) => {
 });
 
 const AccountIcon = fastMemo(() => {
-  const weekday = format(new Date(), 'EEEEEE');
+  const [date, setDate] = useState(new Date());
+
+  useEffect(() => {
+    const handler = () => {
+      setDate(new Date());
+    };
+    window.addEventListener('focus', handler);
+    return () => {
+      window.removeEventListener('focus', handler);
+    };
+  }, []);
+
+  const weekday = format(date, 'EEEEEE');
   if (weekday === 'Sa' || weekday === 'Su') {
     return <RiEmotionLaughLine />;
   }
 
-  const time = format(new Date(), 'HH:mm');
+  const time = format(date, 'HH:mm');
   if (time < '12:00') {
     return <RiEmotionHappyLine />;
   }
