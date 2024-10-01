@@ -1,16 +1,11 @@
 import { Button, TabPane, Tabs } from '@nutui/nutui-react';
-import {
-  RiEmotionHappyLine,
-  RiEmotionLaughLine,
-  RiEmotionLine,
-  RiRefreshLine,
-} from '@remixicon/react';
-import { format } from 'date-fns';
-import React, { useCallback, useEffect, useState } from 'react';
+import { RiRefreshLine } from '@remixicon/react';
+import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { AccountIcon } from '../components/AccountIcon.jsx';
 import { FloatAction } from '../components/FloatAction.jsx';
 import { LinkItems } from '../components/LinkItems.jsx';
 import { NoteItems } from '../components/NoteItems.jsx';
@@ -110,35 +105,6 @@ const Header = fastMemo(({ tab, onTabChange }) => {
       }
     />
   );
-});
-
-const AccountIcon = fastMemo(() => {
-  const [date, setDate] = useState(new Date());
-
-  useEffect(() => {
-    const handler = () => {
-      setDate(new Date());
-    };
-    window.addEventListener('focus', handler);
-    return () => {
-      window.removeEventListener('focus', handler);
-    };
-  }, []);
-
-  const weekday = format(date, 'EEEEEE');
-  if (weekday === 'Sa' || weekday === 'Su') {
-    return <RiEmotionLaughLine />;
-  }
-
-  const time = format(date, 'HH:mm');
-  if (time < '12:00') {
-    return <RiEmotionHappyLine />;
-  }
-  if (time < '18:00') {
-    return <RiEmotionLine />;
-  }
-
-  return <RiEmotionLaughLine />;
 });
 
 const UpgradeButton = fastMemo(() => {
