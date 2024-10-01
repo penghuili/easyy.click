@@ -17,6 +17,7 @@ import {
 } from './shared/browser/store/sharedCats.js';
 import { initEffect } from './shared/browser/store/sharedEffects.js';
 import { Account } from './views/Account.jsx';
+import { Appsumo } from './views/Appsumo.jsx';
 import { ChangeEmail } from './views/ChangeEmail.jsx';
 import { ChangePassword } from './views/ChangePassword.jsx';
 import { Demo } from './views/Demo.jsx';
@@ -96,6 +97,7 @@ const loggedInRoutes = {
   '/settings': Settings,
 
   '/upgrade': Upgrade,
+  '/appsumo': Appsumo,
 
   '/': Home,
 };

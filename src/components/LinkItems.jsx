@@ -24,7 +24,7 @@ export const LinkItems = fastMemo(() => {
   const { groups: linkGroups, links } = useLinkGroups();
 
   if (!links.length) {
-    return <PageEmpty>Which webites do you revisit regularly?</PageEmpty>;
+    return <PageEmpty>Which webites do you visit regularly?</PageEmpty>;
   }
 
   return (
