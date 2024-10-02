@@ -1,4 +1,9 @@
-import { RiEmotionHappyLine, RiEmotionLaughLine, RiEmotionLine } from '@remixicon/react';
+import {
+  RiEmotion2Line,
+  RiEmotionHappyLine,
+  RiEmotionLaughLine,
+  RiEmotionLine,
+} from '@remixicon/react';
 import { format } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import fastMemo from 'react-fast-memo';
@@ -11,18 +16,22 @@ export const AccountIcon = fastMemo(() => {
   const top = useMemo(() => {
     const weekday = format(date, 'EEEEEE');
     if (weekday === 'Sa' || weekday === 'Su') {
-      return -48;
+      return -72;
     }
 
     const time = format(date, 'HH:mm');
-    if (time < '12:00') {
+
+    if (time < '06:00' || time >= '23:00') {
       return 0;
     }
-    if (time < '18:00') {
+    if (time < '12:00') {
       return -24;
     }
+    if (time < '18:00') {
+      return -48;
+    }
 
-    return -48;
+    return -72;
   }, [date]);
 
   useEffect(() => {
@@ -37,7 +46,8 @@ export const AccountIcon = fastMemo(() => {
 
   return (
     <div className={styles.accountIcons}>
-      <div className={styles.accountIconsContent} style={{ top }}>
+      <div className={styles.accountIconsContent} style={{ top, height: 24 * 4 }}>
+        <RiEmotion2Line />
         <RiEmotionHappyLine />
         <RiEmotionLine />
         <RiEmotionLaughLine />

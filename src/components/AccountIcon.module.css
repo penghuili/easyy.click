@@ -9,7 +9,6 @@
   position: absolute;
   left: 0;
   width: 24px;
-  height: 72px;
   transition: top 0.3s ease-in-out;
 
   display: flex;
