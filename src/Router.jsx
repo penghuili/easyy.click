@@ -18,6 +18,8 @@ import {
 import { initEffect } from './shared/browser/store/sharedEffects.js';
 import { Account } from './views/Account.jsx';
 import { ChangeEmail } from './views/ChangeEmail.jsx';
+import { Changelog } from './views/Changelog.jsx';
+import { ChangelogAdd } from './views/ChangelogAdd.jsx';
 import { ChangePassword } from './views/ChangePassword.jsx';
 import { Demo } from './views/Demo.jsx';
 import { Home } from './views/Home.jsx';
@@ -61,6 +63,8 @@ const publicRoutes = {
   '/sign-in/2fa': Verify2FA,
   '/reset-password': ResetPassword,
 
+  '/changelog': Changelog,
+
   '/': Welcome,
 };
 const verifyEmailRoutes = {
@@ -87,8 +91,6 @@ const loggedInRoutes = {
   '/link-groups/details': LinkGroupDetails,
   '/link-groups/reorder': LinkGroupsReorder,
 
-  '/demo': Demo,
-
   '/account': Account,
   '/security': Security,
   '/security/email': ChangeEmail,
@@ -96,6 +98,10 @@ const loggedInRoutes = {
   '/settings': Settings,
 
   '/upgrade': Upgrade,
+
+  '/demo': Demo,
+  '/changelog': Changelog,
+  '/changelog/add': ChangelogAdd,
 
   '/': Home,
 };

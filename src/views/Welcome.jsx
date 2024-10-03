@@ -61,6 +61,8 @@ export function Welcome() {
           Terms
         </Link>
 
+        {/* <Link href="/changelog">Changelog</Link> */}
+
         <Link href="https://x.com/easyydotclick" target="_blank" rel="noreferrer">
           x.com
         </Link>

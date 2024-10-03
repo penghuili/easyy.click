@@ -1,3 +1,5 @@
+import '@nutui/touch-emulator';
+
 import React from 'react';
 
 import { AppWrapper } from './components/AppWrapper.jsx';

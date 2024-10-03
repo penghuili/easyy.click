@@ -43,6 +43,12 @@ export const Account = fastMemo(() => {
               Settings
             </Button>
           </BabyLink>
+
+          {/* <BabyLink to="/changelog">
+            <Button fill="none" icon={<RiFunctionAddLine />}>
+              Changelog
+            </Button>
+          </BabyLink> */}
         </ItemsWrapper>
 
         <PublicLinks />
