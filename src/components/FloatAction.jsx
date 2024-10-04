@@ -1,4 +1,4 @@
-import { Button } from '@nutui/nutui-react';
+import { Button } from '@douyinfe/semi-ui';
 import { RiAddLine } from '@remixicon/react';
 import React from 'react';
 
@@ -16,15 +16,15 @@ export function FloatAction({ icon, onClick, style }) {
       }}
     >
       <Button
-        fill="solid"
+        theme="solid"
         type="primary"
         icon={icon || <RiAddLine />}
         onClick={onClick}
-        shape="round"
         style={{
-          ...(style || {}),
           width: 48,
           height: 48,
+          borderRadius: '50%',
+          ...(style || {}),
         }}
       />
     </div>

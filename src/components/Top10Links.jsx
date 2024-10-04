@@ -1,3 +1,4 @@
+import { Typography } from '@douyinfe/semi-ui';
 import React from 'react';
 import fastMemo from 'react-fast-memo';
 
@@ -5,7 +6,6 @@ import { useTop10Links } from '../store/link/linkCats.js';
 import { updateLinkEffect } from '../store/link/linkEffect.js';
 import { Flex } from './Flex.jsx';
 import { Link } from './Link.jsx';
-import { Text } from './Text.jsx';
 
 export const Top10Links = fastMemo(() => {
   const links = useTop10Links();
@@ -22,15 +22,13 @@ export const Top10Links = fastMemo(() => {
       m="0 0 1.5rem"
       p="2.5rem 1rem 1rem"
       style={{
-        border: '1px solid var(--nutui-gray-4)',
+        border: '1px solid var(--semi-color-border)',
         borderRadius: 8,
         position: 'relative',
       }}
     >
-      <Text
-        as="h3"
-        size="3"
-        bold
+      <Typography.Text
+        strong
         style={{
           position: 'absolute',
           top: '1rem',
@@ -38,7 +36,8 @@ export const Top10Links = fastMemo(() => {
         }}
       >
         🔥Most used {links.length} links
-      </Text>
+      </Typography.Text>
+
       {links.map(link => (
         <Link
           key={link.sortKey}
@@ -57,9 +56,7 @@ export const Top10Links = fastMemo(() => {
           }}
         >
           {link.title}
-          <Text as="span" size="2">
-            ({link.count})
-          </Text>
+          <Typography.Text size="small">({link.count})</Typography.Text>
         </Link>
       ))}
     </Flex>

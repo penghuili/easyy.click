@@ -1,11 +1,10 @@
-import { Button } from '@nutui/nutui-react';
+import { Button } from '@douyinfe/semi-ui';
 import { RiUserUnfollowLine } from '@remixicon/react';
 import React, { useState } from 'react';
 import { useCat } from 'usecat';
 
 import { isDeletingAccountCat } from '../shared/browser/store/sharedCats.js';
 import { deleteAccountEffect } from '../shared/browser/store/sharedEffects.js';
-import { errorCssColor } from './AppWrapper.jsx';
 import { Confirm } from './Confirm.jsx';
 
 export function DeleteAccountLink() {
@@ -15,9 +14,9 @@ export function DeleteAccountLink() {
   return (
     <>
       <Button
-        fill="none"
+        theme="borderless"
         onClick={() => setShowConfirm(true)}
-        color={errorCssColor}
+        type="danger"
         disabled={isDeleting}
         icon={<RiUserUnfollowLine />}
       >

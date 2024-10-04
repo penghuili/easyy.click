@@ -1,13 +1,11 @@
-import { Button, Form, Input } from '@nutui/nutui-react';
+import { Button, Form, Typography } from '@douyinfe/semi-ui';
 import React, { useEffect, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { errorCssColor } from '../components/AppWrapper';
 import { Flex } from '../components/Flex';
 import { PageHeader } from '../components/PageHeader';
 import { RouteLink } from '../components/RouteLink';
-import { Text } from '../components/Text';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { authErrorCat, isVerifying2FACat } from '../shared/browser/store/sharedCats';
 import { clearAuthErrorEffect, verify2FAEffect } from '../shared/browser/store/sharedEffects';
@@ -35,25 +33,20 @@ export const Verify2FA = fastMemo(() => {
     <PageContent>
       <PageHeader title="2-factor Authentication" isLoading={isVerifying} hasBack />
 
-      <Text>Enter the code from your authenticator app</Text>
+      <Typography.Paragraph>Enter the code from your authenticator app</Typography.Paragraph>
 
-      <Form
-        labelPosition="top"
-        footer={
-          <Flex>
-            <Button nativeType="submit" type="primary" disabled={isDisabled}>
-              Verify
-            </Button>
-            {!!errorMessage && <Text color={errorCssColor}>{errorMessage}</Text>}
+      <Form onSubmit={handleSubmit}>
+        <Form.Input field="code" label="Code" placeholder="Code" value={code} onChange={setCode} />
 
-            <RouteLink to="/sign-in">Cancel</RouteLink>
-          </Flex>
-        }
-        onFinish={handleSubmit}
-      >
-        <Form.Item label="Code" name="code" rules={[{ required: true, message: 'Required' }]}>
-          <Input placeholder="Code" value={code} onChange={setCode} />
-        </Form.Item>
+        <Flex m="1rem 0 0">
+          <Button htmlType="submit" theme="solid" disabled={isDisabled}>
+            Verify
+          </Button>
+
+          {!!errorMessage && <Typography.Text type="danger">{errorMessage}</Typography.Text>}
+
+          <RouteLink to="/sign-in">Cancel</RouteLink>
+        </Flex>
       </Form>
     </PageContent>
   );

@@ -2,5 +2,4 @@
   width: var(--page-content-width, 100%);
   padding: 0 8px var(--page-content-padding-bottom, 5rem);
   min-height: 100%;
-  margin: 0 auto;
 }

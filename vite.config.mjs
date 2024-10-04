@@ -1,5 +1,6 @@
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig, loadEnv } from 'vite';
+import SemiPlugin from 'vite-plugin-semi-theme';
 
 import { timestampPlugin } from './vite/viteTimestampPlugin';
 
@@ -7,7 +8,19 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
-    plugins: mode === 'production' ? [timestampPlugin(env)] : [],
+    plugins:
+      mode === 'production'
+        ? [
+            SemiPlugin({
+              theme: '@semi-bot/semi-theme-easyy',
+            }),
+            timestampPlugin(env),
+          ]
+        : [
+            SemiPlugin({
+              theme: '@semi-bot/semi-theme-easyy',
+            }),
+          ],
     resolve: {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
     },

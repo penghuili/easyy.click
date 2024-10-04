@@ -5,22 +5,17 @@ import { appName } from '../../shared/browser/initShared';
 import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import {
   decryptMessageAsymmetric,
-  decryptMessageSymmetric,
   encryptMessageAsymmetric,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
 import { orderByPosition } from '../../shared/js/position';
+import { decryptNote } from '../worker/workerHelpers';
 
 export async function fetchNotes() {
   try {
     const notes = await HTTP.get(appName, `/v1/notes`);
-    const decrypted = await Promise.all(
-      notes.map(async note => {
-        return await decryptNote(note);
-      })
-    );
-    const sorted = orderByPosition(decrypted, true);
+    const sorted = orderByPosition(notes, true);
 
     return {
       data: sorted,
@@ -34,7 +29,7 @@ export async function fetchNotes() {
 export async function fetchNote(noteId) {
   try {
     const note = await HTTP.get(appName, `/v1/notes/${noteId}`);
-    const decrypted = await decryptNote(note);
+    const decrypted = await decryptNote(note, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return {
       data: decrypted,
@@ -66,7 +61,7 @@ export async function createNote({ title, text, groupId }) {
       groupId,
     });
 
-    const decrypted = await decryptNote(data);
+    const decrypted = await decryptNote(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -86,7 +81,7 @@ export async function updateNote(noteId, { encryptedPassword, title, text, group
       groupId,
     });
 
-    const decrypted = await decryptNote(data);
+    const decrypted = await decryptNote(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -102,22 +97,6 @@ export async function deleteNote(noteId) {
   } catch (error) {
     return { data: null, error };
   }
-}
-
-async function decryptNote(note) {
-  const decryptedPassword = await decryptMessageAsymmetric(
-    LocalStorage.get(sharedLocalStorageKeys.privateKey),
-    note.encryptedPassword
-  );
-
-  const decryptedTitle = note.title
-    ? await decryptMessageSymmetric(decryptedPassword, note.title)
-    : note.title;
-  const decryptedText = note.text
-    ? await decryptMessageSymmetric(decryptedPassword, note.text)
-    : note.text;
-
-  return { ...note, title: decryptedTitle, text: decryptedText };
 }
 
 async function decryptPassword(encryptedPassword) {

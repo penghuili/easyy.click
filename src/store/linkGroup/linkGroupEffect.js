@@ -1,7 +1,10 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
+import { workerActionTypes } from '../worker/workerHelpers';
+import { myWorker } from '../worker/workerListeners';
 import {
   isCreatingLinkGroupCat,
   isDeletingLinkGroupCat,
@@ -39,10 +42,14 @@ async function forceFetchLinkGroupsEffect() {
 
   const { data } = await fetchLinkGroups();
   if (data) {
-    updateGroupsState(data, 'fetch');
+    myWorker.postMessage({
+      type: workerActionTypes.DECRYPT_LINK_GROUPS,
+      groups: data,
+      privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
+    });
+  } else {
+    isLoadingLinkGroupsCat.set(false);
   }
-
-  isLoadingLinkGroupsCat.set(false);
 }
 
 export async function fetchLinkGroupEffect(linkGroupId) {

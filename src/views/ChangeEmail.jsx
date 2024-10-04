@@ -1,11 +1,10 @@
-import { Button, Form, Input } from '@nutui/nutui-react';
+import { Button, Form, Typography } from '@douyinfe/semi-ui';
 import React, { useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { Flex } from '../components/Flex.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
-import { Text } from '../components/Text.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isChangingEmailCat, userCat } from '../shared/browser/store/sharedCats';
 import { changeEmailEffect, setToastEffect } from '../shared/browser/store/sharedEffects';
@@ -40,22 +39,21 @@ export const ChangeEmail = fastMemo(() => {
 
     return (
       <>
-        <Form
-          labelPosition="top"
-          footer={
-            <Button nativeType="submit" type="primary" disabled={!newEmail.trim() || isTriggering}>
+        <Form onSubmit={handleTrigger}>
+          <Form.Input
+            type="email"
+            field="newEmail"
+            label="New email"
+            placeholder="New email"
+            value={newEmail}
+            onChange={setNewEmail}
+          />
+
+          <Flex m="1rem 0 0">
+            <Button htmlType="submit" theme="solid" disabled={!newEmail.trim() || isTriggering}>
               Change email
             </Button>
-          }
-          onFinish={handleTrigger}
-        >
-          <Form.Item
-            label="New email"
-            name="newEmail"
-            rules={[{ required: true, message: 'Required' }]}
-          >
-            <Input type="email" placeholder="New email" value={newEmail} onChange={setNewEmail} />
-          </Form.Item>
+          </Flex>
         </Form>
       </>
     );
@@ -69,27 +67,7 @@ export const ChangeEmail = fastMemo(() => {
     return (
       <>
         <Form
-          labelPosition="top"
-          footer={
-            <>
-              <Button
-                nativeType="submit"
-                type="primary"
-                disabled={
-                  !code.trim() || !newEmail.trim() || newEmail.trim() === user?.email || isChanging
-                }
-              >
-                Change
-              </Button>
-
-              <Flex m="1rem 0 0">
-                <Button fill="none" onClick={handleTrigger}>
-                  Resend code
-                </Button>
-              </Flex>
-            </>
-          }
-          onFinish={async () => {
+          onSubmit={async () => {
             await changeEmailEffect(newEmail, code, () => {
               setIsTriggered(false);
               setCode('');
@@ -97,27 +75,39 @@ export const ChangeEmail = fastMemo(() => {
             });
           }}
         >
-          <Form.Item
+          <Form.Input
+            type="email"
+            field="newEmail"
             label="New email"
-            name="newEmail"
-            rules={[{ required: true, message: 'Required' }]}
-          >
-            <Input
-              type="email"
-              placeholder="New email"
-              value={newEmail}
-              onChange={setNewEmail}
-              disabled
-            />
-          </Form.Item>
+            placeholder="New email"
+            value={newEmail}
+            onChange={setNewEmail}
+            disabled
+          />
 
-          <Form.Item
+          <Form.Input
+            field="code"
             label="Code in your email"
-            name="code"
-            rules={[{ required: true, message: 'Required' }]}
+            placeholder="Code"
+            value={code}
+            onChange={setCode}
+          />
+
+          <Button
+            htmlType="submit"
+            theme="solid"
+            disabled={
+              !code.trim() || !newEmail.trim() || newEmail.trim() === user?.email || isChanging
+            }
           >
-            <Input placeholder="Code" value={code} onChange={setCode} />
-          </Form.Item>
+            Change
+          </Button>
+
+          <Flex m="1rem 0 0">
+            <Button theme="borderless" onClick={handleTrigger}>
+              Resend code
+            </Button>
+          </Flex>
         </Form>
       </>
     );
@@ -127,7 +117,7 @@ export const ChangeEmail = fastMemo(() => {
     <PageContent>
       <PageHeader title="Change email" isLoading={isChanging} hasBack />
 
-      <Text>Current email: {user?.email}</Text>
+      <Typography.Text>Current email: {user?.email}</Typography.Text>
 
       {renderTriggerForm()}
 

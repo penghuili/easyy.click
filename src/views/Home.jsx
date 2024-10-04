@@ -1,4 +1,4 @@
-import { Button, TabPane, Tabs } from '@nutui/nutui-react';
+import { Button, TabPane, Tabs } from '@douyinfe/semi-ui';
 import { RiRefreshLine } from '@remixicon/react';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
@@ -79,12 +79,25 @@ const Header = fastMemo(({ tab, onTabChange }) => {
     <PageHeader
       title={
         <>
-          <Tabs value={tab} onChange={onTabChange}>
-            <TabPane key="links" value="links" title="Links"></TabPane>
-            <TabPane key="notes" value="notes" title="Notes"></TabPane>
+          <Tabs
+            type="line"
+            activeKey={tab}
+            onChange={onTabChange}
+            size="small"
+            style={{ marginLeft: '0.5rem' }}
+          >
+            <TabPane tab="Links" itemKey="links" />
+            <TabPane tab="Notes" itemKey="notes" />
           </Tabs>
+
           {!isLoading && (
-            <Button type="primary" fill="none" icon={<RiRefreshLine />} onClick={handleRefresh} />
+            <Button
+              type="primary"
+              theme="borderless"
+              icon={<RiRefreshLine />}
+              onClick={handleRefresh}
+              style={{ marginLeft: '0.5rem' }}
+            />
           )}
         </>
       }
@@ -95,7 +108,7 @@ const Header = fastMemo(({ tab, onTabChange }) => {
 
           <Button
             type="primary"
-            fill="none"
+            theme="borderless"
             icon={<AccountIcon />}
             onClick={() => {
               navigateTo('/account');
@@ -116,11 +129,11 @@ const UpgradeButton = fastMemo(() => {
 
   return (
     <Button
-      type="primary"
-      size="small"
+      theme="solid"
       onClick={() => {
         navigateTo('/upgrade');
       }}
+      size="small"
       style={{ marginRight: '0.5rem', position: 'relative', overflow: 'hidden' }}
     >
       Upgrade

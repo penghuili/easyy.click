@@ -8,7 +8,6 @@ updateOrAddEnvVariable(
   'S3_URL',
   env === 'prod' ? 's3://app.easyy.click' : 's3://dev.easyy.click'
 );
-updateOrAddEnvVariable('.env', 'DISABLE_VERSION_JSON', env === 'prod' ? '' : 'true');
 updateOrAddEnvVariable(
   '.env.production',
   'VITE_EASYY_API_URL',

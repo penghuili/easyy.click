@@ -3,25 +3,16 @@ import { LocalStorage } from '../../lib/LocalStorage';
 import { HTTP } from '../../shared/browser/HTTP';
 import { appName } from '../../shared/browser/initShared';
 import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
-import {
-  decryptMessageAsymmetric,
-  decryptMessageSymmetric,
-  encryptMessageAsymmetric,
-  encryptMessageSymmetric,
-} from '../../shared/js/encryption';
+import { encryptMessageAsymmetric, encryptMessageSymmetric } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
 import { orderByPosition } from '../../shared/js/position';
 import { encryptMessageWithEncryptedPassword } from '../note/noteNetwork';
+import { decryptGroup } from '../worker/workerHelpers';
 
 export async function fetchNoteGroups() {
   try {
     const groups = await HTTP.get(appName, `/v1/note-groups`);
-    const decrypted = await Promise.all(
-      groups.map(async item => {
-        return await decryptNoteGroup(item);
-      })
-    );
-    const sorted = orderByPosition(decrypted, true);
+    const sorted = orderByPosition(groups, true);
 
     return {
       data: sorted,
@@ -35,7 +26,10 @@ export async function fetchNoteGroups() {
 export async function fetchNoteGroup(noteGroupId) {
   try {
     const group = await HTTP.get(appName, `/v1/note-groups/${noteGroupId}`);
-    const decrypted = await decryptNoteGroup(group);
+    const decrypted = await decryptGroup(
+      group,
+      LocalStorage.get(sharedLocalStorageKeys.privateKey)
+    );
 
     return {
       data: decrypted,
@@ -64,7 +58,7 @@ export async function createNoteGroup({ title }) {
       title: encryptedTitle,
     });
 
-    const decrypted = await decryptNoteGroup(data);
+    const decrypted = await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -81,7 +75,7 @@ export async function updateNoteGroup(noteGroupId, { encryptedPassword, title, p
       position,
     });
 
-    const decrypted = await decryptNoteGroup(data);
+    const decrypted = await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -97,17 +91,4 @@ export async function deleteNoteGroup(noteGroupId) {
   } catch (error) {
     return { data: null, error };
   }
-}
-
-async function decryptNoteGroup(group) {
-  const decryptedPassword = await decryptMessageAsymmetric(
-    LocalStorage.get(sharedLocalStorageKeys.privateKey),
-    group.encryptedPassword
-  );
-
-  const decryptedTitle = group.title
-    ? await decryptMessageSymmetric(decryptedPassword, group.title)
-    : group.title;
-
-  return { ...group, title: decryptedTitle };
 }

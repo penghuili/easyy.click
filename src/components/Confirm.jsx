@@ -1,38 +1,26 @@
-import { Button, Popup } from '@nutui/nutui-react';
+import { Modal, Typography } from '@douyinfe/semi-ui';
 import React from 'react';
 import fastMemo from 'react-fast-memo';
 
-import { Flex } from './Flex';
-import { Text } from './Text';
+import { isMobileWidth } from '../shared/browser/device';
 
-export const Confirm = fastMemo(
-  ({
-    open,
-    onOpenChange,
-    message,
-    children,
-    confirmButtonLabel,
-    showCancelButton = true,
-    onConfirm,
-    isSaving,
-  }) => {
-    return (
-      <Popup visible={open} onClose={() => onOpenChange(false)} round style={{ padding: '2rem' }}>
-        <Text>{message}</Text>
+export const Confirm = fastMemo(({ open, onOpenChange, message, onConfirm, isSaving }) => {
+  const handleClose = () => {
+    onOpenChange(false);
+  };
 
-        {children}
-
-        <Flex direction="row" gap="1rem" m="2rem 0 0" justify="end">
-          {showCancelButton && (
-            <Button fill="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-          )}
-          <Button type="primary" onClick={onConfirm} disabled={isSaving}>
-            {confirmButtonLabel || 'Confirm'}
-          </Button>
-        </Flex>
-      </Popup>
-    );
-  }
-);
+  return (
+    <>
+      <Modal
+        visible={open}
+        onOk={onConfirm}
+        onCancel={handleClose}
+        closeOnEsc={true}
+        okButtonProps={{ loading: isSaving }}
+        style={{ maxWidth: isMobileWidth() ? 350 : 'none' }}
+      >
+        <Typography.Text>{message}</Typography.Text>
+      </Modal>
+    </>
+  );
+});

@@ -3,25 +3,16 @@ import { LocalStorage } from '../../lib/LocalStorage';
 import { HTTP } from '../../shared/browser/HTTP';
 import { appName } from '../../shared/browser/initShared';
 import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
-import {
-  decryptMessageAsymmetric,
-  decryptMessageSymmetric,
-  encryptMessageAsymmetric,
-  encryptMessageSymmetric,
-} from '../../shared/js/encryption';
+import { encryptMessageAsymmetric, encryptMessageSymmetric } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
 import { orderByPosition } from '../../shared/js/position';
 import { encryptMessageWithEncryptedPassword } from '../note/noteNetwork';
+import { decryptLink } from '../worker/workerHelpers';
 
 export async function fetchLinks() {
   try {
     const links = await HTTP.get(appName, `/v1/links`);
-    const decrypted = await Promise.all(
-      links.map(async link => {
-        return await decryptLink(link);
-      })
-    );
-    const sorted = orderByPosition(decrypted, true);
+    const sorted = orderByPosition(links, true);
 
     return {
       data: sorted,
@@ -35,7 +26,7 @@ export async function fetchLinks() {
 export async function fetchLink(linkId) {
   try {
     const link = await HTTP.get(appName, `/v1/links/${linkId}`);
-    const decrypted = await decryptLink(link);
+    const decrypted = await decryptLink(link, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return {
       data: decrypted,
@@ -67,7 +58,7 @@ export async function createLink({ title, link, groupId }) {
       groupId,
     });
 
-    const decrypted = await decryptLink(data);
+    const decrypted = await decryptLink(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -91,7 +82,7 @@ export async function updateLink(
       count,
     });
 
-    const decrypted = await decryptLink(data);
+    const decrypted = await decryptLink(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
 
     return { data: decrypted, error: null };
   } catch (error) {
@@ -107,20 +98,4 @@ export async function deleteLink(linkId) {
   } catch (error) {
     return { data: null, error };
   }
-}
-
-async function decryptLink(link) {
-  const decryptedPassword = await decryptMessageAsymmetric(
-    LocalStorage.get(sharedLocalStorageKeys.privateKey),
-    link.encryptedPassword
-  );
-
-  const decryptedTitle = link.title
-    ? await decryptMessageSymmetric(decryptedPassword, link.title)
-    : link.title;
-  const decryptedLink = link.link
-    ? await decryptMessageSymmetric(decryptedPassword, link.link)
-    : link.link;
-
-  return { ...link, title: decryptedTitle, link: decryptedLink };
 }

@@ -1,9 +1,0 @@
-.link {
-  display: inline-block;
-  text-decoration: none;
-  color: var(--nutui-color-primary);
-}
-.link:hover {
-  text-decoration: underline;
-  color: var(--nutui-brand-7);
-}

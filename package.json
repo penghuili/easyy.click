@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@nutui/nutui-react": "2.6.21",
-    "@nutui/touch-emulator": "^1.0.0",
+    "@douyinfe/semi-ui": "2.67.0",
     "@remixicon/react": "4.2.0",
-    "date-fns": "3.6.0",
+    "@semi-bot/semi-theme-easyy": "1.0.2",
+    "date-fns": "4.1.0",
+    "date-fns-tz": "3.2.0",
     "file-saver": "2.0.5",
     "idb-keyval": "6.2.1",
     "inobounce": "0.2.1",
@@ -34,7 +35,8 @@
     "eslint-plugin-sonarjs": "1.0.4",
     "prettier": "3.3.3",
     "rollup-plugin-visualizer": "5.12.0",
-    "vite": "5.4.5"
+    "vite": "5.4.5",
+    "vite-plugin-semi-theme": "0.6.0"
   },
   "browserslist": {
     "production": [

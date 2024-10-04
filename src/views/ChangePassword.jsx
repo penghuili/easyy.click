@@ -1,4 +1,4 @@
-import { Button, Form, Input } from '@nutui/nutui-react';
+import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -27,42 +27,28 @@ export const ChangePassword = fastMemo(() => {
     <PageContent>
       <PageHeader title="Change password" isLoading={isChanging} hasBack />
 
-      <Form
-        labelPosition="top"
-        footer={
-          <>
-            <Button nativeType="submit" type="primary" disabled={isDisabled}>
-              Change
-            </Button>
-          </>
-        }
-        onFinish={handleSubmit}
-      >
-        <Form.Item
+      <Form onSubmit={handleSubmit}>
+        <Form.Input
+          type="password"
+          field="currentPassword"
           label="Current password"
-          name="currentPassword"
-          rules={[{ required: true, message: 'Required' }]}
-        >
-          <Input
-            type="password"
-            placeholder="Current password"
-            value={currentPassword}
-            onChange={setCurrentPassword}
-          />
-        </Form.Item>
+          placeholder="Current password"
+          value={currentPassword}
+          onChange={setCurrentPassword}
+        />
 
-        <Form.Item
+        <Form.Input
+          type="password"
+          field="newPassword"
           label="New password"
-          name="newPassword"
-          rules={[{ required: true, message: 'Required' }]}
-        >
-          <Input
-            type="password"
-            placeholder="New password"
-            value={newPassword}
-            onChange={setNewPassword}
-          />
-        </Form.Item>
+          placeholder="New password"
+          value={newPassword}
+          onChange={setNewPassword}
+        />
+
+        <Button htmlType="submit" theme="solid" disabled={isDisabled}>
+          Change
+        </Button>
       </Form>
     </PageContent>
   );

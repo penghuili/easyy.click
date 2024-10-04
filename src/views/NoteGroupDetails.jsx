@@ -1,4 +1,4 @@
-import { Button, Form, Input } from '@nutui/nutui-react';
+import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useCallback } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -47,20 +47,18 @@ const GroupForm = fastMemo(({ groupId }) => {
   }
 
   return (
-    <Form
-      initialValues={{ title: group.title, text: group.text }}
-      labelPosition="top"
-      divider
-      footer={
-        <Button nativeType="submit" type="primary" disabled={!title || isUpdating}>
-          Update tag
-        </Button>
-      }
-      onFinish={handleSave}
-    >
-      <Form.Item label="Tag name" name="title">
-        <Input placeholder="Give your tag a name" value={title} onChange={titleCat.set} />
-      </Form.Item>
+    <Form initValues={{ title: group.title, text: group.text }} onSubmit={handleSave}>
+      <Form.Input
+        field="title"
+        label="Tag name"
+        placeholder="Give your tag a name"
+        value={title}
+        onChange={titleCat.set}
+      />
+
+      <Button htmlType="submit" theme="solid" disabled={!title || isUpdating}>
+        Update tag
+      </Button>
     </Form>
   );
 });

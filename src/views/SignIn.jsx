@@ -1,13 +1,11 @@
-import { Button, Form, Input } from '@nutui/nutui-react';
+import { Button, Form, Typography } from '@douyinfe/semi-ui';
 import React, { useEffect, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { errorCssColor } from '../components/AppWrapper';
 import { Flex } from '../components/Flex';
 import { PageHeader } from '../components/PageHeader';
 import { RouteLink } from '../components/RouteLink';
-import { Text } from '../components/Text';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { authErrorCat, isSigningInCat } from '../shared/browser/store/sharedCats';
 import { clearAuthErrorEffect, signInEffect } from '../shared/browser/store/sharedEffects';
@@ -37,45 +35,40 @@ export const SignIn = fastMemo(() => {
     <PageContent>
       <PageHeader title="Sign in" isLoading={isSigningIn} hasBack />
 
-      <Form
-        labelPosition="top"
-        footer={
-          <Flex>
-            <Button nativeType="submit" type="primary" disabled={isDisabled}>
-              Sign in
-            </Button>
+      <Form onSubmit={handleSubmit}>
+        <Form.Input
+          type="email"
+          field="email"
+          label="Email"
+          placeholder="Email"
+          value={email}
+          onChange={setEmail}
+        />
 
-            {!!errorMessage && <Text color={errorCssColor}>{errorMessage}</Text>}
+        <Form.Input
+          type="password"
+          field="password"
+          label="Password"
+          placeholder="Password"
+          value={password}
+          onChange={setPassword}
+        />
 
-            <RouteLink to="/sign-up" m="1rem 0 0">
-              No account? Sign up
-            </RouteLink>
+        <Flex m="1rem 0 0">
+          <Button htmlType="submit" theme="solid" disabled={isDisabled}>
+            Sign in
+          </Button>
 
-            <RouteLink to="/reset-password" m="1rem 0 0">
-              Forget password? Reset
-            </RouteLink>
-          </Flex>
-        }
-        onFinish={handleSubmit}
-      >
-        <Form.Item label="Email" name="email">
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={setEmail}
-            rules={[{ required: true, message: 'Please input your email.' }]}
-          />
-        </Form.Item>
-        <Form.Item label="Password" name="password">
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={setPassword}
-            rules={[{ required: true, message: 'Please input your password.' }]}
-          />
-        </Form.Item>
+          {!!errorMessage && <Typography.Text type="danger">{errorMessage}</Typography.Text>}
+
+          <RouteLink to="/sign-up" m="1rem 0 0">
+            No account? Sign up
+          </RouteLink>
+
+          <RouteLink to="/reset-password" m="1rem 0 0">
+            Forget password? Reset
+          </RouteLink>
+        </Flex>
       </Form>
     </PageContent>
   );

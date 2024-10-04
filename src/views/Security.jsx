@@ -1,4 +1,4 @@
-import { Button } from '@nutui/nutui-react';
+import { Button } from '@douyinfe/semi-ui';
 import { RiDeviceLine, RiLockPasswordLine, RiMailLine } from '@remixicon/react';
 import React from 'react';
 import { BabyLink } from 'react-baby-router';
@@ -30,20 +30,20 @@ export const Security = fastMemo(() => {
 
       <ItemsWrapper align="start">
         <BabyLink to="/security/email">
-          <Button fill="none" icon={<RiMailLine />}>
+          <Button theme="borderless" icon={<RiMailLine />}>
             Change email
           </Button>
         </BabyLink>
 
         <BabyLink to="/security/password">
-          <Button fill="none" icon={<RiLockPasswordLine />}>
+          <Button theme="borderless" icon={<RiLockPasswordLine />}>
             Change password
           </Button>
         </BabyLink>
 
         <LogoutLink />
 
-        <Button fill="none" onClick={logOutFromAllDevicesEffect} icon={<RiDeviceLine />}>
+        <Button theme="borderless" onClick={logOutFromAllDevicesEffect} icon={<RiDeviceLine />}>
           Log out from all devices
         </Button>
 

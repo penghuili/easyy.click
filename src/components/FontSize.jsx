@@ -1,20 +1,21 @@
-import { Radio } from '@nutui/nutui-react';
+import { Radio, RadioGroup, Typography } from '@douyinfe/semi-ui';
 import React, { useCallback, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 
 import { LocalStorage } from '../lib/LocalStorage';
 import { sharedLocalStorageKeys } from '../shared/browser/LocalStorage';
 import { Flex } from './Flex';
-import { Text } from './Text';
 
 export function updateFontSize(fontSize) {
   document.documentElement.style.setProperty('--scaling', fontSize);
 }
 
+// TODO: Make it work for semi
 export const FontSize = fastMemo(() => {
   const [scaling, setScaling] = useState(LocalStorage.get(sharedLocalStorageKeys.fontScaling) || 1);
 
-  const handleChange = useCallback(value => {
+  const handleChange = useCallback(e => {
+    const value = e.target.value;
     setScaling(value);
     LocalStorage.set(sharedLocalStorageKeys.fontScaling, value);
     updateFontSize(value);
@@ -22,32 +23,24 @@ export const FontSize = fastMemo(() => {
 
   return (
     <Flex>
-      <Text as="h3" size="5" m="0 0 0.5rem">
+      <Typography.Title heading={4} style={{ margin: '0 0 0.5rem' }}>
         Font size
-      </Text>
+      </Typography.Title>
 
-      <Radio.Group value={scaling} onChange={handleChange}>
+      <RadioGroup direction="vertical" value={scaling} onChange={handleChange}>
         <Radio value={1}>
-          <Text as="span" style={{ fontSize: 'calc(16px * 1)' }}>
-            easyy.click
-          </Text>
+          <Typography.Text style={{ fontSize: 'calc(16px * 1)' }}>easyy.click</Typography.Text>
         </Radio>
         <Radio value={1.1}>
-          <Text as="span" style={{ fontSize: 'calc(16px * 1.1)' }}>
-            easyy.click
-          </Text>
+          <Typography.Text style={{ fontSize: 'calc(16px * 1.1)' }}>easyy.click</Typography.Text>
         </Radio>
         <Radio value={1.25}>
-          <Text as="span" style={{ fontSize: 'calc(16px * 1.25)' }}>
-            easyy.click
-          </Text>
+          <Typography.Text style={{ fontSize: 'calc(16px * 1.25)' }}>easyy.click</Typography.Text>
         </Radio>
         <Radio value={1.5}>
-          <Text as="span" style={{ fontSize: 'calc(16px * 1.5)' }}>
-            easyy.click
-          </Text>
+          <Typography.Text style={{ fontSize: 'calc(16px * 1.5)' }}>easyy.click</Typography.Text>
         </Radio>
-      </Radio.Group>
+      </RadioGroup>
     </Flex>
   );
 });

@@ -1,4 +1,4 @@
-import { Button, Form, Input, TextArea } from '@nutui/nutui-react';
+import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useCallback, useState } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -29,32 +29,28 @@ export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
     <PageContent>
       <PageHeader title="Add note" isLoading={isCreating} hasBack />
 
-      <Form
-        labelPosition="top"
-        divider
-        footer={
-          <Button nativeType="submit" type="primary" disabled={!text || !title || isCreating}>
-            Add note
-          </Button>
-        }
-        onFinish={handleSave}
-      >
-        <Form.Item label="Note name" name="title">
-          <Input placeholder="Give your note a name" value={title} onChange={setTitle} />
-        </Form.Item>
-        <Form.Item label="Note" name="text">
-          <TextArea
-            placeholder="Which note do you copy paste regularly?"
-            maxLength={-1}
-            value={text}
-            onChange={setText}
-            rows={6}
-          />
-        </Form.Item>
+      <Form onSubmit={handleSave}>
+        <Form.Input
+          field="title"
+          label="Note name"
+          placeholder="Give your note a name"
+          value={title}
+          onChange={setTitle}
+        />
 
-        <Form.Item label="Tag" name="tag">
-          <NoteGroupSelector groupId={groupId} onSelect={setGroupId} />
-        </Form.Item>
+        <Form.TextArea
+          field="text"
+          label="Note"
+          placeholder="Which note do you copy paste regularly?"
+          value={text}
+          onChange={setText}
+        />
+
+        <NoteGroupSelector groupId={groupId} onSelect={setGroupId} />
+
+        <Button htmlType="submit" theme="solid" disabled={!text || !title || isCreating}>
+          Add note
+        </Button>
       </Form>
     </PageContent>
   );

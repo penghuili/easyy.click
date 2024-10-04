@@ -1,4 +1,4 @@
-import { Button, Form, Input } from '@nutui/nutui-react';
+import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -39,18 +39,19 @@ export const ResetPassword = fastMemo(() => {
 
     return (
       <>
-        <Form
-          labelPosition="top"
-          footer={
-            <Button nativeType="submit" type="primary" disabled={!email.trim() || isTriggering}>
-              Reset password
-            </Button>
-          }
-          onFinish={handleTrigger}
-        >
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Required' }]}>
-            <Input type="email" placeholder="Email" value={email} onChange={setEmail} />
-          </Form.Item>
+        <Form onSubmit={handleTrigger}>
+          <Form.Input
+            type="email"
+            field="email"
+            label="Email"
+            placeholder="Email"
+            value={email}
+            onChange={setEmail}
+          />
+
+          <Button htmlType="submit" theme="solid" disabled={!email.trim() || isTriggering}>
+            Reset password
+          </Button>
         </Form>
       </>
     );
@@ -64,25 +65,7 @@ export const ResetPassword = fastMemo(() => {
     return (
       <>
         <Form
-          labelPosition="top"
-          footer={
-            <>
-              <Button
-                nativeType="submit"
-                type="primary"
-                disabled={!email.trim() || !code.trim() || !password.trim() || isSaving}
-              >
-                Change
-              </Button>
-
-              <Flex m="1rem 0 0">
-                <Button fill="none" onClick={handleTrigger}>
-                  Resend code
-                </Button>
-              </Flex>
-            </>
-          }
-          onFinish={async () => {
+          onSubmit={async () => {
             setIsSaving(true);
             const { data } = await resetPasswordSave(email, password, code);
             if (data) {
@@ -99,27 +82,46 @@ export const ResetPassword = fastMemo(() => {
             setIsSaving(false);
           }}
         >
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Required' }]}>
-            <Input type="email" placeholder="Email" value={email} onChange={setEmail} disabled />
-          </Form.Item>
+          <Form.Input
+            type="email"
+            field="email"
+            label="Email"
+            placeholder="Email"
+            value={email}
+            onChange={setEmail}
+            disabled
+          />
 
-          <Form.Item
-            label="Code in your email"
-            name="code"
-            rules={[{ required: true, message: 'Required' }]}
+          <Form.Input
+            field="code"
+            label="Code"
+            placeholder="Code"
+            value={code}
+            onChange={setCode}
+          />
+
+          <Form.Input
+            type="password"
+            field="password"
+            label="New password"
+            placeholder="New password"
+            value={password}
+            onChange={setPassword}
+          />
+
+          <Button
+            htmlType="submit"
+            theme="solid"
+            disabled={!email.trim() || !code.trim() || !password.trim() || isSaving}
           >
-            <Input placeholder="Code" value={code} onChange={setCode} />
-          </Form.Item>
+            Change
+          </Button>
 
-          <Form.Item label="New password" name="password">
-            <Input
-              type="password"
-              placeholder="New password"
-              value={password}
-              onChange={setPassword}
-              rules={[{ required: true, message: 'Required' }]}
-            />
-          </Form.Item>
+          <Flex m="1rem 0 0">
+            <Button theme="borderless" onClick={handleTrigger}>
+              Resend code
+            </Button>
+          </Flex>
         </Form>
       </>
     );

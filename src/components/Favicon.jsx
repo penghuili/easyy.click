@@ -9,8 +9,10 @@ export function Favicon({ url }) {
       style={{
         display: 'inline-block',
         marginRight: '0.25rem',
-        width: '16px',
-        height: '16px',
+        width: 16,
+        height: 16,
+        position: 'relative',
+        top: 2,
       }}
     />
   );

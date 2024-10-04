@@ -1,3 +1,4 @@
+import { Typography } from '@douyinfe/semi-ui';
 import { RiCheckLine } from '@remixicon/react';
 import React from 'react';
 
@@ -5,7 +6,6 @@ import { classNames } from '../shared/browser/classNames.js';
 import { Countdown } from '../shared/browser/CountDown.jsx';
 import { Flex } from './Flex.jsx';
 import styles from './Prices.module.css';
-import { Text } from './Text.jsx';
 
 export const Prices = React.memo(() => {
   return (
@@ -16,13 +16,11 @@ export const Prices = React.memo(() => {
         [styles.shine]: true,
       })}
     >
-      <Text as="h3" size="5" color="white">
+      <Typography.Title heading={4} style={{ color: 'white' }}>
         Lifetime deal
-      </Text>
-      <Text m="0.5rem 0" size="7" color="white">
-        Pay once, use forever
-      </Text>
-      <Flex direction="row" align="center" m="0">
+      </Typography.Title>
+      <Typography.Text style={{ color: 'white' }}>Pay once, use forever</Typography.Text>
+      <Flex direction="row" align="center" m="1rem 0 0">
         <span
           style={{
             fontSize: '2rem',
@@ -32,9 +30,15 @@ export const Prices = React.memo(() => {
         >
           $9
         </span>
-        <Text size="7" color="white">
+        <span
+          style={{
+            fontSize: '2rem',
+            display: 'inline-block',
+            marginRight: '0.5rem',
+          }}
+        >
           <del>$19</del> for You
-        </Text>
+        </span>
       </Flex>
 
       <Flex m="1rem 0 1.5rem" align="center">
@@ -51,7 +55,9 @@ export const Prices = React.memo(() => {
         ].map(benifit => (
           <Flex key={benifit.text} direction="row" justify="start" align="start" gap="0.5rem" m="0">
             <RiCheckLine color="white" />{' '}
-            <Text color="white">{benifit.enabled ? benifit.text : <del>{benifit.text}</del>}</Text>
+            <Typography.Text style={{ color: 'white' }}>
+              {benifit.enabled ? benifit.text : <del>{benifit.text}</del>}
+            </Typography.Text>
           </Flex>
         ))}
       </Flex>

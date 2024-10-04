@@ -19,9 +19,7 @@ uploadStatic();
 
 uploadIndex();
 
-if (!process.env.DISABLE_VERSION_JSON) {
-  uploadVersionJson();
-}
+uploadVersionJson();
 
 deleteOldVersion();
 

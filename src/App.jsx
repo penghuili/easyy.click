@@ -1,5 +1,3 @@
-import '@nutui/touch-emulator';
-
 import React from 'react';
 
 import { AppWrapper } from './components/AppWrapper.jsx';
@@ -26,7 +24,7 @@ function App() {
       <Router />
 
       <Toast />
-      <Scrollbar thumbColor="var(--nutui-brand-4)" trackColor="var(--nutui-brand-2)" />
+      <Scrollbar thumbColor="#78c174" trackColor="#def0dc" />
     </AppWrapper>
   );
 }

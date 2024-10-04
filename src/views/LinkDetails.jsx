@@ -1,4 +1,4 @@
-import { Button, Form, Input, TextArea } from '@nutui/nutui-react';
+import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useCallback } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -45,13 +45,15 @@ const LinkForm = fastMemo(({ linkId }) => {
   const linkValue = useCat(linkValueCat);
   const groupId = useCat(groupIdCat);
 
+  console.log(title, linkValue);
+
   const handleSave = useCallback(async () => {
     await updateLinkEffect(linkId, {
       encryptedPassword: link.encryptedPassword,
       title,
       link: linkValue,
       groupId,
-      successMessage: 'Encrypted and saved safely in Franfurt!',
+      successMessage: 'Encrypted and saved safely in Frankfurt!',
     });
     goBack();
   }, [linkId, link.encryptedPassword, title, linkValue, groupId]);
@@ -73,33 +75,27 @@ const LinkForm = fastMemo(({ linkId }) => {
   }
 
   return (
-    <Form
-      initialValues={{ title: link.title, link: link.link }}
-      labelPosition="top"
-      divider
-      footer={
-        <Button nativeType="submit" type="primary" disabled={!title || !linkValue || isUpdating}>
-          Update link
-        </Button>
-      }
-      onFinish={handleSave}
-    >
-      <Form.Item label="Link name" name="title">
-        <Input placeholder="ChatGPT, Youtube, etc" value={title} onChange={titleCat.set} />
-      </Form.Item>
-      <Form.Item label="Link" name="link">
-        <TextArea
-          placeholder="https://example.com"
-          maxLength={-1}
-          rows={6}
-          value={linkValue}
-          onChange={linkValueCat.set}
-        />
-      </Form.Item>
+    <Form initValues={{ title: link.title, link: link.link }} onSubmit={handleSave}>
+      <Form.Input
+        field="title"
+        label="Link name"
+        placeholder="ChatGPT, Youtube, etc"
+        value={title}
+        onChange={titleCat.set}
+      />
+      <Form.TextArea
+        field="link"
+        label="Link"
+        placeholder="https://example.com"
+        value={linkValue}
+        onChange={linkValueCat.set}
+      />
 
-      <Form.Item label="Tag" name="tag">
-        <LinkGroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
-      </Form.Item>
+      <LinkGroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
+
+      <Button htmlType="submit" theme="solid" disabled={!title || !linkValue || isUpdating}>
+        Update link
+      </Button>
     </Form>
   );
 });

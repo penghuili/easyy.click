@@ -1,14 +1,14 @@
-import { Button } from '@nutui/nutui-react';
+import { Button, Typography } from '@douyinfe/semi-ui';
 import React from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { themeCssColor } from '../components/AppWrapper.jsx';
 import { Flex } from '../components/Flex.jsx';
 import { Link } from '../components/Link.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { Prices } from '../components/Prices.jsx';
-import { Text } from '../components/Text.jsx';
 import { hasValidFreeTrial } from '../lib/hasValidFreeTrial.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
@@ -57,12 +57,14 @@ const Intro = fastMemo(() => {
 
   return (
     <>
-      <Text m="0 0 1rem">Open frequently used links, copy frequently used notes.</Text>
-      <Text m="0">
+      <Typography.Paragraph style={{ marginBottom: '1rem' }}>
+        Open frequently used links, copy frequently used notes.
+      </Typography.Paragraph>
+      <Typography.Paragraph>
         <Link href="https://easyy.click" target="_blank">
           See how it works here &gt;&gt;
         </Link>
-      </Text>
+      </Typography.Paragraph>
     </>
   );
 });
@@ -72,14 +74,18 @@ const FreeTrialStatus = fastMemo(() => {
   const freeTrialUntil = useFreeTrialsUntil();
 
   if (expiresAt === 'forever') {
-    return <Text>You have lifetime access!</Text>;
+    return <Typography.Paragraph>You have lifetime access!</Typography.Paragraph>;
   }
 
   if (freeTrialUntil) {
     return freeTrialUntil >= formatDate(new Date()) ? (
-      <Text>You have a free trial until {formatDate(freeTrialUntil)}.</Text>
+      <Typography.Paragraph>
+        You have a free trial until {formatDate(freeTrialUntil)}.
+      </Typography.Paragraph>
     ) : (
-      <Text>Your free trial expired ({formatDate(freeTrialUntil)}).</Text>
+      <Typography.Paragraph>
+        Your free trial expired ({formatDate(freeTrialUntil)}).
+      </Typography.Paragraph>
     );
   }
 
@@ -102,9 +108,9 @@ const UpgradeAction = fastMemo(() => {
             overflow: 'hidden',
             textDecoration: 'none',
             color: 'white',
-            backgroundColor: 'var(--nutui-brand-6)',
+            backgroundColor: themeCssColor,
             padding: '0.5rem 2rem',
-            fontSize: 'var(--nutui-font-size-7)',
+            fontSize: '1.5rem',
             borderRadius: '4rem',
           }}
         >
@@ -115,7 +121,7 @@ const UpgradeAction = fastMemo(() => {
 
       {!freeTrialUntil && (
         <Flex align="center" m="2rem 0">
-          <Button fill="none" size="xlarge" onClick={freeTrialEffect} disabled={isTrying}>
+          <Button theme="borderless" size="large" onClick={freeTrialEffect} disabled={isTrying}>
             or try 14 days for free
           </Button>
         </Flex>

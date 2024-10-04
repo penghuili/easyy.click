@@ -1,4 +1,4 @@
-import { Button } from '@nutui/nutui-react';
+import { Button } from '@douyinfe/semi-ui';
 import {
   RiCodeLine,
   RiHeartLine,
@@ -24,42 +24,42 @@ export const PublicLinks = fastMemo(() => {
   return (
     <ItemsWrapper align="start">
       <a href="https://easyy.click" target="_blank" rel="noreferrer">
-        <Button fill="none" icon={<RiHomeLine />}>
+        <Button theme="borderless" icon={<RiHomeLine />}>
           Learn more
         </Button>
       </a>
 
       <a href="https://easyy.click/encryption/" target="_blank" rel="noreferrer">
-        <Button fill="none" icon={<RiLockLine />}>
+        <Button theme="borderless" icon={<RiLockLine />}>
           Encryption
         </Button>
       </a>
 
       <a href="https://github.com/penghuili/easyy.click" target="_blank" rel="noreferrer">
-        <Button fill="none" icon={<RiCodeLine />}>
+        <Button theme="borderless" icon={<RiCodeLine />}>
           Source code
         </Button>
       </a>
 
       <a href="https://easyy.click/privacy" target="_blank" rel="noreferrer">
-        <Button fill="none" icon={<RiHeartLine />}>
+        <Button theme="borderless" icon={<RiHeartLine />}>
           Privacy
         </Button>
       </a>
 
       <a href="https://easyy.click/terms" target="_blank" rel="noreferrer">
-        <Button fill="none" icon={<RiServiceLine />}>
+        <Button theme="borderless" icon={<RiServiceLine />}>
           Terms
         </Button>
       </a>
 
       <a href="https://x.com/easyydotclick" target="_blank" rel="noreferrer">
-        <Button fill="none" icon={<RiTwitterXLine />}>
+        <Button theme="borderless" icon={<RiTwitterXLine />}>
           x.com
         </Button>
       </a>
 
-      <Button fill="none" icon={<RiMailLine />} onClick={handleCopyEmail}>
+      <Button theme="borderless" icon={<RiMailLine />} onClick={handleCopyEmail}>
         Contact: peng@tuta.com
       </Button>
     </ItemsWrapper>

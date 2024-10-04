@@ -6,12 +6,12 @@
 
   overflow: hidden;
 
-  border: 1px solid var(--nutui-gray-4);
+  border: 1px solid transparent;
   border-radius: 6px;
-  padding: var(--nutui-spacing-4);
+  padding: 1rem;
   margin-top: 2rem;
 }
 .priceCard.accent {
-  background-color: var(--nutui-brand-6);
+  background-color: var(--semi-color-primary);
   color: white;
 }

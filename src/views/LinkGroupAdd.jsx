@@ -1,4 +1,4 @@
-import { Button, Form, Input } from '@nutui/nutui-react';
+import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useCallback, useState } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -23,19 +23,19 @@ export const LinkGroupAdd = fastMemo(() => {
     <PageContent>
       <PageHeader title="Add link tag" isLoading={isCreating} hasBack />
 
-      <Form
-        labelPosition="top"
-        divider
-        footer={
-          <Button nativeType="submit" type="primary" disabled={!title || isCreating}>
-            Add tag
-          </Button>
-        }
-        onFinish={handleSave}
-      >
-        <Form.Item label="Tag name" name="title">
-          <Input placeholder="Give your tag a name" value={title} onChange={setTitle} autoFocus />
-        </Form.Item>
+      <Form onSubmit={handleSave}>
+        <Form.Input
+          field="title"
+          label="Tag name"
+          placeholder="Give your tag a name"
+          value={title}
+          onChange={setTitle}
+          autoFocus
+        />
+
+        <Button htmlType="submit" theme="solid" disabled={!title || isCreating}>
+          Add tag
+        </Button>
       </Form>
     </PageContent>
   );

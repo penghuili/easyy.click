@@ -1,26 +1,30 @@
-import { ActionSheet, Button, Ellipsis, Grid } from '@nutui/nutui-react';
-import { RiAddLine, RiMore2Line } from '@remixicon/react';
+import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
+import { RiAddLine, RiBookmarkLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
-import { createCat, useCat } from 'usecat';
+import { useCat } from 'usecat';
 
 import { noGroupSortKey } from '../lib/constants.js';
 import { copyToClipboard } from '../lib/copyToClipboard.js';
-import { isMobileBrowser } from '../shared/browser/device.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { isDeletingNoteCat, useNoteGroups } from '../store/note/noteCats.js';
 import { deleteNoteEffect } from '../store/note/noteEffect.js';
+import { isDeletingNoteGroupCat } from '../store/noteGroup/noteGroupCats.js';
+import { deleteNoteGroupEffect } from '../store/noteGroup/noteGroupEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Flex } from './Flex.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
-import { Text } from './Text.jsx';
-
-const activeNoteCat = createCat(null);
-const showActionSheetCat = createCat(false);
 
 export const NoteItems = fastMemo(() => {
   const { groups: noteGroups, notes } = useNoteGroups();
+  const isDeletingNote = useCat(isDeletingNoteCat);
+  const isDeletingGroup = useCat(isDeletingNoteGroupCat);
+
+  const [activeNote, setActiveNote] = useState(null);
+  const [showDeleteNoteConfirm, setShowDeleteNoteConfirm] = useState(false);
+  const [activeGroup, setActiveGroup] = useState(null);
+  const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
 
   const handleCopy = useCallback(note => {
     copyToClipboard(note.text);
@@ -35,130 +39,184 @@ export const NoteItems = fastMemo(() => {
     <>
       <Flex direction="row" wrap="wrap" gap="1rem" m="0 0 1.5rem">
         {notes.length > 1 && (
-          <Button onClick={() => navigateTo('/notes/reorder')} size="mini">
+          <Button
+            onClick={() => navigateTo('/notes/reorder')}
+            icon={<RiDragMoveLine size={16} />}
+            size="small"
+          >
             Reorder notes
           </Button>
         )}
-        <Button onClick={() => navigateTo('/note-groups/add')} size="mini">
-          Add tag
-        </Button>
-        {noteGroups.length > 1 && (
-          <Button onClick={() => navigateTo('/note-groups/reorder')} size="mini">
-            Update tags
+
+        {noteGroups.length > 2 && (
+          <Button
+            onClick={() => navigateTo('/note-groups/reorder')}
+            icon={<RiDragMoveLine size={16} />}
+            size="small"
+          >
+            Reorder tags
           </Button>
         )}
+
+        <Button
+          onClick={() => navigateTo('/note-groups/add')}
+          icon={<RiBookmarkLine size={16} />}
+          size="small"
+        >
+          Add tag
+        </Button>
       </Flex>
 
       {noteGroups.map(group => (
         <div key={group.sortKey} style={{ marginBottom: '2rem' }}>
-          <Flex direction="row" gap="1rem" align="center">
-            <Text bold m="0 0 0.25rem">
-              {group.title}
-            </Text>
+          <Flex direction="row" justify="between" align="center">
+            <Typography.Title heading={5}>{group.title}</Typography.Title>
 
-            <Button
-              fill="none"
-              icon={<RiAddLine />}
-              onClick={() =>
-                navigateTo(
-                  group.sortKey === noGroupSortKey
-                    ? '/notes/add'
-                    : `/notes/add?groupId=${group.sortKey}`
-                )
-              }
-            />
+            <Flex direction="row" gap="1rem" align="center">
+              <Button
+                theme="borderless"
+                icon={<RiAddLine />}
+                onClick={() =>
+                  navigateTo(
+                    group.sortKey === noGroupSortKey
+                      ? '/notes/add'
+                      : `/notes/add?groupId=${group.sortKey}`
+                  )
+                }
+              />
+              <Dropdown
+                trigger="click"
+                position={'bottomLeft'}
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => {
+                        navigateTo(`/note-groups/details?groupId=${group.sortKey}`);
+                      }}
+                    >
+                      Edit tag
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      type="danger"
+                      onClick={() => {
+                        setActiveGroup(group);
+                        setShowDeleteGroupConfirm(true);
+                      }}
+                    >
+                      Delete tag
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button
+                  theme="borderless"
+                  icon={<RiMore2Line />}
+                  style={{
+                    marginRight: 2,
+                  }}
+                />
+              </Dropdown>
+            </Flex>
           </Flex>
 
           {group.items?.length ? (
-            <Grid columns={isMobileBrowser() ? 2 : 3}>
-              {group.items.map(item => (
-                <Grid.Item key={item.sortKey} style={{ overflow: 'hidden', position: 'relative' }}>
-                  <Ellipsis
-                    onClick={() => handleCopy(item)}
-                    content={item.title}
-                    direction="end"
-                    rows="2"
+            <>
+              <Row type="flex">
+                {group.items.map(item => (
+                  <Col
+                    key={item.sortKey}
+                    span={12}
+                    md={8}
                     style={{
-                      cursor: 'pointer',
-                      paddingRight: '1rem',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      padding: '0.5rem 1.5rem 0.5rem 0',
                     }}
-                  />
+                  >
+                    <Typography.Text
+                      onClick={() => handleCopy(item)}
+                      direction="end"
+                      style={{
+                        cursor: 'pointer',
+                        paddingRight: '1rem',
+                      }}
+                    >
+                      {item.title}
+                    </Typography.Text>
 
-                  <Button
-                    fill="none"
-                    icon={<RiMore2Line width="20" height="20" />}
-                    onClick={() => {
-                      activeNoteCat.set(item);
-                      showActionSheetCat.set(true);
-                    }}
-                    size="mini"
-                    style={{
-                      position: 'absolute',
-                      top: '0.5rem',
-                      right: 0,
-                    }}
-                  />
-                </Grid.Item>
-              ))}
-            </Grid>
+                    <Dropdown
+                      trigger="click"
+                      position={'bottomLeft'}
+                      clickToHide
+                      render={
+                        <Dropdown.Menu>
+                          <Dropdown.Item
+                            onClick={() => {
+                              navigateTo(`/notes/details?noteId=${item.sortKey}`);
+                            }}
+                          >
+                            Edit note
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            type="danger"
+                            onClick={() => {
+                              setActiveNote(item);
+                              setShowDeleteNoteConfirm(true);
+                            }}
+                          >
+                            Delete note
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      }
+                    >
+                      <Button
+                        theme="borderless"
+                        icon={<RiMore2Line width="20" height="20" />}
+                        size="small"
+                        style={{
+                          position: 'absolute',
+                          top: '0.5rem',
+                          right: '0.5rem',
+                        }}
+                      />
+                    </Dropdown>
+                  </Col>
+                ))}
+              </Row>
+            </>
           ) : (
-            <Text>No notes here.</Text>
+            <Typography.Text type="secondary">No notes here.</Typography.Text>
           )}
         </div>
       ))}
 
-      <NoteActions />
-    </>
-  );
-});
+      <Confirm
+        message="Are you sure to delete this note?"
+        open={showDeleteNoteConfirm}
+        onOpenChange={setShowDeleteNoteConfirm}
+        onConfirm={async () => {
+          if (!activeNote) return;
 
-const NoteActions = fastMemo(() => {
-  const showActionSheet = useCat(showActionSheetCat);
-  const activeNote = useCat(activeNoteCat);
-  const isDeleting = useCat(isDeletingNoteCat);
-
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const options = [
-    {
-      name: 'Edit',
-      onClick: () => {
-        navigateTo(`/notes/details?noteId=${activeNote?.sortKey}`);
-      },
-    },
-    {
-      name: 'Delete',
-      danger: true,
-      onClick: () => {
-        setShowConfirm(true);
-      },
-    },
-  ];
-
-  const handleSelectAction = option => {
-    option.onClick();
-    showActionSheetCat.set(false);
-  };
-
-  return (
-    <>
-      <ActionSheet
-        visible={showActionSheet}
-        options={options}
-        onSelect={handleSelectAction}
-        onCancel={() => showActionSheetCat.set(false)}
+          await deleteNoteEffect(activeNote?.sortKey);
+          setShowDeleteNoteConfirm(false);
+          setActiveNote(null);
+        }}
+        isSaving={isDeletingNote}
       />
 
       <Confirm
-        message="Are you sure to delete this note?"
-        open={showConfirm}
-        onOpenChange={setShowConfirm}
+        message={`Only this tag will be deleted, your notes with this tag will be moved to "Notes without tag". Go ahead?`}
+        open={showDeleteGroupConfirm}
+        onOpenChange={setShowDeleteGroupConfirm}
         onConfirm={async () => {
-          await deleteNoteEffect(activeNote?.sortKey);
-          setShowConfirm(false);
-          activeNoteCat.set(null);
+          if (!activeGroup) return;
+
+          await deleteNoteGroupEffect(activeGroup?.sortKey);
+          setShowDeleteGroupConfirm(false);
+          setActiveGroup(null);
         }}
-        isSaving={isDeleting}
+        isSaving={isDeletingGroup}
       />
     </>
   );

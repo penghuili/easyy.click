@@ -1,9 +1,9 @@
+import { Typography } from '@douyinfe/semi-ui';
 import React, { useEffect, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 
 import { PageEmpty } from './PageEmpty';
 import { PageLoading } from './PageLoading';
-import { Text } from './Text';
 
 const PrepareDataStatus = {
   pending: 'pending',
@@ -33,10 +33,9 @@ export const PrepareData = fastMemo(({ load, children }) => {
   }
 
   if (status === PrepareDataStatus.error) {
-    console.log('error');
     return (
       <PageEmpty>
-        <Text>Something went wrong.</Text>
+        <Typography.Text>Something went wrong.</Typography.Text>
       </PageEmpty>
     );
   }

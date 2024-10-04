@@ -124,7 +124,7 @@ const AllRoutes = fastMemo(() => {
         <BabyRoutes
           routes={verifyEmailRoutes}
           enableAnimation={isMobileWidth()}
-          bgColor="var(--color-background)"
+          bgColor="var(--semi-color-bg-0)"
           maxWidth="600px"
         />
       );
@@ -139,7 +139,7 @@ const AllRoutes = fastMemo(() => {
         <BabyRoutes
           routes={upgradeRoutes}
           enableAnimation={isMobileWidth()}
-          bgColor="var(--color-background)"
+          bgColor="var(--semi-color-bg-0)"
           maxWidth="600px"
         />
       );
@@ -149,7 +149,7 @@ const AllRoutes = fastMemo(() => {
       <BabyRoutes
         routes={loggedInRoutes}
         enableAnimation={isMobileWidth()}
-        bgColor="var(--color-background)"
+        bgColor="var(--semi-color-bg-0)"
         maxWidth="600px"
       />
     );
@@ -159,7 +159,7 @@ const AllRoutes = fastMemo(() => {
     <BabyRoutes
       routes={publicRoutes}
       enableAnimation={isMobileWidth()}
-      bgColor="var(--color-background)"
+      bgColor="var(--semi-color-bg-0)"
       maxWidth="600px"
     />
   );

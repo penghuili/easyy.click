@@ -1,4 +1,4 @@
-import { Button, Form, Input, TextArea } from '@nutui/nutui-react';
+import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useCallback } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -8,7 +8,7 @@ import { NoteGroupSelector } from '../components/NoteGroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { noteCat } from '../store/note/noteCats.js';
+import { isUpdatingNoteCat, noteCat } from '../store/note/noteCats.js';
 import { fetchNoteEffect, updateNoteEffect } from '../store/note/noteEffect';
 
 const titleCat = createCat('');
@@ -39,6 +39,7 @@ export const NoteDetails = fastMemo(({ queryParams: { noteId } }) => {
 
 const NoteForm = fastMemo(({ noteId }) => {
   const note = useCat(noteCat);
+  const isUpdating = useCat(isUpdatingNoteCat);
 
   const title = useCat(titleCat);
   const text = useCat(textCat);
@@ -49,7 +50,7 @@ const NoteForm = fastMemo(({ noteId }) => {
       encryptedPassword: note.encryptedPassword,
       title,
       text,
-      successMessage: 'Encrypted and saved safely in Franfurt!',
+      successMessage: 'Encrypted and saved safely in Frankfurt!',
     });
     goBack();
   }, [noteId, note.encryptedPassword, title, text]);
@@ -71,33 +72,28 @@ const NoteForm = fastMemo(({ noteId }) => {
   }
 
   return (
-    <Form
-      initialValues={{ title: note.title, text: note.text }}
-      labelPosition="top"
-      divider
-      footer={
-        <Button nativeType="submit" type="primary" disabled={!title || !text}>
-          Update note
-        </Button>
-      }
-      onFinish={handleSave}
-    >
-      <Form.Item label="Note name" name="title">
-        <Input placeholder="Give your note a name" value={title} onChange={titleCat.set} />
-      </Form.Item>
-      <Form.Item label="Note" name="text">
-        <TextArea
-          placeholder="Which note do you copy paste regularly?"
-          maxLength={-1}
-          value={text}
-          onChange={textCat.set}
-          rows={6}
-        />
-      </Form.Item>
+    <Form initValues={{ title: note.title, text: note.text }} onSubmit={handleSave}>
+      <Form.Input
+        field="title"
+        label="Note name"
+        placeholder="Give your note a name"
+        value={title}
+        onChange={titleCat.set}
+      />
 
-      <Form.Item label="Tag" name="tag">
-        <NoteGroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
-      </Form.Item>
+      <Form.TextArea
+        field="text"
+        label="Note"
+        placeholder="Which note do you copy paste regularly?"
+        value={text}
+        onChange={textCat.set}
+      />
+
+      <NoteGroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
+
+      <Button htmlType="submit" theme="solid" disabled={!title || !text || isUpdating}>
+        Update note
+      </Button>
     </Form>
   );
 });

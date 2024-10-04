@@ -1,27 +1,31 @@
-import { ActionSheet, Button, Ellipsis, Grid } from '@nutui/nutui-react';
-import { RiAddLine, RiMore2Line } from '@remixicon/react';
+import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
+import { RiAddLine, RiBookmarkLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
 import React, { useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
-import { createCat, useCat } from 'usecat';
+import { useCat } from 'usecat';
 
 import { noGroupSortKey } from '../lib/constants.js';
-import { isMobileBrowser } from '../shared/browser/device.js';
 import { isDeletingLinkCat, useLinkGroups } from '../store/link/linkCats.js';
 import { deleteLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
+import { isDeletingLinkGroupCat } from '../store/linkGroup/linkGroupCats.js';
+import { deleteLinkGroupEffect } from '../store/linkGroup/linkGroupEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
 import { Flex } from './Flex.jsx';
 import { Link } from './Link.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
-import { Text } from './Text.jsx';
 import { Top10Links } from './Top10Links.jsx';
-
-const activeLinkCat = createCat(null);
-const showActionSheetCat = createCat(false);
 
 export const LinkItems = fastMemo(() => {
   const { groups: linkGroups, links } = useLinkGroups();
+  const isDeletingLink = useCat(isDeletingLinkCat);
+  const isDeletingGroup = useCat(isDeletingLinkGroupCat);
+
+  const [activeLink, setActiveLink] = useState(null);
+  const [showDeleteLinkConfirm, setShowDeleteLinkConfirm] = useState(false);
+  const [activeGroup, setActiveGroup] = useState(null);
+  const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
 
   if (!links.length) {
     return <PageEmpty>Which webites do you visit regularly?</PageEmpty>;
@@ -31,143 +35,188 @@ export const LinkItems = fastMemo(() => {
     <>
       <Flex direction="row" wrap="wrap" gap="1rem" m="0 0 1.5rem">
         {links.length > 1 && (
-          <Button onClick={() => navigateTo('/links/reorder')} size="mini">
+          <Button
+            onClick={() => navigateTo('/links/reorder')}
+            icon={<RiDragMoveLine size={16} />}
+            size="small"
+          >
             Reorder links
           </Button>
         )}
-        <Button onClick={() => navigateTo('/link-groups/add')} size="mini">
-          Add tag
-        </Button>
-        {linkGroups.length > 1 && (
-          <Button onClick={() => navigateTo('/link-groups/reorder')} size="mini">
-            Update tags
+
+        {linkGroups.length > 2 && (
+          <Button
+            onClick={() => navigateTo('/link-groups/reorder')}
+            icon={<RiDragMoveLine size={16} />}
+            size="small"
+          >
+            Reorder tags
           </Button>
         )}
+
+        <Button
+          onClick={() => navigateTo('/link-groups/add')}
+          icon={<RiBookmarkLine size={16} />}
+          size="small"
+        >
+          Add tag
+        </Button>
       </Flex>
 
       <Top10Links />
 
       {linkGroups.map(group => (
         <div key={group.sortKey} style={{ marginBottom: '2rem' }}>
-          <Flex direction="row" gap="1rem" align="center">
-            <Text bold m="0 0 0.25rem">
-              {group.title}
-            </Text>
+          <Flex direction="row" justify="between" align="center">
+            <Typography.Title heading={5}>{group.title}</Typography.Title>
 
-            <Button
-              fill="none"
-              icon={<RiAddLine />}
-              onClick={() =>
-                navigateTo(
-                  group.sortKey === noGroupSortKey
-                    ? '/links/add'
-                    : `/links/add?groupId=${group.sortKey}`
-                )
-              }
-            />
+            <Flex direction="row" gap="1rem" align="center">
+              <Button
+                theme="borderless"
+                icon={<RiAddLine />}
+                onClick={() =>
+                  navigateTo(
+                    group.sortKey === noGroupSortKey
+                      ? '/links/add'
+                      : `/links/add?groupId=${group.sortKey}`
+                  )
+                }
+              />
+              <Dropdown
+                trigger="click"
+                position={'bottomLeft'}
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => {
+                        navigateTo(`/link-groups/details?groupId=${group.sortKey}`);
+                      }}
+                    >
+                      Edit tag
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      type="danger"
+                      onClick={() => {
+                        setActiveGroup(group);
+                        setShowDeleteGroupConfirm(true);
+                      }}
+                    >
+                      Delete tag
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button
+                  theme="borderless"
+                  icon={<RiMore2Line />}
+                  style={{
+                    marginRight: 2,
+                  }}
+                />
+              </Dropdown>
+            </Flex>
           </Flex>
+
           {group.items?.length ? (
-            <Grid columns={isMobileBrowser() ? 2 : 3}>
-              {group.items.map(link => (
-                <Grid.Item key={link.sortKey} style={{ overflow: 'hidden', position: 'relative' }}>
-                  <Link
-                    href={link.link}
-                    target="_blank"
+            <>
+              <Row type="flex">
+                {group.items.map(link => (
+                  <Col
+                    key={link.sortKey}
+                    span={12}
+                    md={8}
                     style={{
-                      display: 'inline-flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                    onClick={() => {
-                      updateLinkEffect(link.sortKey, {
-                        count: (link.count || 0) + 1,
-                      });
+                      overflow: 'hidden',
+                      position: 'relative',
+                      padding: '0.5rem 1.5rem 0.5rem 0',
                     }}
                   >
-                    <Favicon url={link.link} />
-                    <Ellipsis
-                      content={link.title}
-                      direction="end"
-                      rows="2"
-                      style={{ textAlign: 'center' }}
-                    />
-                  </Link>
+                    <Link
+                      href={link.link}
+                      target="_blank"
+                      onClick={() => {
+                        updateLinkEffect(link.sortKey, {
+                          count: (link.count || 0) + 1,
+                        });
+                      }}
+                    >
+                      <Favicon url={link.link} />
+                      {link.title}
+                    </Link>
 
-                  <Button
-                    fill="none"
-                    icon={<RiMore2Line width="20" height="20" />}
-                    onClick={() => {
-                      activeLinkCat.set(link);
-                      showActionSheetCat.set(true);
-                    }}
-                    size="mini"
-                    style={{
-                      position: 'absolute',
-                      top: '0.5rem',
-                      right: 0,
-                    }}
-                  />
-                </Grid.Item>
-              ))}
-            </Grid>
+                    <Dropdown
+                      trigger="click"
+                      position={'bottomLeft'}
+                      clickToHide
+                      render={
+                        <Dropdown.Menu>
+                          <Dropdown.Item
+                            onClick={() => {
+                              navigateTo(`/links/details?linkId=${link.sortKey}`);
+                            }}
+                          >
+                            Edit link
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            type="danger"
+                            onClick={() => {
+                              setActiveLink(link);
+                              setShowDeleteLinkConfirm(true);
+                            }}
+                          >
+                            Delete link
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      }
+                    >
+                      <Button
+                        theme="borderless"
+                        icon={<RiMore2Line width="20" height="20" />}
+                        size="small"
+                        style={{
+                          position: 'absolute',
+                          top: '0.5rem',
+                          right: '0.5rem',
+                        }}
+                      />
+                    </Dropdown>
+                  </Col>
+                ))}
+              </Row>
+            </>
           ) : (
-            <Text>No links here.</Text>
+            <Typography.Text type="secondary">No links here.</Typography.Text>
           )}
         </div>
       ))}
 
-      <LinkActions />
-    </>
-  );
-});
+      <Confirm
+        message="Are you sure to delete this link?"
+        open={showDeleteLinkConfirm}
+        onOpenChange={setShowDeleteLinkConfirm}
+        onConfirm={async () => {
+          if (!activeLink) return;
 
-const LinkActions = fastMemo(() => {
-  const showActionSheet = useCat(showActionSheetCat);
-  const activeLink = useCat(activeLinkCat);
-  const isDeleting = useCat(isDeletingLinkCat);
-
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const options = [
-    {
-      name: 'Edit',
-      onClick: () => {
-        navigateTo(`/links/details?linkId=${activeLink?.sortKey}`);
-      },
-    },
-    {
-      name: 'Delete',
-      danger: true,
-      onClick: () => {
-        setShowConfirm(true);
-      },
-    },
-  ];
-
-  const handleSelectAction = option => {
-    option.onClick();
-    showActionSheetCat.set(false);
-  };
-
-  return (
-    <>
-      <ActionSheet
-        visible={showActionSheet}
-        options={options}
-        onSelect={handleSelectAction}
-        onCancel={() => showActionSheetCat.set(false)}
+          await deleteLinkEffect(activeLink?.sortKey);
+          setShowDeleteLinkConfirm(false);
+          setActiveLink(null);
+        }}
+        isSaving={isDeletingLink}
       />
 
       <Confirm
-        message="Are you sure to delete this link?"
-        open={showConfirm}
-        onOpenChange={setShowConfirm}
+        message={`Only this tag will be deleted, your links with this tag will be moved to "Links without tag". Go ahead?`}
+        open={showDeleteGroupConfirm}
+        onOpenChange={setShowDeleteGroupConfirm}
         onConfirm={async () => {
-          await deleteLinkEffect(activeLink?.sortKey);
-          setShowConfirm(false);
-          activeLinkCat.set(null);
+          if (!activeGroup) return;
+
+          await deleteLinkGroupEffect(activeGroup.sortKey);
+          setShowDeleteGroupConfirm(false);
+          setActiveGroup(null);
         }}
-        isSaving={isDeleting}
+        isSaving={isDeletingGroup}
       />
     </>
   );

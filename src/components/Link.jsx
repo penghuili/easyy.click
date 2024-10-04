@@ -1,23 +1,23 @@
+import { Typography } from '@douyinfe/semi-ui';
 import React from 'react';
 
-import styles from './Link.module.css';
-import { fontSizes } from './Text.jsx';
-
-export function Link({ href, onClick, target, children, style, size = '4', m }) {
+export function Link({ href, onClick, target, children, style, small, m }) {
   return (
-    <a
-      className={styles.link}
+    <Typography.Text
+      link={{
+        href,
+        target,
+        rel: 'noreferrer noopener',
+      }}
+      onClick={onClick}
+      size={small ? 'small' : undefined}
+      underline
       style={{
-        fontSize: fontSizes[size] || 'var(--nutui-font-size-4)',
         margin: m || '0',
         ...(style || {}),
       }}
-      href={href}
-      target={target}
-      rel="noreferrer noopener"
-      onClick={onClick}
     >
       {children}
-    </a>
+    </Typography.Text>
   );
 }

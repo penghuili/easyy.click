@@ -1,6 +1,6 @@
-import { Button, Cell } from '@nutui/nutui-react';
+import { Button, Descriptions, Typography } from '@douyinfe/semi-ui';
 import { RiMoneyDollarCircleLine, RiSettings3Line, RiShieldCheckLine } from '@remixicon/react';
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { BabyLink } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -10,7 +10,6 @@ import { LogoutLink } from '../components/LogoutLink.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PublicLinks } from '../components/PublicLinks.jsx';
-import { copyToClipboard } from '../shared/browser/copyToClipboard';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import {
   isLoadingAccountCat,
@@ -18,7 +17,6 @@ import {
   useFreeTrialsUntil,
   userCat,
 } from '../shared/browser/store/sharedCats.js';
-import { setToastEffect } from '../shared/browser/store/sharedEffects';
 import { formatDate, formatDateTime } from '../shared/js/date';
 
 export const Account = fastMemo(() => {
@@ -33,19 +31,19 @@ export const Account = fastMemo(() => {
           <UpgradeLink />
 
           <BabyLink to="/security">
-            <Button fill="none" icon={<RiShieldCheckLine />}>
+            <Button theme="borderless" icon={<RiShieldCheckLine />}>
               Security
             </Button>
           </BabyLink>
 
           <BabyLink to="/settings">
-            <Button fill="none" icon={<RiSettings3Line />}>
+            <Button theme="borderless" icon={<RiSettings3Line />}>
               Settings
             </Button>
           </BabyLink>
 
           {/* <BabyLink to="/changelog">
-            <Button fill="none" icon={<RiFunctionAddLine />}>
+            <Button theme="borderless" icon={<RiFunctionAddLine />}>
               Changelog
             </Button>
           </BabyLink> */}
@@ -72,35 +70,23 @@ const AccountInfo = fastMemo(() => {
   const freeTrialUntil = useFreeTrialsUntil();
   const expiresAt = useExpiresAt();
 
-  const handleCopyUserId = useCallback(async () => {
-    await copyToClipboard(account.id);
-    setToastEffect('Copied!');
-  }, [account.id]);
-
-  const paymentStatus = useMemo(() => {
-    if (expiresAt) {
-      return <Cell title="Payment" extra="Lifetime access" />;
-    }
-
-    if (freeTrialUntil) {
-      return <Cell title="Payment" extra={`Free trial until ${formatDate(freeTrialUntil)}`} />;
-    }
-
-    return null;
-  }, [expiresAt, freeTrialUntil]);
+  const data = useMemo(() => {
+    return [
+      { key: 'Email', value: account.email },
+      { key: 'User Id', value: <Typography.Text copyable>{account.id}</Typography.Text> },
+      { key: 'Created at', value: formatDateTime(account.createdAt) },
+      {
+        key: 'Payment',
+        value: expiresAt ? 'Lifetime access' : `Free trial until ${formatDate(freeTrialUntil)}`,
+      },
+    ];
+  }, [account.createdAt, account.email, account.id, expiresAt, freeTrialUntil]);
 
   if (!account?.id) {
     return null;
   }
 
-  return (
-    <Cell.Group style={{ marginBottom: '2rem' }}>
-      <Cell title="Email" extra={account.email} />
-      <Cell title="User Id" extra={account.id} clickable onClick={handleCopyUserId} />
-      <Cell title="Created at" extra={formatDateTime(account.createdAt)} />
-      {paymentStatus}
-    </Cell.Group>
-  );
+  return <Descriptions data={data} style={{ marginBottom: '1rem' }} />;
 });
 
 const UpgradeLink = fastMemo(() => {
@@ -112,7 +98,7 @@ const UpgradeLink = fastMemo(() => {
 
   return (
     <BabyLink to="/upgrade">
-      <Button fill="none" icon={<RiMoneyDollarCircleLine />}>
+      <Button theme="borderless" icon={<RiMoneyDollarCircleLine />}>
         Upgrade
       </Button>
     </BabyLink>

@@ -1,5 +1,8 @@
-import { Button, NoticeBar } from '@nutui/nutui-react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Banner } from '@douyinfe/semi-ui';
+import { RiRefreshLine } from '@remixicon/react';
+import React, { useEffect, useState } from 'react';
+
+import { themeCssColor } from './AppWrapper';
 
 export function NewVersionAvailable() {
   const [newVersion, setNewVersion] = useState('');
@@ -25,31 +28,19 @@ export function NewVersionAvailable() {
     return () => window.removeEventListener('focus', fetchNewVersion);
   }, []);
 
-  const rightElement = useMemo(
-    () => (
-      <Button
-        fill="outline"
-        size="small"
-        onClick={() => {
-          location.reload();
-        }}
-      >
-        Update
-      </Button>
-    ),
-    []
-  );
-
   if (!newVersion) {
     return null;
   }
 
   return (
-    <NoticeBar
-      content={`New version: ${changes || 'Small changes.'}`}
-      scrollable
-      closeable={false}
-      right={rightElement}
+    <Banner
+      type="success"
+      description={`New version: ${changes || 'Small changes.'}`}
+      fullMode={false}
+      closeIcon={<RiRefreshLine color={themeCssColor} />}
+      onClose={() => {
+        location.reload();
+      }}
       style={{ marginBottom: '1rem' }}
     />
   );

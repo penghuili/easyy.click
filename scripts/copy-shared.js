@@ -7,8 +7,8 @@ execSync(`cp -a ../private-sharedjs/lib/js src/shared/js`);
 execSync(`cp -a ../private-sharedjs/lib/browser src/shared/browser`);
 if (lib === 'radix') {
   execSync(`cp -a ../private-sharedjs/lib/radix src/shared/radix`);
-} else if (lib === 'nutui') {
-  execSync(`cp -a ../private-sharedjs/lib/nutui src/shared/nutui`);
+} else if (lib === 'semi') {
+  execSync(`cp -a ../private-sharedjs/lib/semi src/shared/semi`);
 }
 execSync(
   `rm -f scripts/upload.js && cp -a ../private-sharedjs/scripts/upload.js scripts/upload.js`

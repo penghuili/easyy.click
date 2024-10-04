@@ -1,7 +1,10 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
+import { workerActionTypes } from '../worker/workerHelpers';
+import { myWorker } from '../worker/workerListeners';
 import {
   isCreatingNoteCat,
   isDeletingNoteCat,
@@ -33,10 +36,14 @@ async function forceFetchNotesEffect() {
 
   const { data } = await fetchNotes();
   if (data) {
-    updateNotesState(data, 'fetch');
+    myWorker.postMessage({
+      type: workerActionTypes.DECRYPT_NOTES,
+      notes: data,
+      privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
+    });
+  } else {
+    isLoadingNotesCat.set(false);
   }
-
-  isLoadingNotesCat.set(false);
 }
 
 export async function fetchNoteEffect(noteId) {
@@ -56,7 +63,7 @@ export async function createNoteEffect(title, text, groupId) {
   const { data } = await createNote({ title, text, groupId });
   if (data) {
     updateNotesState(data, 'create');
-    setToastEffect('Encrypted and saved safely in Franfurt!');
+    setToastEffect('Encrypted and saved safely in Frankfurt!');
   }
 
   isCreatingNoteCat.set(false);

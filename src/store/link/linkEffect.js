@@ -1,7 +1,10 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
+import { workerActionTypes } from '../worker/workerHelpers';
+import { myWorker } from '../worker/workerListeners';
 import {
   isCreatingLinkCat,
   isDeletingLinkCat,
@@ -33,10 +36,14 @@ async function forceFetchLinksEffect() {
 
   const { data } = await fetchLinks();
   if (data) {
-    updateLinksState(data, 'fetch');
+    myWorker.postMessage({
+      type: workerActionTypes.DECRYPT_LINKS,
+      links: data,
+      privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
+    });
+  } else {
+    isLoadingLinksCat.set(false);
   }
-
-  isLoadingLinksCat.set(false);
 }
 
 export async function fetchLinkEffect(linkId) {
@@ -56,7 +63,7 @@ export async function createLinkEffect(title, link, groupId) {
   const { data } = await createLink({ title, link, groupId });
   if (data) {
     updateLinksState(data, 'create');
-    setToastEffect('Encrypted and saved safely in Franfurt!');
+    setToastEffect('Encrypted and saved safely in Frankfurt!');
   }
 
   isCreatingLinkCat.set(false);
