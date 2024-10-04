@@ -29,12 +29,7 @@ export async function fetchNotes() {
 export async function fetchNote(noteId) {
   try {
     const note = await HTTP.get(appName, `/v1/notes/${noteId}`);
-    const decrypted = await decryptNote(note, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return {
-      data: decrypted,
-      error: null,
-    };
+    return await decryptNote(note, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -61,9 +56,7 @@ export async function createNote({ title, text, groupId }) {
       groupId,
     });
 
-    const decrypted = await decryptNote(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptNote(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -81,9 +74,7 @@ export async function updateNote(noteId, { encryptedPassword, title, text, group
       groupId,
     });
 
-    const decrypted = await decryptNote(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptNote(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }

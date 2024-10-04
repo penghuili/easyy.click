@@ -26,12 +26,7 @@ export async function fetchLinks() {
 export async function fetchLink(linkId) {
   try {
     const link = await HTTP.get(appName, `/v1/links/${linkId}`);
-    const decrypted = await decryptLink(link, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return {
-      data: decrypted,
-      error: null,
-    };
+    return await decryptLink(link, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -58,9 +53,7 @@ export async function createLink({ title, link, groupId }) {
       groupId,
     });
 
-    const decrypted = await decryptLink(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptLink(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -82,9 +75,7 @@ export async function updateLink(
       count,
     });
 
-    const decrypted = await decryptLink(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptLink(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }

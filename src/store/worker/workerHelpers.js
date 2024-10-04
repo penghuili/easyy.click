@@ -1,4 +1,5 @@
 import { decryptMessageAsymmetric, decryptMessageSymmetric } from '../../shared/js/encryption';
+import { sendError } from '../error/errorNetwork';
 
 export const workerActionTypes = {
   DECRYPT_LINKS: 'DECRYPT_LINKS',
@@ -8,37 +9,55 @@ export const workerActionTypes = {
 };
 
 export async function decryptLink(link, privateKey) {
-  const decryptedPassword = await decryptMessageAsymmetric(privateKey, link.encryptedPassword);
+  try {
+    const decryptedPassword = await decryptMessageAsymmetric(privateKey, link.encryptedPassword);
 
-  const decryptedTitle = link.title
-    ? await decryptMessageSymmetric(decryptedPassword, link.title)
-    : link.title;
-  const decryptedLink = link.link
-    ? await decryptMessageSymmetric(decryptedPassword, link.link)
-    : link.link;
+    const decryptedTitle = link.title
+      ? await decryptMessageSymmetric(decryptedPassword, link.title)
+      : link.title;
+    const decryptedLink = link.link
+      ? await decryptMessageSymmetric(decryptedPassword, link.link)
+      : link.link;
 
-  return { ...link, title: decryptedTitle, link: decryptedLink };
-}
+    return { data: { ...link, title: decryptedTitle, link: decryptedLink }, error: null };
+  } catch (error) {
+    sendError({ userId: link?.id, linkId: link?.sortKey, error });
 
-export async function decryptGroup(group, privateKey) {
-  const decryptedPassword = await decryptMessageAsymmetric(privateKey, group.encryptedPassword);
-
-  const decryptedTitle = group.title
-    ? await decryptMessageSymmetric(decryptedPassword, group.title)
-    : group.title;
-
-  return { ...group, title: decryptedTitle };
+    return { data: null, error };
+  }
 }
 
 export async function decryptNote(note, privateKey) {
-  const decryptedPassword = await decryptMessageAsymmetric(privateKey, note.encryptedPassword);
+  try {
+    const decryptedPassword = await decryptMessageAsymmetric(privateKey, note.encryptedPassword);
 
-  const decryptedTitle = note.title
-    ? await decryptMessageSymmetric(decryptedPassword, note.title)
-    : note.title;
-  const decryptedText = note.text
-    ? await decryptMessageSymmetric(decryptedPassword, note.text)
-    : note.text;
+    const decryptedTitle = note.title
+      ? await decryptMessageSymmetric(decryptedPassword, note.title)
+      : note.title;
+    const decryptedText = note.text
+      ? await decryptMessageSymmetric(decryptedPassword, note.text)
+      : note.text;
 
-  return { ...note, title: decryptedTitle, text: decryptedText };
+    return { data: { ...note, title: decryptedTitle, text: decryptedText }, error: null };
+  } catch (error) {
+    sendError({ userId: note?.id, noteId: note?.sortKey, error });
+
+    return { data: null, error };
+  }
+}
+
+export async function decryptGroup(group, privateKey) {
+  try {
+    const decryptedPassword = await decryptMessageAsymmetric(privateKey, group.encryptedPassword);
+
+    const decryptedTitle = group.title
+      ? await decryptMessageSymmetric(decryptedPassword, group.title)
+      : group.title;
+
+    return { data: { ...group, title: decryptedTitle }, error: null };
+  } catch (error) {
+    sendError({ userId: group?.id, groupId: group?.sortKey, error });
+
+    return { data: null, error };
+  }
 }

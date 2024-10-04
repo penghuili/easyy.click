@@ -26,13 +26,16 @@ self.onmessage = async function (event) {
 };
 
 async function decryptLinks(links, privateKey) {
-  return await Promise.all(links.map(link => decryptLink(link, privateKey)));
+  const results = await Promise.all(links.map(link => decryptLink(link, privateKey)));
+  return results.map(r => r.data).filter(Boolean);
 }
 
 async function decryptNotes(notes, privateKey) {
-  return await Promise.all(notes.map(note => decryptNote(note, privateKey)));
+  const results = await Promise.all(notes.map(note => decryptNote(note, privateKey)));
+  return results.map(r => r.data).filter(Boolean);
 }
 
 async function decryptGroups(groups, privateKey) {
-  return await Promise.all(groups.map(group => decryptGroup(group, privateKey)));
+  const results = await Promise.all(groups.map(group => decryptGroup(group, privateKey)));
+  return results.map(r => r.data).filter(Boolean);
 }

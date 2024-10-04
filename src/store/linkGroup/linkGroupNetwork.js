@@ -26,15 +26,7 @@ export async function fetchLinkGroups() {
 export async function fetchLinkGroup(linkGroupId) {
   try {
     const group = await HTTP.get(appName, `/v1/link-groups/${linkGroupId}`);
-    const decrypted = await decryptGroup(
-      group,
-      LocalStorage.get(sharedLocalStorageKeys.privateKey)
-    );
-
-    return {
-      data: decrypted,
-      error: null,
-    };
+    return await decryptGroup(group, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -58,9 +50,7 @@ export async function createLinkGroup({ title }) {
       title: encryptedTitle,
     });
 
-    const decrypted = await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -75,9 +65,7 @@ export async function updateLinkGroup(linkGroupId, { encryptedPassword, title, p
       position,
     });
 
-    const decrypted = await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }

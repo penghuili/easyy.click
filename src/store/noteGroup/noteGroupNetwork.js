@@ -26,15 +26,7 @@ export async function fetchNoteGroups() {
 export async function fetchNoteGroup(noteGroupId) {
   try {
     const group = await HTTP.get(appName, `/v1/note-groups/${noteGroupId}`);
-    const decrypted = await decryptGroup(
-      group,
-      LocalStorage.get(sharedLocalStorageKeys.privateKey)
-    );
-
-    return {
-      data: decrypted,
-      error: null,
-    };
+    return await decryptGroup(group, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -58,9 +50,7 @@ export async function createNoteGroup({ title }) {
       title: encryptedTitle,
     });
 
-    const decrypted = await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
@@ -75,9 +65,7 @@ export async function updateNoteGroup(noteGroupId, { encryptedPassword, title, p
       position,
     });
 
-    const decrypted = await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
-
-    return { data: decrypted, error: null };
+    return await decryptGroup(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
     return { data: null, error };
   }
