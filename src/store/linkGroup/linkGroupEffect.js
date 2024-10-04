@@ -22,7 +22,7 @@ import {
   updateLinkGroup,
 } from './linkGroupNetwork';
 
-export async function fetchLinkGroupsEffect(force) {
+export async function fetchLinkGroupsEffect(force, alwaysFetchRemote = true) {
   if (!linkGroupsCat.get()?.length) {
     const cachedGroups = LocalStorage.get(localStorageKeys.linkGroups);
     if (cachedGroups?.length) {
@@ -33,7 +33,9 @@ export async function fetchLinkGroupsEffect(force) {
   if (force || !linkGroupsCat.get()?.length) {
     await forceFetchLinkGroupsEffect();
   } else {
-    forceFetchLinkGroupsEffect();
+    if (alwaysFetchRemote || !linkGroupsCat.get()?.length) {
+      forceFetchLinkGroupsEffect();
+    }
   }
 }
 

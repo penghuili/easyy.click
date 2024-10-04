@@ -36,7 +36,7 @@ export const NoteGroupsReorder = fastMemo(() => {
   }, []);
 
   useEffect(() => {
-    fetchNoteGroupsEffect();
+    fetchNoteGroupsEffect(false, false);
   }, []);
 
   return (

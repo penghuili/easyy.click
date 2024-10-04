@@ -16,7 +16,7 @@ import {
 } from './linkCats';
 import { createLink, deleteLink, fetchLink, fetchLinks, updateLink } from './linkNetwork';
 
-export async function fetchLinksEffect(force) {
+export async function fetchLinksEffect(force, alwaysFetchRemote = true) {
   if (!linksCat.get()?.length) {
     const cachedLinks = LocalStorage.get(localStorageKeys.links);
     if (cachedLinks?.length) {
@@ -27,7 +27,9 @@ export async function fetchLinksEffect(force) {
   if (force || !linksCat.get()?.length) {
     await forceFetchLinksEffect();
   } else {
-    forceFetchLinksEffect();
+    if (alwaysFetchRemote || !linksCat.get()?.length) {
+      forceFetchLinksEffect();
+    }
   }
 }
 

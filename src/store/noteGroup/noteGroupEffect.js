@@ -22,7 +22,7 @@ import {
   updateNoteGroup,
 } from './noteGroupNetwork';
 
-export async function fetchNoteGroupsEffect(force) {
+export async function fetchNoteGroupsEffect(force, alwaysFetchRemote = true) {
   if (!noteGroupsCat.get()?.length) {
     const cachedGroups = LocalStorage.get(localStorageKeys.noteGroups);
     if (cachedGroups?.length) {
@@ -33,7 +33,9 @@ export async function fetchNoteGroupsEffect(force) {
   if (force || !noteGroupsCat.get()?.length) {
     await forceFetchNoteGroupsEffect();
   } else {
-    forceFetchNoteGroupsEffect();
+    if (alwaysFetchRemote || !noteGroupsCat.get()?.length) {
+      forceFetchNoteGroupsEffect();
+    }
   }
 }
 

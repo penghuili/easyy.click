@@ -24,10 +24,10 @@ import { fetchNotesEffect } from '../store/note/noteEffect.js';
 import { fetchNoteGroupsEffect } from '../store/noteGroup/noteGroupEffect.js';
 
 async function load(force) {
+  fetchLinksEffect(force);
+  fetchNotesEffect(force);
   fetchLinkGroupsEffect(force);
   fetchNoteGroupsEffect(force);
-  fetchNotesEffect(force);
-  fetchLinksEffect(force);
 }
 
 const savedTab = LocalStorage.get(localStorageKeys.activeTab);

@@ -29,8 +29,8 @@ export const LinksReorder = fastMemo(() => {
   }, []);
 
   useEffect(() => {
-    fetchLinksEffect();
-    fetchLinkGroupsEffect();
+    fetchLinksEffect(false, false);
+    fetchLinkGroupsEffect(false, false);
   }, []);
 
   return (

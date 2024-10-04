@@ -16,7 +16,7 @@ import {
 } from './noteCats';
 import { createNote, deleteNote, fetchNote, fetchNotes, updateNote } from './noteNetwork';
 
-export async function fetchNotesEffect(force) {
+export async function fetchNotesEffect(force, alwaysFetchRemote = true) {
   if (!notesCat.get()?.length) {
     const cachedNotes = LocalStorage.get(localStorageKeys.notes);
     if (cachedNotes?.length) {
@@ -27,7 +27,9 @@ export async function fetchNotesEffect(force) {
   if (force || !notesCat.get()?.length) {
     await forceFetchNotesEffect();
   } else {
-    forceFetchNotesEffect();
+    if (alwaysFetchRemote || !notesCat.get()?.length) {
+      forceFetchNotesEffect();
+    }
   }
 }
 
