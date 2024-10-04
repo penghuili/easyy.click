@@ -6,7 +6,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { noGroupSortKey } from '../lib/constants.js';
-import { isDeletingLinkCat, useLinkGroups } from '../store/link/linkCats.js';
+import { isDeletingLinkCat, isLoadingLinksCat, useLinkGroups } from '../store/link/linkCats.js';
 import { deleteLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
 import { isDeletingLinkGroupCat } from '../store/linkGroup/linkGroupCats.js';
 import { deleteLinkGroupEffect } from '../store/linkGroup/linkGroupEffect.js';
@@ -15,12 +15,14 @@ import { Favicon } from './Favicon.jsx';
 import { Flex } from './Flex.jsx';
 import { Link } from './Link.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
+import { PageLoading } from './PageLoading.jsx';
 import { Top10Links } from './Top10Links.jsx';
 
 export const LinkItems = fastMemo(() => {
   const { groups: linkGroups, links } = useLinkGroups();
   const isDeletingLink = useCat(isDeletingLinkCat);
   const isDeletingGroup = useCat(isDeletingLinkGroupCat);
+  const isLoading = useCat(isLoadingLinksCat);
 
   const [activeLink, setActiveLink] = useState(null);
   const [showDeleteLinkConfirm, setShowDeleteLinkConfirm] = useState(false);
@@ -28,7 +30,11 @@ export const LinkItems = fastMemo(() => {
   const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
 
   if (!links.length) {
-    return <PageEmpty>Which webites do you visit regularly?</PageEmpty>;
+    return isLoading ? (
+      <PageLoading />
+    ) : (
+      <PageEmpty>Which webites do you visit regularly?</PageEmpty>
+    );
   }
 
   return (

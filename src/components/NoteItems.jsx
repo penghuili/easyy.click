@@ -8,18 +8,20 @@ import { useCat } from 'usecat';
 import { noGroupSortKey } from '../lib/constants.js';
 import { copyToClipboard } from '../lib/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
-import { isDeletingNoteCat, useNoteGroups } from '../store/note/noteCats.js';
+import { isDeletingNoteCat, isLoadingNotesCat, useNoteGroups } from '../store/note/noteCats.js';
 import { deleteNoteEffect } from '../store/note/noteEffect.js';
 import { isDeletingNoteGroupCat } from '../store/noteGroup/noteGroupCats.js';
 import { deleteNoteGroupEffect } from '../store/noteGroup/noteGroupEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Flex } from './Flex.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
+import { PageLoading } from './PageLoading.jsx';
 
 export const NoteItems = fastMemo(() => {
   const { groups: noteGroups, notes } = useNoteGroups();
   const isDeletingNote = useCat(isDeletingNoteCat);
   const isDeletingGroup = useCat(isDeletingNoteGroupCat);
+  const isLoading = useCat(isLoadingNotesCat);
 
   const [activeNote, setActiveNote] = useState(null);
   const [showDeleteNoteConfirm, setShowDeleteNoteConfirm] = useState(false);
@@ -32,7 +34,11 @@ export const NoteItems = fastMemo(() => {
   }, []);
 
   if (!notes.length) {
-    return <PageEmpty>Which notes do you copy paste regularly?</PageEmpty>;
+    return isLoading ? (
+      <PageLoading />
+    ) : (
+      <PageEmpty>Which notes do you copy paste regularly?</PageEmpty>
+    );
   }
 
   return (
