@@ -12,7 +12,7 @@ import { Prices } from '../components/Prices.jsx';
 import { hasValidFreeTrial } from '../lib/hasValidFreeTrial.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
-import { useExpiresAt, useFreeTrialsUntil } from '../shared/browser/store/sharedCats.js';
+import { useExpiresAt, useFreeTrialsUntil, userCat } from '../shared/browser/store/sharedCats.js';
 import { formatDate } from '../shared/js/date.js';
 import { isFreeTryingCat } from '../store/pay/payCats.js';
 import { freeTrialEffect } from '../store/pay/payEffects.js';
@@ -95,6 +95,7 @@ const FreeTrialStatus = fastMemo(() => {
 const UpgradeAction = fastMemo(() => {
   const isTrying = useCat(isFreeTryingCat);
   const freeTrialUntil = useFreeTrialsUntil();
+  const user = useCat(userCat);
 
   return (
     <>
@@ -117,6 +118,10 @@ const UpgradeAction = fastMemo(() => {
           Pay now
           <Shine />
         </a>
+        <Typography.Paragraph style={{ marginTop: '1rem', textAlign: 'center' }}>
+          Remember to use the same email (<Typography.Text copyable>{user?.email}</Typography.Text>)
+          on the payment page.
+        </Typography.Paragraph>
       </Flex>
 
       {!freeTrialUntil && (
