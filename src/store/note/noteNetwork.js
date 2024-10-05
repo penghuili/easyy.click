@@ -37,7 +37,7 @@ export async function fetchNote(noteId) {
 
 export async function createNote({ title, text, groupId }) {
   try {
-    const password = generatePassword(20, true);
+    const password = generatePassword(20);
     const encryptedPassword = await encryptMessageAsymmetric(
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password

@@ -34,7 +34,7 @@ export async function fetchLink(linkId) {
 
 export async function createLink({ title, link, groupId }) {
   try {
-    const password = generatePassword(20, true);
+    const password = generatePassword(20);
     const encryptedPassword = await encryptMessageAsymmetric(
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password
