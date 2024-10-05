@@ -1,8 +1,10 @@
 import { Avatar, Button, PinCode, Typography } from '@douyinfe/semi-ui';
+import { RiRestartLine } from '@remixicon/react';
 import React from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { DeleteAccountLink } from '../components/DeleteAccountLink.jsx';
 import { Flex } from '../components/Flex.jsx';
 import { LogoutLink } from '../components/LogoutLink.jsx';
 import { RouteLink } from '../components/RouteLink.jsx';
@@ -52,6 +54,7 @@ export const VerifyEmail = fastMemo(() => {
       <Flex gap="1rem" align="start" m="2rem 0 0">
         <Button
           theme="borderless"
+          icon={<RiRestartLine />}
           onClick={resendVerificationCodeEffect}
           disabled={isResending || isVerifying}
         >
@@ -59,6 +62,8 @@ export const VerifyEmail = fastMemo(() => {
         </Button>
 
         <LogoutLink />
+
+        <DeleteAccountLink />
 
         <Typography.Paragraph>
           Used the wrong email? <RouteLink to="/security/email">Change email</RouteLink>
