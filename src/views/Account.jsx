@@ -10,6 +10,7 @@ import { LogoutLink } from '../components/LogoutLink.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PublicLinks } from '../components/PublicLinks.jsx';
+import { UsedPasswordManager } from '../components/UsedPasswordManager.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import {
   isLoadingAccountCat,
@@ -24,6 +25,8 @@ export const Account = fastMemo(() => {
     <PrepareData>
       <PageContent>
         <Header />
+
+        <UsedPasswordManager />
 
         <AccountInfo />
 

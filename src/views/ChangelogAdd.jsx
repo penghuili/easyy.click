@@ -7,8 +7,8 @@ import { useCat } from 'usecat';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { useAdmin } from '../lib/useAdmin.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { isCreatingChangelogCat } from '../store/changelog/changelogCats.js';
-import { createChangelogEffect } from '../store/changelog/changelogEffect.js';
+import { isCreatingChangelogCat } from '../store/settings/settingsCats.js';
+import { createChangelogEffect } from '../store/settings/settingsEffect.js';
 
 export const ChangelogAdd = fastMemo(() => {
   const isCreating = useCat(isCreatingChangelogCat);

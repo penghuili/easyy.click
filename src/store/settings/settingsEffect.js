@@ -1,8 +1,13 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
-import { setToastEffect } from '../../shared/browser/store/sharedEffects';
-import { changelogCat, isCreatingChangelogCat, isLoadingChangelogCat } from './changelogCats';
-import { createChangelog, fetchChangelog } from './changelogNetwork';
+import { setSettingsEffect, setToastEffect } from '../../shared/browser/store/sharedEffects';
+import {
+  changelogCat,
+  isCreatingChangelogCat,
+  isLoadingChangelogCat,
+  isUsingPasswordManagerCat,
+} from './settingsCats';
+import { createChangelog, fetchChangelog, usedPasswordManager } from './settingsNetwork';
 
 export async function fetchChangelogEffect() {
   const cached = LocalStorage.get(localStorageKeys.changelog);
@@ -33,4 +38,15 @@ export async function createChangelogEffect({ timestamp, title, message, imageUr
   isCreatingChangelogCat.set(false);
 
   return data;
+}
+
+export async function usedPasswordManagerEffect() {
+  isUsingPasswordManagerCat.set(true);
+
+  const { data } = await usedPasswordManager();
+  if (data) {
+    setSettingsEffect(data);
+  }
+
+  isUsingPasswordManagerCat.set(false);
 }

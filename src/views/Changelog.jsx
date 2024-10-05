@@ -9,8 +9,8 @@ import { Flex } from '../components/Flex.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { useAdmin } from '../lib/useAdmin.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { changelogCat, isLoadingChangelogCat } from '../store/changelog/changelogCats.js';
-import { fetchChangelogEffect } from '../store/changelog/changelogEffect.js';
+import { changelogCat, isLoadingChangelogCat } from '../store/settings/settingsCats.js';
+import { fetchChangelogEffect } from '../store/settings/settingsEffect.js';
 
 export const Changelog = fastMemo(() => {
   const isLoadingGroups = useCat(isLoadingChangelogCat);

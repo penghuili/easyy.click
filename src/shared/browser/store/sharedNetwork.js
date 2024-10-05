@@ -327,10 +327,6 @@ export async function fetchSettings() {
   try {
     const settings = await HTTP.get(appName, `/v1/settings`);
 
-    if (settings) {
-      LocalStorage.set(`${appName}-settings`, settings);
-    }
-
     return { data: settings, error: null };
   } catch (error) {
     return { data: null, error };

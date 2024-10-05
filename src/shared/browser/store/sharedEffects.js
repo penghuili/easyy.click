@@ -284,6 +284,11 @@ export async function fetchAccountEffect() {
   }
 }
 
+export function setSettingsEffect(settings) {
+  settingsCat.set(settings);
+  LocalStorage.set(`${appName}-settings`, settings);
+}
+
 async function forceFetchSettingsEffect() {
   if (isLoadingSettingsCat.get()) {
     return;
@@ -294,9 +299,7 @@ async function forceFetchSettingsEffect() {
   const { data } = await fetchSettings();
 
   if (data) {
-    if (isNewer(data.updatedAt, settingsCat.get()?.updatedAt)) {
-      settingsCat.set(data);
-    }
+    setSettingsEffect(data);
     eventEmitter.emit(eventEmitterEvents.settingsFetched, data);
   }
 

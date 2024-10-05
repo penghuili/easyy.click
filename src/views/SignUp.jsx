@@ -6,6 +6,7 @@ import { useCat } from 'usecat';
 import { Flex } from '../components/Flex.jsx';
 import { Link } from '../components/Link.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
+import { PasswordManager } from '../components/PasswordManager.jsx';
 import { RouteLink } from '../components/RouteLink.jsx';
 import { privacyUrl, termsUrl } from '../shared/browser/initShared.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -53,6 +54,7 @@ export const SignUp = fastMemo(() => {
           placeholder="Password"
           value={password}
           onChange={setPassword}
+          extraText={<PasswordManager />}
         />
 
         <Flex m="1rem 0 0">
