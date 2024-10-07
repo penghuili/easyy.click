@@ -1,5 +1,5 @@
 import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
-import { RiAddLine, RiBookmarkLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
+import { RiAddLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
 import React, { useCallback, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -8,19 +8,20 @@ import { useCat } from 'usecat';
 import { noGroupSortKey } from '../lib/constants.js';
 import { copyToClipboard } from '../lib/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { isDeletingGroupCat } from '../store/group/groupCats.js';
+import { deleteGroupEffect } from '../store/group/groupEffect.js';
 import { isDeletingNoteCat, isLoadingNotesCat, useNoteGroups } from '../store/note/noteCats.js';
 import { deleteNoteEffect } from '../store/note/noteEffect.js';
-import { isDeletingNoteGroupCat } from '../store/noteGroup/noteGroupCats.js';
-import { deleteNoteGroupEffect } from '../store/noteGroup/noteGroupEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Flex } from './Flex.jsx';
+import { confirmDeleteGroupMessage } from './GroupItems.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
 import { PageLoading } from './PageLoading.jsx';
 
 export const NoteItems = fastMemo(() => {
   const { groups: noteGroups, notes } = useNoteGroups();
   const isDeletingNote = useCat(isDeletingNoteCat);
-  const isDeletingGroup = useCat(isDeletingNoteGroupCat);
+  const isDeletingGroup = useCat(isDeletingGroupCat);
   const isLoading = useCat(isLoadingNotesCat);
 
   const [activeNote, setActiveNote] = useState(null);
@@ -43,34 +44,16 @@ export const NoteItems = fastMemo(() => {
 
   return (
     <>
-      <Flex direction="row" wrap="wrap" gap="1rem" m="0 0 1.5rem">
+      <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
+        <Button theme="solid" onClick={() => navigateTo('/notes/reorder')} icon={<RiAddLine />}>
+          Add note
+        </Button>
+
         {notes.length > 1 && (
-          <Button
-            onClick={() => navigateTo('/notes/reorder')}
-            icon={<RiDragMoveLine size={16} />}
-            size="small"
-          >
+          <Button onClick={() => navigateTo('/notes/reorder')} icon={<RiDragMoveLine />}>
             Reorder notes
           </Button>
         )}
-
-        {noteGroups.length > 2 && (
-          <Button
-            onClick={() => navigateTo('/note-groups/reorder')}
-            icon={<RiDragMoveLine size={16} />}
-            size="small"
-          >
-            Reorder tags
-          </Button>
-        )}
-
-        <Button
-          onClick={() => navigateTo('/note-groups/add')}
-          icon={<RiBookmarkLine size={16} />}
-          size="small"
-        >
-          Add tag
-        </Button>
       </Flex>
 
       {noteGroups.map(group => (
@@ -212,13 +195,13 @@ export const NoteItems = fastMemo(() => {
       />
 
       <Confirm
-        message={`Only this tag will be deleted, your notes with this tag will be moved to "Notes without tag". Go ahead?`}
+        message={confirmDeleteGroupMessage}
         open={showDeleteGroupConfirm}
         onOpenChange={setShowDeleteGroupConfirm}
         onConfirm={async () => {
           if (!activeGroup) return;
 
-          await deleteNoteGroupEffect(activeGroup?.sortKey);
+          await deleteGroupEffect(activeGroup?.sortKey);
           setShowDeleteGroupConfirm(false);
           setActiveGroup(null);
         }}

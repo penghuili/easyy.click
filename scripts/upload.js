@@ -15,13 +15,23 @@ require('dotenv').config();
 
 buildApp();
 
-uploadStatic();
+deployApp(process.env.S3_URL);
 
-uploadIndex();
+deployApp(process.env.NOTENOTE_S3_URL);
 
-uploadVersionJson();
+function deployApp(bucket) {
+  console.log(`Deploying app to ${bucket} ...`);
 
-deleteOldVersion();
+  uploadStatic(bucket);
+
+  uploadIndex(bucket);
+
+  uploadVersionJson(bucket);
+
+  deleteOldVersion(bucket);
+
+  console.log('Deploy app to ${bucket} completed.');
+}
 
 function updateOrAddEnvVariable(key, value) {
   const envPath = path.join(__dirname, '..', '.env.production'); // Adjust the path to your .env file
@@ -54,23 +64,21 @@ function buildApp() {
   console.log('Build app completed.');
 }
 
-function uploadStatic() {
+function uploadStatic(bucket) {
   console.log('Uploading assets to S3...');
   execSync(
-    `aws s3 sync dist/${timestamp} ${process.env.S3_URL}/${timestamp} --cache-control max-age=31536000,public`
+    `aws s3 sync dist/${timestamp} ${bucket}/${timestamp} --cache-control max-age=31536000,public`
   );
   console.log('Upload assets to S3 completed.');
 }
 
-function uploadIndex() {
+function uploadIndex(bucket) {
   console.log('Uploading index.html to S3...');
-  execSync(
-    `aws s3 cp dist/index.html ${process.env.S3_URL}/index.html --cache-control max-age=0,no-store`
-  );
+  execSync(`aws s3 cp dist/index.html ${bucket}/index.html --cache-control max-age=0,no-store`);
   console.log('Upload index.html to S3 completed.');
 }
 
-function uploadVersionJson() {
+function uploadVersionJson(bucket) {
   console.log('Uploading version json to S3...');
   const newVersionMessage = process.argv[2];
   const json = newVersionMessage
@@ -79,17 +87,15 @@ function uploadVersionJson() {
 
   execSync(`echo '${json}' > dist/version.json`);
 
-  execSync(
-    `aws s3 cp dist/version.json ${process.env.S3_URL}/version.json --cache-control max-age=0,no-store`
-  );
+  execSync(`aws s3 cp dist/version.json ${bucket}/version.json --cache-control max-age=0,no-store`);
 
   console.log('Upload version json to S3 completed.');
 }
 
-function deleteOldVersion() {
+function deleteOldVersion(bucket) {
   console.log('Deleting old versions ...');
   // Retrieve the list of folder names (versions) from S3
-  const command = `aws s3 ls ${process.env.S3_URL} --recursive | awk '{print $4}' | grep '/' | cut -d/ -f1 | uniq`;
+  const command = `aws s3 ls ${bucket} --recursive | awk '{print $4}' | grep '/' | cut -d/ -f1 | uniq`;
   const result = execSync(command).toString();
   // Split the result into an array, filter out 'index.html' and other non-versioned entries, and then sort
   const versions = result
@@ -102,7 +108,7 @@ function deleteOldVersion() {
 
     toDelete.forEach(version => {
       console.log(`Deleting version: ${version}`);
-      execSync(`aws s3 rm ${process.env.S3_URL}/${version} --recursive`);
+      execSync(`aws s3 rm ${bucket}/${version} --recursive`);
     });
     console.log('Deleting old versions completed.');
   } else {

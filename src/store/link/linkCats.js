@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { createCat, useCat } from 'usecat';
 
 import { noGroupSortKey } from '../../lib/constants';
-import { linkGroupsCat } from '../linkGroup/linkGroupCats';
+import { groupsCat } from '../group/groupCats';
 
 export const linksCat = createCat([]);
 export const linkCat = createCat(null);
@@ -14,7 +14,7 @@ export const isDeletingLinkCat = createCat(false);
 
 export function useLinkGroups() {
   const links = useCat(linksCat);
-  const groups = useCat(linkGroupsCat);
+  const groups = useCat(groupsCat);
 
   const groupsWithLinks = useMemo(() => {
     const obj = {};
@@ -35,7 +35,7 @@ export function useLinkGroups() {
     return [
       ...groups.map(group => obj[group.sortKey]),
       { sortKey: noGroupSortKey, title: 'Links without tag', items: noGroupLinks },
-    ];
+    ].filter(group => group.sortKey === noGroupSortKey || group.items.length > 0);
   }, [groups, links]);
 
   return {

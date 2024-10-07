@@ -3,26 +3,7 @@ import fastMemo from 'react-fast-memo';
 
 import { randomBetween } from '../shared/js/utils';
 
-const emojis = [
-  '😎',
-  '🤩',
-  '🎉',
-  '🔥',
-  '😸',
-  '💪',
-  '🥳',
-  '🙈',
-  '😏',
-  '😱',
-  '🤪',
-  '💯',
-  '😒',
-  '🌞',
-  '🫣',
-  '🙃',
-  '🤤',
-  '🫶',
-];
+const emojis = ['😎', '🔥', '💯'];
 
 function getEmoji() {
   const index = randomBetween(0, emojis.length - 1);

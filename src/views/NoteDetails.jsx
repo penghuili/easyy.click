@@ -4,7 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
-import { NoteGroupSelector } from '../components/NoteGroupSelector.jsx';
+import { GroupSelector } from '../components/GroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -89,7 +89,7 @@ const NoteForm = fastMemo(({ noteId }) => {
         onChange={textCat.set}
       />
 
-      <NoteGroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
+      <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
 
       <Button htmlType="submit" theme="solid" disabled={!title || !text || isUpdating}>
         Update note

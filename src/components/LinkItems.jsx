@@ -1,18 +1,19 @@
 import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
-import { RiAddLine, RiBookmarkLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
+import { RiAddLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
 import React, { useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { noGroupSortKey } from '../lib/constants.js';
+import { isDeletingGroupCat } from '../store/group/groupCats.js';
+import { deleteGroupEffect } from '../store/group/groupEffect.js';
 import { isDeletingLinkCat, isLoadingLinksCat, useLinkGroups } from '../store/link/linkCats.js';
 import { deleteLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
-import { isDeletingLinkGroupCat } from '../store/linkGroup/linkGroupCats.js';
-import { deleteLinkGroupEffect } from '../store/linkGroup/linkGroupEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
 import { Flex } from './Flex.jsx';
+import { confirmDeleteGroupMessage } from './GroupItems.jsx';
 import { Link } from './Link.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
 import { PageLoading } from './PageLoading.jsx';
@@ -21,7 +22,7 @@ import { Top10Links } from './Top10Links.jsx';
 export const LinkItems = fastMemo(() => {
   const { groups: linkGroups, links } = useLinkGroups();
   const isDeletingLink = useCat(isDeletingLinkCat);
-  const isDeletingGroup = useCat(isDeletingLinkGroupCat);
+  const isDeletingGroup = useCat(isDeletingGroupCat);
   const isLoading = useCat(isLoadingLinksCat);
 
   const [activeLink, setActiveLink] = useState(null);
@@ -39,34 +40,16 @@ export const LinkItems = fastMemo(() => {
 
   return (
     <>
-      <Flex direction="row" wrap="wrap" gap="1rem" m="0 0 1.5rem">
+      <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
+        <Button theme="solid" onClick={() => navigateTo('/links/add')} icon={<RiAddLine />}>
+          Add link
+        </Button>
+
         {links.length > 1 && (
-          <Button
-            onClick={() => navigateTo('/links/reorder')}
-            icon={<RiDragMoveLine size={16} />}
-            size="small"
-          >
+          <Button onClick={() => navigateTo('/links/reorder')} icon={<RiDragMoveLine />}>
             Reorder links
           </Button>
         )}
-
-        {linkGroups.length > 2 && (
-          <Button
-            onClick={() => navigateTo('/link-groups/reorder')}
-            icon={<RiDragMoveLine size={16} />}
-            size="small"
-          >
-            Reorder tags
-          </Button>
-        )}
-
-        <Button
-          onClick={() => navigateTo('/link-groups/add')}
-          icon={<RiBookmarkLine size={16} />}
-          size="small"
-        >
-          Add tag
-        </Button>
       </Flex>
 
       <Top10Links />
@@ -96,7 +79,7 @@ export const LinkItems = fastMemo(() => {
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() => {
-                        navigateTo(`/link-groups/details?groupId=${group.sortKey}`);
+                        navigateTo(`/groups/details?groupId=${group.sortKey}`);
                       }}
                     >
                       Edit tag
@@ -212,13 +195,13 @@ export const LinkItems = fastMemo(() => {
       />
 
       <Confirm
-        message={`Only this tag will be deleted, your links with this tag will be moved to "Links without tag". Go ahead?`}
+        message={confirmDeleteGroupMessage}
         open={showDeleteGroupConfirm}
         onOpenChange={setShowDeleteGroupConfirm}
         onConfirm={async () => {
           if (!activeGroup) return;
 
-          await deleteLinkGroupEffect(activeGroup.sortKey);
+          await deleteGroupEffect(activeGroup.sortKey);
           setShowDeleteGroupConfirm(false);
           setActiveGroup(null);
         }}

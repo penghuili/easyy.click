@@ -8,27 +8,20 @@ import { createCat, useCat } from 'usecat';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderItems } from '../shared/browser/ReorderItems.jsx';
-import {
-  isLoadingNoteGroupsCat,
-  isUpdatingNoteGroupCat,
-  noteGroupsCat,
-} from '../store/noteGroup/noteGroupCats.js';
-import {
-  fetchNoteGroupsEffect,
-  updateNoteGroupEffect,
-} from '../store/noteGroup/noteGroupEffect.js';
+import { groupsCat, isLoadingGroupsCat, isUpdatingGroupCat } from '../store/group/groupCats.js';
+import { fetchGroupsEffect, updateGroupEffect } from '../store/group/groupEffect.js';
 
 const activeGroupCat = createCat(null);
 const showActionSheetCat = createCat(false);
 
-export const NoteGroupsReorder = fastMemo(() => {
-  const isLoadingGroups = useCat(isLoadingNoteGroupsCat);
-  const groups = useCat(noteGroupsCat);
-  const isUpdating = useCat(isUpdatingNoteGroupCat);
+export const GroupsReorder = fastMemo(() => {
+  const isLoadingGroups = useCat(isLoadingGroupsCat);
+  const groups = useCat(groupsCat);
+  const isUpdating = useCat(isUpdatingGroupCat);
 
   const handleReorder = useCallback(({ item }) => {
     if (item) {
-      updateNoteGroupEffect(item.sortKey, {
+      updateGroupEffect(item.sortKey, {
         encryptedPassword: item.encryptedPassword,
         position: item.position,
       });
@@ -36,20 +29,20 @@ export const NoteGroupsReorder = fastMemo(() => {
   }, []);
 
   useEffect(() => {
-    fetchNoteGroupsEffect(false, false);
+    fetchGroupsEffect(false, false);
   }, []);
 
   return (
     <PageContent paddingBottom="0">
       <PageHeader
-        title="Edit note tags"
+        title="Reorder tags"
         isLoading={isLoadingGroups || isUpdating}
         hasBack
         right={
           <Button
             theme="borderless"
             icon={<RiAddLine />}
-            onClick={() => navigateTo('/note-groups/add')}
+            onClick={() => navigateTo('/groups/add')}
           />
         }
       />

@@ -5,7 +5,6 @@ export const workerActionTypes = {
   DECRYPT_LINKS: 'DECRYPT_LINKS',
   DECRYPT_LINK_GROUPS: 'DECRYPT_LINK_GROUPS',
   DECRYPT_NOTES: 'DECRYPT_NOTES',
-  DECRYPT_NOTE_GROUPS: 'DECRYPT_NOTE_GROUPS',
 };
 
 export async function decryptLink(link, privateKey) {

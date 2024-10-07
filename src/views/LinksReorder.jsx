@@ -6,14 +6,14 @@ import { PageHeader } from '../components/PageHeader.jsx';
 import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderGroupItems } from '../shared/browser/ReorderGroupItems.jsx';
+import { isLoadingGroupsCat } from '../store/group/groupCats.js';
+import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat, isUpdatingLinkCat, useLinkGroups } from '../store/link/linkCats.js';
 import { fetchLinksEffect, updateLinkEffect } from '../store/link/linkEffect.js';
-import { isLoadingLinkGroupsCat } from '../store/linkGroup/linkGroupCats.js';
-import { fetchLinkGroupsEffect } from '../store/linkGroup/linkGroupEffect.js';
 
 export const LinksReorder = fastMemo(() => {
   const isLoadingLinks = useCat(isLoadingLinksCat);
-  const isLoadingGroups = useCat(isLoadingLinkGroupsCat);
+  const isLoadingGroups = useCat(isLoadingGroupsCat);
   const { groups: linkGroups } = useLinkGroups();
   const isUpdating = useCat(isUpdatingLinkCat);
 
@@ -30,7 +30,7 @@ export const LinksReorder = fastMemo(() => {
 
   useEffect(() => {
     fetchLinksEffect(false, false);
-    fetchLinkGroupsEffect(false, false);
+    fetchGroupsEffect(false, false);
   }, []);
 
   return (

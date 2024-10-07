@@ -6,7 +6,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { AccountIcon } from '../components/AccountIcon.jsx';
-import { FloatAction } from '../components/FloatAction.jsx';
+import { GroupItems } from '../components/GroupItems.jsx';
 import { LinkItems } from '../components/LinkItems.jsx';
 import { NoteItems } from '../components/NoteItems.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
@@ -16,25 +16,22 @@ import { LocalStorage } from '../shared/browser/LocalStorage.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
+import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat } from '../store/link/linkCats.js';
 import { fetchLinksEffect } from '../store/link/linkEffect.js';
-import { fetchLinkGroupsEffect } from '../store/linkGroup/linkGroupEffect.js';
 import { isLoadingNotesCat } from '../store/note/noteCats.js';
 import { fetchNotesEffect } from '../store/note/noteEffect.js';
-import { fetchNoteGroupsEffect } from '../store/noteGroup/noteGroupEffect.js';
 
 async function load(force) {
   fetchLinksEffect(force);
   fetchNotesEffect(force);
-  fetchLinkGroupsEffect(force);
-  fetchNoteGroupsEffect(force);
+  fetchGroupsEffect(force);
 }
 
 const savedTab = LocalStorage.get(localStorageKeys.activeTab);
 
 export const Home = fastMemo(() => {
   const [tab, setTab] = useState(savedTab || 'links');
-  const isNotes = tab === 'notes';
 
   const handleChangeTab = useCallback(
     newTab => {
@@ -44,28 +41,32 @@ export const Home = fastMemo(() => {
     [setTab]
   );
 
-  const handleAdd = useCallback(() => {
-    if (isNotes) {
-      navigateTo(`/notes/add`);
-    } else {
-      navigateTo(`/links/add`);
-    }
-  }, [isNotes]);
-
   return (
     <PrepareData load={load}>
-      <FloatAction onClick={handleAdd} />
-
       <PageContent>
         <Header tab={tab} onTabChange={handleChangeTab} />
 
-        {isNotes ? <NoteItems /> : <LinkItems />}
+        <Tabs
+          type="line"
+          activeKey={tab}
+          onChange={handleChangeTab}
+          size="small"
+          style={{ marginLeft: '0.5rem' }}
+        >
+          <TabPane tab="Links" itemKey="links" />
+          <TabPane tab="Notes" itemKey="notes" />
+          <TabPane tab="Tags" itemKey="tags" />
+        </Tabs>
+
+        {tab === 'links' && <LinkItems />}
+        {tab === 'notes' && <NoteItems />}
+        {tab === 'tags' && <GroupItems />}
       </PageContent>
     </PrepareData>
   );
 });
 
-const Header = fastMemo(({ tab, onTabChange }) => {
+const Header = fastMemo(() => {
   const isLoadingNotes = useCat(isLoadingNotesCat);
   const isLoadingLinks = useCat(isLoadingLinksCat);
 
@@ -79,17 +80,6 @@ const Header = fastMemo(({ tab, onTabChange }) => {
     <PageHeader
       title={
         <>
-          <Tabs
-            type="line"
-            activeKey={tab}
-            onChange={onTabChange}
-            size="small"
-            style={{ marginLeft: '0.5rem' }}
-          >
-            <TabPane tab="Links" itemKey="links" />
-            <TabPane tab="Notes" itemKey="notes" />
-          </Tabs>
-
           {!isLoading && (
             <Button
               type="primary"

@@ -4,7 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { LinkGroupSelector } from '../components/LinkGroupSelector.jsx';
+import { GroupSelector } from '../components/GroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -46,7 +46,7 @@ export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
           onChange={setLink}
         />
 
-        <LinkGroupSelector groupId={groupId} onSelect={setGroupId} />
+        <GroupSelector groupId={groupId} onSelect={setGroupId} />
 
         <Button htmlType="submit" theme="solid" disabled={!link || !title || isCreating}>
           Add link

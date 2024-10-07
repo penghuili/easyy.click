@@ -6,22 +6,22 @@ import { useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { isCreatingNoteGroupCat } from '../store/noteGroup/noteGroupCats.js';
-import { createNoteGroupEffect } from '../store/noteGroup/noteGroupEffect.js';
+import { isCreatingGroupCat } from '../store/group/groupCats.js';
+import { createGroupEffect } from '../store/group/groupEffect.js';
 
-export const NoteGroupAdd = fastMemo(() => {
-  const isCreating = useCat(isCreatingNoteGroupCat);
+export const GroupAdd = fastMemo(() => {
+  const isCreating = useCat(isCreatingGroupCat);
 
   const [title, setTitle] = useState('');
 
   const handleSave = useCallback(async () => {
-    await createNoteGroupEffect(title);
+    await createGroupEffect(title);
     goBack();
   }, [title]);
 
   return (
     <PageContent>
-      <PageHeader title="Add note tag" isLoading={isCreating} hasBack />
+      <PageHeader title="Add tag" isLoading={isCreating} hasBack />
 
       <Form onSubmit={handleSave}>
         <Form.Input

@@ -1,17 +1,29 @@
 import { Button, Input, Radio, RadioGroup, Typography } from '@douyinfe/semi-ui';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useCat } from 'usecat';
 
+import { groupsCat, isCreatingGroupCat } from '../store/group/groupCats';
+import { createGroupEffect, fetchGroupsEffect } from '../store/group/groupEffect';
 import { Flex } from './Flex';
 
-export function GroupsSelector({
-  groups,
-  groupId,
-  onSelect,
-  title,
-  onTitleChange,
-  isCreating,
-  onCreate,
-}) {
+export function GroupSelector({ groupId, onSelect }) {
+  const groups = useCat(groupsCat);
+  const isCreating = useCat(isCreatingGroupCat);
+
+  const [title, setTitle] = useState('');
+
+  const handleCreate = useCallback(async () => {
+    const newGroup = await createGroupEffect(title);
+    if (newGroup) {
+      onSelect(newGroup.sortKey);
+      setTitle('');
+    }
+  }, [onSelect, title]);
+
+  useEffect(() => {
+    fetchGroupsEffect();
+  }, []);
+
   return (
     <div>
       <Typography.Paragraph strong style={{ marginBottom: '0.5rem' }}>
@@ -43,8 +55,8 @@ export function GroupsSelector({
         style={{ maxWidth: 300 }}
         m="0 0 1rem"
       >
-        <Input placeholder="New tag name" value={title} onChange={onTitleChange} />
-        <Button theme="outline" disabled={!title || isCreating} onClick={onCreate}>
+        <Input placeholder="New tag name" value={title} onChange={setTitle} />
+        <Button theme="outline" disabled={!title || isCreating} onClick={handleCreate}>
           Create
         </Button>
       </Flex>

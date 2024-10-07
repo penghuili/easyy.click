@@ -4,7 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { NoteGroupSelector } from '../components/NoteGroupSelector.jsx';
+import { GroupSelector } from '../components/GroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -36,6 +36,7 @@ export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
           placeholder="Give your note a name"
           value={title}
           onChange={setTitle}
+          autoFocus
         />
 
         <Form.TextArea
@@ -46,7 +47,7 @@ export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
           onChange={setText}
         />
 
-        <NoteGroupSelector groupId={groupId} onSelect={setGroupId} />
+        <GroupSelector groupId={groupId} onSelect={setGroupId} />
 
         <Button htmlType="submit" theme="solid" disabled={!text || !title || isCreating}>
           Add note

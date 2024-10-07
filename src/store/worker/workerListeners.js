@@ -1,9 +1,8 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { groupsCat, isLoadingGroupsCat } from '../group/groupCats';
 import { isLoadingLinksCat, linksCat } from '../link/linkCats';
-import { isLoadingLinkGroupsCat, linkGroupsCat } from '../linkGroup/linkGroupCats';
 import { isLoadingNotesCat, notesCat } from '../note/noteCats';
-import { isLoadingNoteGroupsCat, noteGroupsCat } from '../noteGroup/noteGroupCats';
 import { workerActionTypes } from './workerHelpers';
 
 export const myWorker = new Worker(new URL('./worker.js', import.meta.url), {
@@ -21,20 +20,14 @@ myWorker.onmessage = event => {
   } else if (type === workerActionTypes.DECRYPT_LINK_GROUPS) {
     const { decryptedItems } = event.data;
 
-    linkGroupsCat.set(decryptedItems);
-    LocalStorage.set(localStorageKeys.linkGroups, decryptedItems);
-    isLoadingLinkGroupsCat.set(false);
+    groupsCat.set(decryptedItems);
+    LocalStorage.set(localStorageKeys.groups, decryptedItems);
+    isLoadingGroupsCat.set(false);
   } else if (type === workerActionTypes.DECRYPT_NOTES) {
     const { decryptedItems } = event.data;
 
     notesCat.set(decryptedItems);
     LocalStorage.set(localStorageKeys.notes, decryptedItems);
     isLoadingNotesCat.set(false);
-  } else if (type === workerActionTypes.DECRYPT_NOTE_GROUPS) {
-    const { decryptedItems } = event.data;
-
-    noteGroupsCat.set(decryptedItems);
-    LocalStorage.set(localStorageKeys.noteGroups, decryptedItems);
-    isLoadingNoteGroupsCat.set(false);
   }
 };

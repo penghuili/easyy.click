@@ -4,7 +4,7 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
-import { LinkGroupSelector } from '../components/LinkGroupSelector.jsx';
+import { GroupSelector } from '../components/GroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -44,8 +44,6 @@ const LinkForm = fastMemo(({ linkId }) => {
   const title = useCat(titleCat);
   const linkValue = useCat(linkValueCat);
   const groupId = useCat(groupIdCat);
-
-  console.log(title, linkValue);
 
   const handleSave = useCallback(async () => {
     await updateLinkEffect(linkId, {
@@ -91,7 +89,7 @@ const LinkForm = fastMemo(({ linkId }) => {
         onChange={linkValueCat.set}
       />
 
-      <LinkGroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
+      <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
 
       <Button htmlType="submit" theme="solid" disabled={!title || !linkValue || isUpdating}>
         Update link

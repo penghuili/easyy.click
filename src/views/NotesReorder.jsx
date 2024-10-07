@@ -6,16 +6,16 @@ import { PageHeader } from '../components/PageHeader.jsx';
 import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderGroupItems } from '../shared/browser/ReorderGroupItems.jsx';
+import { isLoadingGroupsCat } from '../store/group/groupCats.js';
+import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingNotesCat, isUpdatingNoteCat, useNoteGroups } from '../store/note/noteCats.js';
 import { fetchNotesEffect, updateNoteEffect } from '../store/note/noteEffect.js';
-import { isLoadingNoteGroupsCat } from '../store/noteGroup/noteGroupCats.js';
-import { fetchNoteGroupsEffect } from '../store/noteGroup/noteGroupEffect.js';
 
 const activeNoteCat = createCat(null);
 
 export const NotesReorder = fastMemo(() => {
   const isLoading = useCat(isLoadingNotesCat);
-  const isLoadingGroups = useCat(isLoadingNoteGroupsCat);
+  const isLoadingGroups = useCat(isLoadingGroupsCat);
   const { groups: noteGroups } = useNoteGroups();
   const isUpdating = useCat(isUpdatingNoteCat);
 
@@ -32,7 +32,7 @@ export const NotesReorder = fastMemo(() => {
 
   useEffect(() => {
     fetchNotesEffect(false, false);
-    fetchNoteGroupsEffect(false, false);
+    fetchGroupsEffect(false, false);
   }, []);
 
   return (

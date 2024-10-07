@@ -7,15 +7,15 @@ import { createCat, useCat } from 'usecat';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { isUpdatingLinkGroupCat, linkGroupCat } from '../store/linkGroup/linkGroupCats.js';
-import { fetchLinkGroupEffect, updateLinkGroupEffect } from '../store/linkGroup/linkGroupEffect.js';
+import { groupCat, isUpdatingGroupCat } from '../store/group/groupCats.js';
+import { fetchGroupEffect, updateGroupEffect } from '../store/group/groupEffect.js';
 
 const titleCat = createCat('');
 
-export const LinkGroupDetails = fastMemo(({ queryParams: { groupId } }) => {
+export const GroupDetails = fastMemo(({ queryParams: { groupId } }) => {
   const load = useCallback(async () => {
-    await fetchLinkGroupEffect(groupId);
-    const group = linkGroupCat.get();
+    await fetchGroupEffect(groupId);
+    const group = groupCat.get();
     if (group) {
       titleCat.set(group.title);
     }
@@ -24,7 +24,7 @@ export const LinkGroupDetails = fastMemo(({ queryParams: { groupId } }) => {
   return (
     <PrepareData load={load}>
       <PageContent>
-        <PageHeader title="Edit link tag" hasBack />
+        <PageHeader title="Edit tag" hasBack />
 
         <GroupForm groupId={groupId} />
       </PageContent>
@@ -33,12 +33,12 @@ export const LinkGroupDetails = fastMemo(({ queryParams: { groupId } }) => {
 });
 
 const GroupForm = fastMemo(({ groupId }) => {
-  const group = useCat(linkGroupCat);
+  const group = useCat(groupCat);
   const title = useCat(titleCat);
-  const isUpdating = useCat(isUpdatingLinkGroupCat);
+  const isUpdating = useCat(isUpdatingGroupCat);
 
   const handleSave = useCallback(async () => {
-    await updateLinkGroupEffect(groupId, { encryptedPassword: group.encryptedPassword, title });
+    await updateGroupEffect(groupId, { encryptedPassword: group.encryptedPassword, title });
     goBack();
   }, [groupId, group.encryptedPassword, title]);
 
