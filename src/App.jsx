@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { AppWrapper } from './components/AppWrapper.jsx';
-import { PageTitleUpdator } from './components/PageTitleUpdator.jsx';
 import { Scrollbar } from './components/Scrollbar.jsx';
 import { Router } from './Router.jsx';
 import { disablePullToRefresh } from './shared/browser/bodySccroll.js';
@@ -26,7 +25,6 @@ function App() {
 
       <Toast />
       <Scrollbar thumbColor="#78c174" trackColor="#def0dc" />
-      <PageTitleUpdator />
     </AppWrapper>
   );
 }

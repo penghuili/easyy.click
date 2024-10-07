@@ -3,6 +3,7 @@ const path = require('path');
 
 const env = process.argv[2];
 
+updateOrAddEnvVariable('.env', 'DEPLOY_ENV', env);
 updateOrAddEnvVariable(
   '.env',
   'S3_URL',
@@ -10,8 +11,8 @@ updateOrAddEnvVariable(
 );
 updateOrAddEnvVariable(
   '.env',
-  'NOTENOTE_S3_URL',
-  env === 'prod' ? 's3://easyy.notenote.cc' : 's3://dev-easyy.notenote.cc'
+  'COM_S3_URL',
+  env === 'prod' ? 's3://app.easyyclick.com' : 's3://dev-app.easyyclick.com'
 );
 updateOrAddEnvVariable(
   '.env.production',

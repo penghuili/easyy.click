@@ -17,7 +17,9 @@ buildApp();
 
 deployApp(process.env.S3_URL);
 
-deployApp(process.env.NOTENOTE_S3_URL);
+if (process.env.DEPLOY_ENV === 'prod') {
+  deployApp(process.env.COM_S3_URL);
+}
 
 function deployApp(bucket) {
   console.log(`Deploying app to ${bucket} ...`);
@@ -30,7 +32,7 @@ function deployApp(bucket) {
 
   deleteOldVersion(bucket);
 
-  console.log('Deploy app to ${bucket} completed.');
+  console.log(`Deploy app to ${bucket} completed.`);
 }
 
 function updateOrAddEnvVariable(key, value) {

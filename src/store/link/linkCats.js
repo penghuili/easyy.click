@@ -12,7 +12,7 @@ export const isCreatingLinkCat = createCat(false);
 export const isUpdatingLinkCat = createCat(false);
 export const isDeletingLinkCat = createCat(false);
 
-export function useLinkGroups() {
+export function useLinkGroups(showEmptyGroups = false) {
   const links = useCat(linksCat);
   const groups = useCat(groupsCat);
 
@@ -35,8 +35,10 @@ export function useLinkGroups() {
     return [
       ...groups.map(group => obj[group.sortKey]),
       { sortKey: noGroupSortKey, title: 'Links without tag', items: noGroupLinks },
-    ].filter(group => group.sortKey === noGroupSortKey || group.items.length > 0);
-  }, [groups, links]);
+    ].filter(
+      group => group.sortKey === noGroupSortKey || showEmptyGroups || group.items.length > 0
+    );
+  }, [groups, links, showEmptyGroups]);
 
   return {
     groups: groupsWithLinks,

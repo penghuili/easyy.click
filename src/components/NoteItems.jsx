@@ -45,7 +45,7 @@ export const NoteItems = fastMemo(() => {
   return (
     <>
       <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
-        <Button theme="solid" onClick={() => navigateTo('/notes/reorder')} icon={<RiAddLine />}>
+        <Button theme="solid" onClick={() => navigateTo('/notes/add')} icon={<RiAddLine />}>
           Add note
         </Button>
 
