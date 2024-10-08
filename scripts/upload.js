@@ -19,6 +19,7 @@ deployApp(process.env.S3_URL);
 
 if (process.env.DEPLOY_ENV === 'prod') {
   deployApp(process.env.COM_S3_URL);
+  deployApp(process.env.NOTENOTE_S3_URL);
 }
 
 function deployApp(bucket) {

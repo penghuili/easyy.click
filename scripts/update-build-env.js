@@ -15,6 +15,11 @@ updateOrAddEnvVariable(
   env === 'prod' ? 's3://app.easyyclick.com' : 's3://dev-app.easyyclick.com'
 );
 updateOrAddEnvVariable(
+  '.env',
+  'NOTENOTE_S3_URL',
+  env === 'prod' ? 's3://easyy.notenote.cc' : 's3://dev-easyy.notenote.cc'
+);
+updateOrAddEnvVariable(
   '.env.production',
   'VITE_EASYY_API_URL',
   env === 'prod' ? 'https://api.peng37.com/easyy' : 'https://api.peng37.com/easyy-test'

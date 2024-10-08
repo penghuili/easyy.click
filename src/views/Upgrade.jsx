@@ -10,6 +10,7 @@ import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
 import { Prices } from '../components/Prices.jsx';
 import { hasValidFreeTrial } from '../lib/hasValidFreeTrial.js';
+import { useEarlyUser } from '../lib/useEarlyUser.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt, useFreeTrialsUntil, userCat } from '../shared/browser/store/sharedCats.js';
@@ -96,12 +97,13 @@ const UpgradeAction = fastMemo(() => {
   const isTrying = useCat(isFreeTryingCat);
   const freeTrialUntil = useFreeTrialsUntil();
   const user = useCat(userCat);
+  const isEarlyUser = useEarlyUser();
 
   return (
     <>
       <Flex m="2rem 0" align="center">
         <a
-          href={import.meta.env.VITE_PAY_LINK}
+          href={isEarlyUser ? import.meta.env.VITE_PAY_LINK1 : import.meta.env.VITE_PAY_LINK2}
           target="_blank"
           rel="noreferrer noopener"
           style={{
