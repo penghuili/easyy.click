@@ -6,6 +6,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { AccountIcon } from '../components/AccountIcon.jsx';
+import { FreeTrialEnding } from '../components/FreeTrialEnding.jsx';
 import { GroupItems } from '../components/GroupItems.jsx';
 import { LinkItems } from '../components/LinkItems.jsx';
 import { NoteItems } from '../components/NoteItems.jsx';
@@ -45,6 +46,8 @@ export const Home = fastMemo(() => {
     <PrepareData load={load}>
       <PageContent>
         <Header tab={tab} onTabChange={handleChangeTab} />
+
+        <FreeTrialEnding />
 
         <Tabs
           type="line"
