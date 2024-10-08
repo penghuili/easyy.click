@@ -34,16 +34,8 @@ export const NoteItems = fastMemo(() => {
     setToastEffect(`Copied "${note.title}"!`);
   }, []);
 
-  if (!notes.length) {
-    return isLoading ? (
-      <PageLoading />
-    ) : (
-      <PageEmpty>Which notes do you copy paste regularly?</PageEmpty>
-    );
-  }
-
-  return (
-    <>
+  function renderActions() {
+    return (
       <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
         <Button theme="solid" onClick={() => navigateTo('/notes/add')} icon={<RiAddLine />}>
           Add note
@@ -55,6 +47,26 @@ export const NoteItems = fastMemo(() => {
           </Button>
         )}
       </Flex>
+    );
+  }
+
+  if (!notes.length) {
+    return (
+      <>
+        {renderActions()}
+
+        {isLoading ? (
+          <PageLoading />
+        ) : (
+          <PageEmpty>Which notes do you copy paste regularly?</PageEmpty>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {renderActions()}
 
       {noteGroups.map(group => (
         <div key={group.sortKey} style={{ marginBottom: '2rem' }}>

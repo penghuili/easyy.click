@@ -30,16 +30,8 @@ export const LinkItems = fastMemo(() => {
   const [activeGroup, setActiveGroup] = useState(null);
   const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
 
-  if (!links.length) {
-    return isLoading ? (
-      <PageLoading />
-    ) : (
-      <PageEmpty>Which webites do you visit regularly?</PageEmpty>
-    );
-  }
-
-  return (
-    <>
+  function renderActions() {
+    return (
       <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
         <Button theme="solid" onClick={() => navigateTo('/links/add')} icon={<RiAddLine />}>
           Add link
@@ -51,6 +43,21 @@ export const LinkItems = fastMemo(() => {
           </Button>
         )}
       </Flex>
+    );
+  }
+
+  if (!links.length) {
+    return (
+      <>
+        {renderActions()}
+        {isLoading ? <PageLoading /> : <PageEmpty>Which webites do you visit regularly?</PageEmpty>}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {renderActions()}
 
       <Top10Links />
 
