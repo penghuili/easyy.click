@@ -99,8 +99,22 @@ const UpgradeAction = fastMemo(() => {
   const user = useCat(userCat);
   const isEarlyUser = useEarlyUser();
 
+  const hasFreeTrial = !!freeTrialUntil;
+
   return (
     <>
+      {!hasFreeTrial && (
+        <Flex align="center" m="3rem 0 0">
+          <Button theme="solid" size="large" onClick={freeTrialEffect} disabled={isTrying}>
+            Try 14 days for free
+          </Button>
+
+          <Typography.Paragraph style={{ marginTop: '1rem', textAlign: 'center' }}>
+            or
+          </Typography.Paragraph>
+        </Flex>
+      )}
+
       <Flex m="2rem 0" align="center">
         <a
           href={isEarlyUser ? import.meta.env.VITE_PAY_LINK1 : import.meta.env.VITE_PAY_LINK2}
@@ -110,8 +124,8 @@ const UpgradeAction = fastMemo(() => {
             position: 'relative',
             overflow: 'hidden',
             textDecoration: 'none',
-            color: 'white',
-            backgroundColor: themeCssColor,
+            color: hasFreeTrial ? 'white' : undefined,
+            backgroundColor: hasFreeTrial ? themeCssColor : undefined,
             padding: '0.5rem 2rem',
             fontSize: '1.5rem',
             borderRadius: '4rem',
@@ -120,19 +134,11 @@ const UpgradeAction = fastMemo(() => {
           Pay now
           <Shine />
         </a>
-        <Typography.Paragraph style={{ marginTop: '1rem', textAlign: 'center' }}>
+        <Typography.Paragraph style={{ marginTop: '0rem', textAlign: 'center' }}>
           Remember to use the same email (<Typography.Text copyable>{user?.email}</Typography.Text>)
           on the payment page.
         </Typography.Paragraph>
       </Flex>
-
-      {!freeTrialUntil && (
-        <Flex align="center" m="2rem 0">
-          <Button theme="borderless" size="large" onClick={freeTrialEffect} disabled={isTrying}>
-            or try 14 days for free
-          </Button>
-        </Flex>
-      )}
     </>
   );
 });
