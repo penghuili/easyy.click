@@ -3,8 +3,9 @@ import { sendError } from '../error/errorNetwork';
 
 export const workerActionTypes = {
   DECRYPT_LINKS: 'DECRYPT_LINKS',
-  DECRYPT_LINK_GROUPS: 'DECRYPT_LINK_GROUPS',
+  DECRYPT_GROUPS: 'DECRYPT_GROUPS',
   DECRYPT_NOTES: 'DECRYPT_NOTES',
+  DECRYPT_SPACES: 'DECRYPT_SPACES',
 };
 
 export async function decryptLink(link, privateKey) {
@@ -56,6 +57,22 @@ export async function decryptGroup(group, privateKey) {
     return { data: { ...group, title: decryptedTitle }, error: null };
   } catch (error) {
     sendError({ userId: group?.id, groupId: group?.sortKey, error });
+
+    return { data: null, error };
+  }
+}
+
+export async function decryptSpace(space, privateKey) {
+  try {
+    const decryptedPassword = await decryptMessageAsymmetric(privateKey, space.encryptedPassword);
+
+    const decryptedTitle = space.title
+      ? await decryptMessageSymmetric(decryptedPassword, space.title)
+      : space.title;
+
+    return { data: { ...space, title: decryptedTitle }, error: null };
+  } catch (error) {
+    sendError({ userId: space?.id, spaceId: space?.sortKey, error });
 
     return { data: null, error };
   }

@@ -12,12 +12,13 @@ self.onmessage = async function (event) {
       const { notes, privateKey, rest } = event.data;
       const decrypted = await decryptNotes(notes, privateKey);
       self.postMessage({ type, decryptedItems: decrypted, rest });
-    } else if (
-      type === workerActionTypes.DECRYPT_LINK_GROUPS ||
-      type === workerActionTypes.DECRYPT_NOTE_GROUPS
-    ) {
+    } else if (type === workerActionTypes.DECRYPT_GROUPS) {
       const { groups, privateKey } = event.data;
       const decrypted = await decryptGroups(groups, privateKey);
+      self.postMessage({ type, decryptedItems: decrypted });
+    } else if (type === workerActionTypes.DECRYPT_SPACES) {
+      const { spaces, privateKey } = event.data;
+      const decrypted = await decryptSpaces(spaces, privateKey);
       self.postMessage({ type, decryptedItems: decrypted });
     }
   } catch (error) {
@@ -37,5 +38,10 @@ async function decryptNotes(notes, privateKey) {
 
 async function decryptGroups(groups, privateKey) {
   const results = await Promise.all(groups.map(group => decryptGroup(group, privateKey)));
+  return results.map(r => r.data).filter(Boolean);
+}
+
+async function decryptSpaces(spaces, privateKey) {
+  const results = await Promise.all(spaces.map(space => decryptGroup(space, privateKey)));
   return results.map(r => r.data).filter(Boolean);
 }

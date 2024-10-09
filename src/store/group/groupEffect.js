@@ -39,7 +39,7 @@ async function forceFetchGroupsEffect() {
   const { data } = await fetchGroups();
   if (data) {
     myWorker.postMessage({
-      type: workerActionTypes.DECRYPT_LINK_GROUPS,
+      type: workerActionTypes.DECRYPT_GROUPS,
       groups: data,
       privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
     });

@@ -11,3 +11,7 @@ export function generateLinkSortKey(timestamp) {
 export function generateGroupSortKey(timestamp) {
   return `linkgroup_${getUTCTimeNumber(timestamp)}_${Math.floor(Math.random() * 10000)}`;
 }
+
+export function generateSpaceSortKey(timestamp) {
+  return `space_${getUTCTimeNumber(timestamp)}_${Math.floor(Math.random() * 10000)}`;
+}
