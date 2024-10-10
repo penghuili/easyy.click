@@ -145,3 +145,13 @@ export async function deleteLink(linkId, spaceId) {
     return { data: null, error };
   }
 }
+
+export async function getPageInfo(link) {
+  try {
+    const data = await HTTP.post(appName, `/v1/link-info`, { link });
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}

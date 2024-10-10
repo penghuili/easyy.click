@@ -82,19 +82,20 @@ const LinkForm = fastMemo(({ linkId, spaceId }) => {
 
   return (
     <Form initValues={{ title: link.title, link: link.link }} onSubmit={handleSave}>
-      <Form.Input
-        field="title"
-        label="Link name"
-        placeholder="ChatGPT, Youtube, etc"
-        value={title}
-        onChange={titleCat.set}
-      />
       <Form.TextArea
         field="link"
         label="Link"
         placeholder="https://example.com"
         value={linkValue}
         onChange={linkValueCat.set}
+      />
+
+      <Form.Input
+        field="title"
+        label="Link name"
+        placeholder="ChatGPT, Youtube, etc"
+        value={title}
+        onChange={titleCat.set}
       />
 
       <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} spaceId={spaceId} />

@@ -18,17 +18,17 @@ import {
 import { createNote, deleteNote, fetchNote, fetchNotes, updateNote } from './noteNetwork';
 
 export async function fetchNotesEffect(force, alwaysFetchRemote = true, spaceId) {
-  if (!notesCat.get()?.length) {
+  if (!notesCat.get()[spaceId]?.length) {
     const cachedNotes = LocalStorage.get(`${localStorageKeys.notes}-${spaceId}`);
     if (cachedNotes?.length) {
       notesCat.set({ ...notesCat.get(), [spaceId]: cachedNotes });
     }
   }
 
-  if (force || !notesCat.get()?.length) {
+  if (force || !notesCat.get()[spaceId]?.length) {
     await forceFetchNotesEffect(spaceId);
   } else {
-    if (alwaysFetchRemote || !notesCat.get()?.length) {
+    if (alwaysFetchRemote || !notesCat.get()[spaceId]?.length) {
       forceFetchNotesEffect(spaceId);
     }
   }

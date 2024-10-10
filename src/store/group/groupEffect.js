@@ -17,17 +17,17 @@ import {
 import { createGroup, deleteGroup, fetchGroup, fetchGroups, updateGroup } from './groupNetwork';
 
 export async function fetchGroupsEffect(force, alwaysFetchRemote = true, spaceId) {
-  if (!groupsCat.get()?.length) {
+  if (!groupsCat.get()[spaceId]?.length) {
     const cachedGroups = LocalStorage.get(`${localStorageKeys.groups}-${spaceId}`);
     if (cachedGroups?.length) {
       groupsCat.set({ ...groupsCat.get(), [spaceId]: cachedGroups });
     }
   }
 
-  if (force || !groupsCat.get()?.length) {
+  if (force || !groupsCat.get()[spaceId]?.length) {
     await forceFetchGroupsEffect(spaceId);
   } else {
-    if (alwaysFetchRemote || !groupsCat.get()?.length) {
+    if (alwaysFetchRemote || !groupsCat.get()[spaceId]?.length) {
       forceFetchGroupsEffect(spaceId);
     }
   }

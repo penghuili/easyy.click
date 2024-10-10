@@ -12,6 +12,7 @@ export const isCreatingLinkCat = createCat(false);
 export const isMovingLinkCat = createCat(false);
 export const isUpdatingLinkCat = createCat(false);
 export const isDeletingLinkCat = createCat(false);
+export const isLoadingPageInfoCat = createCat(false);
 
 export function useLinkGroups(showEmptyGroups = false, spaceId) {
   const links = useCat(linksCat);

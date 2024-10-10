@@ -10,25 +10,33 @@ import {
   isDeletingLinkCat,
   isLoadingLinkCat,
   isLoadingLinksCat,
+  isLoadingPageInfoCat,
   isMovingLinkCat,
   isUpdatingLinkCat,
   linkCat,
   linksCat,
 } from './linkCats';
-import { createLink, deleteLink, fetchLink, fetchLinks, updateLink } from './linkNetwork';
+import {
+  createLink,
+  deleteLink,
+  fetchLink,
+  fetchLinks,
+  getPageInfo,
+  updateLink,
+} from './linkNetwork';
 
 export async function fetchLinksEffect(force, alwaysFetchRemote = true, spaceId) {
-  if (!linksCat.get()?.length) {
+  if (!linksCat.get()[spaceId]?.length) {
     const cachedLinks = LocalStorage.get(`${localStorageKeys.links}-${spaceId}`);
     if (cachedLinks?.length) {
       linksCat.set({ ...linksCat.get(), [spaceId]: cachedLinks });
     }
   }
 
-  if (force || !linksCat.get()?.length) {
+  if (force || !linksCat.get()[spaceId]?.length) {
     await forceFetchLinksEffect(spaceId);
   } else {
-    if (alwaysFetchRemote || !linksCat.get()?.length) {
+    if (alwaysFetchRemote || !linksCat.get()[spaceId]?.length) {
       forceFetchLinksEffect(spaceId);
     }
   }
@@ -128,6 +136,16 @@ export async function deleteLinkEffect(linkId, { showMessage }, spaceId) {
   }
 
   isDeletingLinkCat.set(false);
+}
+
+export async function fetchPageInfoEffect(link) {
+  isLoadingPageInfoCat.set(true);
+
+  const { data } = await getPageInfo(link);
+
+  isLoadingPageInfoCat.set(false);
+
+  return data;
 }
 
 export function updateLinksState(data, type, spaceId) {
