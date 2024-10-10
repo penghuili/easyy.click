@@ -14,6 +14,10 @@ import { createLinkEffect, fetchPageInfoEffect } from '../store/link/linkEffect.
 
 const titleCat = createCat('');
 const debouncedFetchInfo = debounce(async (pageLink, ref) => {
+  if (!pageLink || !pageLink.trim()) {
+    return;
+  }
+
   const data = await fetchPageInfoEffect(pageLink);
   if (data?.title) {
     titleCat.set(data.title);

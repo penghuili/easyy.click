@@ -1,6 +1,6 @@
-import { Avatar, Button, PinCode, Typography } from '@douyinfe/semi-ui';
+import { Avatar, Button, Form, Typography } from '@douyinfe/semi-ui';
 import { RiRestartLine } from '@remixicon/react';
-import React from 'react';
+import React, { useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
@@ -25,8 +25,10 @@ export const VerifyEmail = fastMemo(() => {
   const isVerifying = useCat(isVerifyingEmailCat);
   const isResending = useCat(isResendingVerificationCodeCat);
 
-  function handleVerify(code) {
-    verifyEmailEffect(code);
+  const [code, setCode] = useState('');
+
+  function handleVerify() {
+    verifyEmailEffect(code.trim());
   }
 
   return (
@@ -41,15 +43,25 @@ export const VerifyEmail = fastMemo(() => {
 
       {!!user?.email && <Typography.Paragraph>Your email: {user.email}</Typography.Paragraph>}
 
-      <Typography.Text style={{ margin: '2rem 0 0.5rem', display: 'block', fontWeight: 'bold' }}>
-        Verification code
-      </Typography.Text>
-      <PinCode
-        format={'number'}
-        autoFocus
-        onComplete={value => handleVerify(value)}
-        disabled={isVerifying}
-      />
+      <Form onSubmit={handleVerify}>
+        <Form.Input
+          field="code"
+          label="Code in your email"
+          placeholder="Code"
+          value={code}
+          onChange={setCode}
+          autoFocus
+        />
+
+        <Button
+          htmlType="submit"
+          theme="solid"
+          block
+          disabled={!code || isResending || isVerifying}
+        >
+          Verify
+        </Button>
+      </Form>
 
       <Flex gap="1rem" align="start" m="2rem 0 0">
         <Button
