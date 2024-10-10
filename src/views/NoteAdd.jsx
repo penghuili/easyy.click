@@ -11,7 +11,7 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isCreatingNoteCat } from '../store/note/noteCats.js';
 import { createNoteEffect } from '../store/note/noteEffect';
 
-export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) => {
+export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, spaceId } }) => {
   const isCreating = useCat(isCreatingNoteCat);
 
   const [title, setTitle] = useState('');
@@ -21,9 +21,9 @@ export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
   );
 
   const handleSave = useCallback(async () => {
-    await createNoteEffect(title, text, groupId);
+    await createNoteEffect({ title, text, groupId, showMessage: true }, spaceId);
     goBack();
-  }, [title, text, groupId]);
+  }, [title, text, groupId, spaceId]);
 
   return (
     <PageContent>
@@ -47,7 +47,7 @@ export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
           onChange={setText}
         />
 
-        <GroupSelector groupId={groupId} onSelect={setGroupId} />
+        <GroupSelector groupId={groupId} onSelect={setGroupId} spaceId={spaceId} />
 
         <Button htmlType="submit" theme="solid" disabled={!text || !title || isCreating}>
           Add note

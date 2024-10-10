@@ -5,37 +5,40 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
+import { spaceColors, SpaceColorSelector } from '../components/SpaceColorSelector.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { createGroupEffect } from '../store/group/groupEffect.js';
 import { isCreatingSpaceCat } from '../store/space/spaceCats.js';
+import { createSpaceEffect } from '../store/space/spaceEffect.js';
 
 export const SpaceAdd = fastMemo(() => {
   const isCreating = useCat(isCreatingSpaceCat);
 
   const [title, setTitle] = useState('');
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState(spaceColors[0]);
 
   const handleSave = useCallback(async () => {
-    await createGroupEffect(title);
+    await createSpaceEffect(title, color);
     goBack();
-  }, [title]);
+  }, [color, title]);
 
   return (
     <PageContent>
-      <PageHeader title="Add tag" isLoading={isCreating} hasBack />
+      <PageHeader title="Add space" isLoading={isCreating} hasBack />
 
       <Form onSubmit={handleSave}>
         <Form.Input
           field="title"
-          label="Tag name"
-          placeholder="Give your tag a name"
+          label="Space name"
+          placeholder="Work, Home, Invest, etc"
           value={title}
           onChange={setTitle}
           autoFocus
         />
 
+        <SpaceColorSelector color={color} onSelect={setColor} />
+
         <Button htmlType="submit" theme="solid" disabled={!title || isCreating}>
-          Add tag
+          Create space
         </Button>
       </Form>
     </PageContent>

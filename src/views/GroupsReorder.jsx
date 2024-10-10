@@ -3,34 +3,38 @@ import { RiAddLine } from '@remixicon/react';
 import React, { useCallback, useEffect } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
-import { createCat, useCat } from 'usecat';
+import { useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderItems } from '../shared/browser/ReorderItems.jsx';
-import { groupsCat, isLoadingGroupsCat, isUpdatingGroupCat } from '../store/group/groupCats.js';
+import { isLoadingGroupsCat, isUpdatingGroupCat, useGroups } from '../store/group/groupCats.js';
 import { fetchGroupsEffect, updateGroupEffect } from '../store/group/groupEffect.js';
 
-const activeGroupCat = createCat(null);
-const showActionSheetCat = createCat(false);
-
-export const GroupsReorder = fastMemo(() => {
+export const GroupsReorder = fastMemo(({ queryParams: { spaceId } }) => {
   const isLoadingGroups = useCat(isLoadingGroupsCat);
-  const groups = useCat(groupsCat);
+  const groups = useGroups(spaceId);
   const isUpdating = useCat(isUpdatingGroupCat);
 
-  const handleReorder = useCallback(({ item }) => {
-    if (item) {
-      updateGroupEffect(item.sortKey, {
-        encryptedPassword: item.encryptedPassword,
-        position: item.position,
-      });
-    }
-  }, []);
+  const handleReorder = useCallback(
+    ({ item }) => {
+      if (item) {
+        updateGroupEffect(
+          item.sortKey,
+          {
+            encryptedPassword: item.encryptedPassword,
+            position: item.position,
+          },
+          spaceId
+        );
+      }
+    },
+    [spaceId]
+  );
 
   useEffect(() => {
-    fetchGroupsEffect(false, false);
-  }, []);
+    fetchGroupsEffect(false, false, spaceId);
+  }, [spaceId]);
 
   return (
     <PageContent paddingBottom="0">
@@ -42,7 +46,7 @@ export const GroupsReorder = fastMemo(() => {
           <Button
             theme="borderless"
             icon={<RiAddLine />}
-            onClick={() => navigateTo('/groups/add')}
+            onClick={() => navigateTo(`/groups/add?spaceId=${spaceId}`)}
           />
         }
       />
@@ -52,10 +56,6 @@ export const GroupsReorder = fastMemo(() => {
         onReorder={handleReorder}
         reverse
         renderItem={item => item.title}
-        onClickItem={item => {
-          activeGroupCat.set(item);
-          showActionSheetCat.set(true);
-        }}
         height={`calc(100vh - 70px - 1rem)`}
       />
     </PageContent>

@@ -2,27 +2,27 @@ import { Button, Input, Radio, RadioGroup, Typography } from '@douyinfe/semi-ui'
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCat } from 'usecat';
 
-import { groupsCat, isCreatingGroupCat } from '../store/group/groupCats';
+import { isCreatingGroupCat, useGroups } from '../store/group/groupCats';
 import { createGroupEffect, fetchGroupsEffect } from '../store/group/groupEffect';
 import { Flex } from './Flex';
 
-export function GroupSelector({ groupId, onSelect }) {
-  const groups = useCat(groupsCat);
+export function GroupSelector({ groupId, onSelect, spaceId }) {
+  const groups = useGroups(spaceId);
   const isCreating = useCat(isCreatingGroupCat);
 
   const [title, setTitle] = useState('');
 
   const handleCreate = useCallback(async () => {
-    const newGroup = await createGroupEffect(title);
+    const newGroup = await createGroupEffect(title, spaceId);
     if (newGroup) {
       onSelect(newGroup.sortKey);
       setTitle('');
     }
-  }, [onSelect, title]);
+  }, [onSelect, spaceId, title]);
 
   useEffect(() => {
-    fetchGroupsEffect();
-  }, []);
+    fetchGroupsEffect(false, true, spaceId);
+  }, [spaceId]);
 
   return (
     <div>

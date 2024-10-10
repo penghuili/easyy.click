@@ -15,29 +15,29 @@ const titleCat = createCat('');
 const linkValueCat = createCat('');
 const groupIdCat = createCat('');
 
-export const LinkDetails = fastMemo(({ queryParams: { linkId } }) => {
+export const LinkDetails = fastMemo(({ queryParams: { linkId, spaceId } }) => {
   const load = useCallback(async () => {
-    await fetchLinkEffect(linkId);
+    await fetchLinkEffect(linkId, spaceId);
     const link = linkCat.get();
     if (link) {
       titleCat.set(link.title);
       linkValueCat.set(link.link);
       groupIdCat.set(link.groupId);
     }
-  }, [linkId]);
+  }, [linkId, spaceId]);
 
   return (
     <PrepareData load={load}>
       <PageContent>
         <PageHeader title="Edit link" hasBack />
 
-        <LinkForm linkId={linkId} />
+        <LinkForm linkId={linkId} spaceId={spaceId} />
       </PageContent>
     </PrepareData>
   );
 });
 
-const LinkForm = fastMemo(({ linkId }) => {
+const LinkForm = fastMemo(({ linkId, spaceId }) => {
   const link = useCat(linkCat);
   const isUpdating = useCat(isUpdatingLinkCat);
 
@@ -46,26 +46,34 @@ const LinkForm = fastMemo(({ linkId }) => {
   const groupId = useCat(groupIdCat);
 
   const handleSave = useCallback(async () => {
-    await updateLinkEffect(linkId, {
-      encryptedPassword: link.encryptedPassword,
-      title,
-      link: linkValue,
-      groupId,
-      successMessage: 'Encrypted and saved safely in Frankfurt!',
-    });
+    await updateLinkEffect(
+      linkId,
+      {
+        encryptedPassword: link.encryptedPassword,
+        title,
+        link: linkValue,
+        groupId,
+        successMessage: 'Encrypted and saved safely in Frankfurt!',
+      },
+      spaceId
+    );
     goBack();
-  }, [linkId, link.encryptedPassword, title, linkValue, groupId]);
+  }, [linkId, link.encryptedPassword, title, linkValue, groupId, spaceId]);
 
   const handleUpdateGroup = useCallback(
     async newGroupId => {
       groupIdCat.set(newGroupId);
-      await updateLinkEffect(linkId, {
-        encryptedPassword: link.encryptedPassword,
-        groupId: newGroupId,
-        successMessage: 'Updated!',
-      });
+      await updateLinkEffect(
+        linkId,
+        {
+          encryptedPassword: link.encryptedPassword,
+          groupId: newGroupId,
+          successMessage: 'Updated!',
+        },
+        spaceId
+      );
     },
-    [linkId, link.encryptedPassword]
+    [linkId, link.encryptedPassword, spaceId]
   );
 
   if (!link) {
@@ -89,7 +97,7 @@ const LinkForm = fastMemo(({ linkId }) => {
         onChange={linkValueCat.set}
       />
 
-      <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
+      <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} spaceId={spaceId} />
 
       <Button htmlType="submit" theme="solid" disabled={!title || !linkValue || isUpdating}>
         Update link

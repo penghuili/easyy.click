@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Flex } from './Flex';
 
-const spaceColors = [
+export const spaceColors = [
   'rgb(249, 57, 32)',
   'rgb(233, 30, 99)',
   'rgb(180, 73, 194)',

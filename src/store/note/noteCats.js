@@ -2,19 +2,20 @@ import { useMemo } from 'react';
 import { createCat, useCat } from 'usecat';
 
 import { noGroupSortKey } from '../../lib/constants';
-import { groupsCat } from '../group/groupCats';
+import { useGroups } from '../group/groupCats';
 
-export const notesCat = createCat([]);
+export const notesCat = createCat({});
 export const noteCat = createCat(null);
 export const isLoadingNotesCat = createCat(false);
 export const isLoadingNoteCat = createCat(false);
 export const isCreatingNoteCat = createCat(false);
+export const isMovingNoteCat = createCat(false);
 export const isUpdatingNoteCat = createCat(false);
 export const isDeletingNoteCat = createCat(false);
 
-export function useNoteGroups() {
+export function useNoteGroups(spaceId) {
   const notes = useCat(notesCat);
-  const groups = useCat(groupsCat);
+  const groups = useGroups(spaceId);
 
   const groupsWithLinks = useMemo(() => {
     const obj = {};
@@ -24,7 +25,7 @@ export function useNoteGroups() {
 
     const noGroupLinks = [];
 
-    notes.forEach(link => {
+    (notes[spaceId] || []).forEach(link => {
       if (obj[link.groupId]) {
         obj[link.groupId].items.push(link);
       } else {
@@ -36,10 +37,10 @@ export function useNoteGroups() {
       ...groups.map(group => obj[group.sortKey]),
       { sortKey: noGroupSortKey, title: 'Notes without tag', items: noGroupLinks },
     ].filter(group => group.sortKey === noGroupSortKey || group.items.length > 0);
-  }, [groups, notes]);
+  }, [groups, notes, spaceId]);
 
   return {
     groups: groupsWithLinks,
-    notes,
+    notes: notes[spaceId] || [],
   };
 }

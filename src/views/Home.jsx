@@ -1,7 +1,7 @@
 import { Button, TabPane, Tabs } from '@douyinfe/semi-ui';
 import { RiRefreshLine } from '@remixicon/react';
-import React, { useCallback, useState } from 'react';
-import { navigateTo } from 'react-baby-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { navigateTo, replaceTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
@@ -11,78 +11,90 @@ import { GroupItems } from '../components/GroupItems.jsx';
 import { LinkItems } from '../components/LinkItems.jsx';
 import { NoteItems } from '../components/NoteItems.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
-import { PrepareData } from '../components/PrepareData.jsx';
+import { SpaceSelector } from '../components/SpaceSelector.jsx';
 import { localStorageKeys } from '../lib/constants.js';
 import { LocalStorage } from '../shared/browser/LocalStorage.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
+import { isLoadingGroupsCat } from '../store/group/groupCats.js';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';
-import { isLoadingLinksCat } from '../store/link/linkCats.js';
+import { isLoadingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
 import { fetchLinksEffect } from '../store/link/linkEffect.js';
-import { isLoadingNotesCat } from '../store/note/noteCats.js';
+import { isLoadingNotesCat, isMovingNoteCat } from '../store/note/noteCats.js';
 import { fetchNotesEffect } from '../store/note/noteEffect.js';
+import { defaultSpaceId } from '../store/space/spaceCats.js';
 
-async function load(force) {
-  fetchLinksEffect(force);
-  fetchNotesEffect(force);
-  fetchGroupsEffect(force);
+async function load(force, spaceId) {
+  fetchLinksEffect(force, true, spaceId);
+  fetchNotesEffect(force, true, spaceId);
+  fetchGroupsEffect(force, true, spaceId);
 }
 
-const savedTab = LocalStorage.get(localStorageKeys.activeTab);
+export const Home = fastMemo(({ queryParams: { spaceId } }) => {
+  const [tab, setTab] = useState(LocalStorage.get(localStorageKeys.activeTab) || 'links');
 
-export const Home = fastMemo(() => {
-  const [tab, setTab] = useState(savedTab || 'links');
+  const innerSpaceId = useMemo(() => spaceId || defaultSpaceId, [spaceId]);
 
-  const handleChangeTab = useCallback(
-    newTab => {
-      setTab(newTab);
-      LocalStorage.set(localStorageKeys.activeTab, newTab);
-    },
-    [setTab]
-  );
+  const handleSpaceChange = useCallback(newSpaceId => {
+    replaceTo(newSpaceId && newSpaceId !== defaultSpaceId ? `/?spaceId=${newSpaceId}` : `/`);
+  }, []);
+  const handleChangeTab = useCallback(newTab => {
+    setTab(newTab);
+    LocalStorage.set(localStorageKeys.activeTab, newTab);
+  }, []);
+
+  useEffect(() => {
+    load(false, innerSpaceId);
+  }, [innerSpaceId]);
 
   return (
-    <PrepareData load={load}>
-      <PageContent>
-        <Header tab={tab} onTabChange={handleChangeTab} />
+    <PageContent>
+      <Header spaceId={innerSpaceId} onSpaceChange={handleSpaceChange} />
 
-        <FreeTrialEnding />
+      <FreeTrialEnding />
 
-        <Tabs
-          type="line"
-          activeKey={tab}
-          onChange={handleChangeTab}
-          size="small"
-          style={{ marginLeft: '0.5rem' }}
-        >
-          <TabPane tab="Links" itemKey="links" />
-          <TabPane tab="Notes" itemKey="notes" />
-          <TabPane tab="Tags" itemKey="tags" />
-        </Tabs>
-
-        {tab === 'links' && <LinkItems />}
-        {tab === 'notes' && <NoteItems />}
-        {tab === 'tags' && <GroupItems />}
-      </PageContent>
-    </PrepareData>
+      <Tabs
+        type="line"
+        activeKey={tab}
+        onChange={handleChangeTab}
+        size="small"
+        style={{ marginLeft: '0.5rem' }}
+      >
+        <TabPane tab="Links" itemKey="links">
+          <LinkItems spaceId={innerSpaceId} />
+        </TabPane>
+        <TabPane tab="Notes" itemKey="notes">
+          <NoteItems spaceId={innerSpaceId} />
+        </TabPane>
+        <TabPane tab="Tags" itemKey="tags">
+          <GroupItems spaceId={innerSpaceId} />
+        </TabPane>
+      </Tabs>
+    </PageContent>
   );
 });
 
-const Header = fastMemo(() => {
+const Header = fastMemo(({ spaceId, onSpaceChange }) => {
   const isLoadingNotes = useCat(isLoadingNotesCat);
   const isLoadingLinks = useCat(isLoadingLinksCat);
+  const isLoadingGroups = useCat(isLoadingGroupsCat);
+  const isMovingLink = useCat(isMovingLinkCat);
+  const isMovingNote = useCat(isMovingNoteCat);
 
-  const isLoading = isLoadingNotes || isLoadingLinks;
+  const isLoading =
+    isLoadingNotes || isLoadingLinks || isLoadingGroups || isMovingLink || isMovingNote;
 
   const handleRefresh = useCallback(() => {
-    load(true);
-  }, []);
+    load(true, spaceId);
+  }, [spaceId]);
 
   return (
     <PageHeader
       title={
         <>
+          <SpaceSelector value={spaceId} onChange={onSpaceChange} />
+
           {!isLoading && (
             <Button
               type="primary"
@@ -94,7 +106,7 @@ const Header = fastMemo(() => {
           )}
         </>
       }
-      isLoading={isLoadingNotes || isLoadingLinks}
+      isLoading={isLoading}
       right={
         <>
           <UpgradeButton />

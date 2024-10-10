@@ -3,6 +3,9 @@ import { LocalStorage } from '../../lib/LocalStorage';
 import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
+import { updateGroupsState } from '../group/groupEffect';
+import { updateLinksState } from '../link/linkEffect';
+import { updateNotesState } from '../note/noteEffect';
 import { workerActionTypes } from '../worker/workerHelpers';
 import { myWorker } from '../worker/workerListeners';
 import {
@@ -98,7 +101,7 @@ export async function deleteSpaceEffect(spaceId) {
   isDeletingSpaceCat.set(false);
 }
 
-function updateSpacesState(data, type) {
+export function updateSpacesState(data, type) {
   const spacesInState = spacesCat.get() || [];
 
   let newItems = spacesInState;
@@ -109,6 +112,9 @@ function updateSpacesState(data, type) {
     );
   } else if (type === 'delete') {
     newItems = newItems.filter(item => item.sortKey !== data.sortKey);
+    updateLinksState(null, 'delete', data.sortKey);
+    updateNotesState(null, 'delete', data.sortKey);
+    updateGroupsState(null, 'delete', data.sortKey);
   } else if (type === 'create') {
     newItems = [...newItems, data];
   } else if (type === 'fetch') {

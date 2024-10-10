@@ -1,6 +1,6 @@
 import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
 import { RiAddLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -8,8 +8,14 @@ import { useCat } from 'usecat';
 import { noGroupSortKey } from '../lib/constants.js';
 import { isDeletingGroupCat } from '../store/group/groupCats.js';
 import { deleteGroupEffect } from '../store/group/groupEffect.js';
-import { isDeletingLinkCat, isLoadingLinksCat, useLinkGroups } from '../store/link/linkCats.js';
-import { deleteLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
+import {
+  isDeletingLinkCat,
+  isLoadingLinksCat,
+  isMovingLinkCat,
+  useLinkGroups,
+} from '../store/link/linkCats.js';
+import { deleteLinkEffect, moveLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
+import { useSpaces } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
 import { Flex } from './Flex.jsx';
@@ -19,11 +25,18 @@ import { PageEmpty } from './PageEmpty.jsx';
 import { PageLoading } from './PageLoading.jsx';
 import { Top10Links } from './Top10Links.jsx';
 
-export const LinkItems = fastMemo(() => {
-  const { groups: linkGroups, links } = useLinkGroups();
+export const LinkItems = fastMemo(({ spaceId }) => {
+  const { groups: linkGroups, links } = useLinkGroups(false, spaceId);
   const isDeletingLink = useCat(isDeletingLinkCat);
   const isDeletingGroup = useCat(isDeletingGroupCat);
+  const isMoving = useCat(isMovingLinkCat);
   const isLoading = useCat(isLoadingLinksCat);
+  const spaces = useSpaces();
+
+  const otherSpaces = useMemo(
+    () => spaces.filter(space => space.sortKey !== spaceId),
+    [spaceId, spaces]
+  );
 
   const [activeLink, setActiveLink] = useState(null);
   const [showDeleteLinkConfirm, setShowDeleteLinkConfirm] = useState(false);
@@ -33,12 +46,19 @@ export const LinkItems = fastMemo(() => {
   function renderActions() {
     return (
       <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
-        <Button theme="solid" onClick={() => navigateTo('/links/add')} icon={<RiAddLine />}>
+        <Button
+          theme="solid"
+          onClick={() => navigateTo(`/links/add?spaceId=${spaceId}`)}
+          icon={<RiAddLine />}
+        >
           Add link
         </Button>
 
         {links.length > 1 && (
-          <Button onClick={() => navigateTo('/links/reorder')} icon={<RiDragMoveLine />}>
+          <Button
+            onClick={() => navigateTo(`/links/reorder?spaceId=${spaceId}`)}
+            icon={<RiDragMoveLine />}
+          >
             Reorder links
           </Button>
         )}
@@ -59,7 +79,7 @@ export const LinkItems = fastMemo(() => {
     <>
       {renderActions()}
 
-      <Top10Links />
+      <Top10Links spaceId={spaceId} />
 
       {linkGroups.map(group => (
         <div key={group.sortKey} style={{ marginBottom: '2rem' }}>
@@ -73,8 +93,8 @@ export const LinkItems = fastMemo(() => {
                 onClick={() =>
                   navigateTo(
                     group.sortKey === noGroupSortKey
-                      ? '/links/add'
-                      : `/links/add?groupId=${group.sortKey}`
+                      ? `/links/add?spaceId=${spaceId}`
+                      : `/links/add?groupId=${group.sortKey}&spaceId=${spaceId}`
                   )
                 }
               />
@@ -86,7 +106,7 @@ export const LinkItems = fastMemo(() => {
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() => {
-                        navigateTo(`/groups/details?groupId=${group.sortKey}`);
+                        navigateTo(`/groups/details?groupId=${group.sortKey}&spaceId=${spaceId}`);
                       }}
                     >
                       Edit tag
@@ -132,9 +152,13 @@ export const LinkItems = fastMemo(() => {
                       href={link.link}
                       target="_blank"
                       onClick={() => {
-                        updateLinkEffect(link.sortKey, {
-                          count: (link.count || 0) + 1,
-                        });
+                        updateLinkEffect(
+                          link.sortKey,
+                          {
+                            count: (link.count || 0) + 1,
+                          },
+                          spaceId
+                        );
                       }}
                     >
                       <Favicon url={link.link} />
@@ -149,11 +173,34 @@ export const LinkItems = fastMemo(() => {
                         <Dropdown.Menu>
                           <Dropdown.Item
                             onClick={() => {
-                              navigateTo(`/links/details?linkId=${link.sortKey}`);
+                              navigateTo(
+                                `/links/details?linkId=${link.sortKey}&spaceId=${spaceId}`
+                              );
                             }}
                           >
                             Edit link
                           </Dropdown.Item>
+
+                          {otherSpaces.length > 0 && (
+                            <>
+                              <Dropdown.Divider />
+
+                              {otherSpaces.map(space => (
+                                <Dropdown.Item
+                                  key={space.sortKey}
+                                  onClick={() => {
+                                    moveLinkEffect(link, spaceId, space.sortKey);
+                                  }}
+                                  disabled={isMoving}
+                                >
+                                  Move to "{space.title}"
+                                </Dropdown.Item>
+                              ))}
+
+                              <Dropdown.Divider />
+                            </>
+                          )}
+
                           <Dropdown.Item
                             type="danger"
                             onClick={() => {
@@ -194,7 +241,7 @@ export const LinkItems = fastMemo(() => {
         onConfirm={async () => {
           if (!activeLink) return;
 
-          await deleteLinkEffect(activeLink?.sortKey);
+          await deleteLinkEffect(activeLink?.sortKey, { showMessage: true }, spaceId);
           setShowDeleteLinkConfirm(false);
           setActiveLink(null);
         }}
@@ -208,7 +255,7 @@ export const LinkItems = fastMemo(() => {
         onConfirm={async () => {
           if (!activeGroup) return;
 
-          await deleteGroupEffect(activeGroup.sortKey);
+          await deleteGroupEffect(activeGroup.sortKey, spaceId);
           setShowDeleteGroupConfirm(false);
           setActiveGroup(null);
         }}

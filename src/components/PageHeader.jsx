@@ -31,8 +31,8 @@ export function PageHeader({ title, right, isLoading, hasBack }) {
         justify="between"
         align="center"
         titleAlign="left"
-        m="0 0 1rem"
-        p="0.5rem 0 0"
+        p="0.5rem 0.5rem 0"
+        style={{ position: 'sticky', top: 0, backgroundColor: 'var(--semi-color-bg-0)', zIndex: 2 }}
       >
         <Flex direction="row" align="center">
           {iconElement} {title} {isLoading && <Spin style={{ marginLeft: '1rem' }} />}
@@ -43,6 +43,8 @@ export function PageHeader({ title, right, isLoading, hasBack }) {
           </Flex>
         )}
       </Flex>
+
+      <div style={{ height: '0.5rem' }} />
 
       <NewVersionAvailable />
     </>

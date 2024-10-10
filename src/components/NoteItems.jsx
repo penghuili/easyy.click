@@ -1,6 +1,6 @@
 import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
 import { RiAddLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -10,19 +10,32 @@ import { copyToClipboard } from '../lib/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { isDeletingGroupCat } from '../store/group/groupCats.js';
 import { deleteGroupEffect } from '../store/group/groupEffect.js';
-import { isDeletingNoteCat, isLoadingNotesCat, useNoteGroups } from '../store/note/noteCats.js';
-import { deleteNoteEffect } from '../store/note/noteEffect.js';
+import {
+  isDeletingNoteCat,
+  isLoadingNotesCat,
+  isMovingNoteCat,
+  useNoteGroups,
+} from '../store/note/noteCats.js';
+import { deleteNoteEffect, moveNoteEffect } from '../store/note/noteEffect.js';
+import { useSpaces } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
 import { Flex } from './Flex.jsx';
 import { confirmDeleteGroupMessage } from './GroupItems.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
 import { PageLoading } from './PageLoading.jsx';
 
-export const NoteItems = fastMemo(() => {
-  const { groups: noteGroups, notes } = useNoteGroups();
+export const NoteItems = fastMemo(({ spaceId }) => {
+  const { groups: noteGroups, notes } = useNoteGroups(spaceId);
   const isDeletingNote = useCat(isDeletingNoteCat);
   const isDeletingGroup = useCat(isDeletingGroupCat);
   const isLoading = useCat(isLoadingNotesCat);
+  const isMoving = useCat(isMovingNoteCat);
+  const spaces = useSpaces();
+
+  const otherSpaces = useMemo(
+    () => spaces.filter(space => space.sortKey !== spaceId),
+    [spaceId, spaces]
+  );
 
   const [activeNote, setActiveNote] = useState(null);
   const [showDeleteNoteConfirm, setShowDeleteNoteConfirm] = useState(false);
@@ -37,12 +50,19 @@ export const NoteItems = fastMemo(() => {
   function renderActions() {
     return (
       <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
-        <Button theme="solid" onClick={() => navigateTo('/notes/add')} icon={<RiAddLine />}>
+        <Button
+          theme="solid"
+          onClick={() => navigateTo(`/notes/add?spaceId=${spaceId}`)}
+          icon={<RiAddLine />}
+        >
           Add note
         </Button>
 
         {notes.length > 1 && (
-          <Button onClick={() => navigateTo('/notes/reorder')} icon={<RiDragMoveLine />}>
+          <Button
+            onClick={() => navigateTo(`/notes/reorder?spaceId=${spaceId}`)}
+            icon={<RiDragMoveLine />}
+          >
             Reorder notes
           </Button>
         )}
@@ -80,8 +100,8 @@ export const NoteItems = fastMemo(() => {
                 onClick={() =>
                   navigateTo(
                     group.sortKey === noGroupSortKey
-                      ? '/notes/add'
-                      : `/notes/add?groupId=${group.sortKey}`
+                      ? `/notes/add?spaceId=${spaceId}`
+                      : `/notes/add?groupId=${group.sortKey}&spaceId=${spaceId}`
                   )
                 }
               />
@@ -93,7 +113,9 @@ export const NoteItems = fastMemo(() => {
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() => {
-                        navigateTo(`/note-groups/details?groupId=${group.sortKey}`);
+                        navigateTo(
+                          `/note-groups/details?groupId=${group.sortKey}&spaceId=${spaceId}`
+                        );
                       }}
                     >
                       Edit tag
@@ -154,11 +176,34 @@ export const NoteItems = fastMemo(() => {
                         <Dropdown.Menu>
                           <Dropdown.Item
                             onClick={() => {
-                              navigateTo(`/notes/details?noteId=${item.sortKey}`);
+                              navigateTo(
+                                `/notes/details?noteId=${item.sortKey}&spaceId=${spaceId}`
+                              );
                             }}
                           >
                             Edit note
                           </Dropdown.Item>
+
+                          {otherSpaces.length > 0 && (
+                            <>
+                              <Dropdown.Divider />
+
+                              {otherSpaces.map(space => (
+                                <Dropdown.Item
+                                  key={space.sortKey}
+                                  onClick={() => {
+                                    moveNoteEffect(item, spaceId, space.sortKey);
+                                  }}
+                                  disabled={isMoving}
+                                >
+                                  Move to "{space.title}"
+                                </Dropdown.Item>
+                              ))}
+
+                              <Dropdown.Divider />
+                            </>
+                          )}
+
                           <Dropdown.Item
                             type="danger"
                             onClick={() => {
@@ -199,7 +244,7 @@ export const NoteItems = fastMemo(() => {
         onConfirm={async () => {
           if (!activeNote) return;
 
-          await deleteNoteEffect(activeNote?.sortKey);
+          await deleteNoteEffect(activeNote?.sortKey, { showMessage: true }, spaceId);
           setShowDeleteNoteConfirm(false);
           setActiveNote(null);
         }}
@@ -213,7 +258,7 @@ export const NoteItems = fastMemo(() => {
         onConfirm={async () => {
           if (!activeGroup) return;
 
-          await deleteGroupEffect(activeGroup?.sortKey);
+          await deleteGroupEffect(activeGroup?.sortKey, spaceId);
           setShowDeleteGroupConfirm(false);
           setActiveGroup(null);
         }}

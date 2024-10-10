@@ -15,29 +15,29 @@ const titleCat = createCat('');
 const textCat = createCat('');
 const groupIdCat = createCat('');
 
-export const NoteDetails = fastMemo(({ queryParams: { noteId } }) => {
+export const NoteDetails = fastMemo(({ queryParams: { noteId, spaceId } }) => {
   const load = useCallback(async () => {
-    await fetchNoteEffect(noteId);
+    await fetchNoteEffect(noteId, spaceId);
     const note = noteCat.get();
     if (note) {
       titleCat.set(note.title);
       textCat.set(note.text);
       groupIdCat.set(note.groupId);
     }
-  }, [noteId]);
+  }, [noteId, spaceId]);
 
   return (
     <PrepareData load={load}>
       <PageContent>
         <PageHeader title="Edit note" hasBack />
 
-        <NoteForm noteId={noteId} />
+        <NoteForm noteId={noteId} spaceId={spaceId} />
       </PageContent>
     </PrepareData>
   );
 });
 
-const NoteForm = fastMemo(({ noteId }) => {
+const NoteForm = fastMemo(({ noteId, spaceId }) => {
   const note = useCat(noteCat);
   const isUpdating = useCat(isUpdatingNoteCat);
 
@@ -46,25 +46,33 @@ const NoteForm = fastMemo(({ noteId }) => {
   const groupId = useCat(groupIdCat);
 
   const handleSave = useCallback(async () => {
-    await updateNoteEffect(noteId, {
-      encryptedPassword: note.encryptedPassword,
-      title,
-      text,
-      successMessage: 'Encrypted and saved safely in Frankfurt!',
-    });
+    await updateNoteEffect(
+      noteId,
+      {
+        encryptedPassword: note.encryptedPassword,
+        title,
+        text,
+        successMessage: 'Encrypted and saved safely in Frankfurt!',
+      },
+      spaceId
+    );
     goBack();
-  }, [noteId, note.encryptedPassword, title, text]);
+  }, [noteId, note.encryptedPassword, title, text, spaceId]);
 
   const handleUpdateGroup = useCallback(
     async newGroupId => {
       groupIdCat.set(newGroupId);
-      await updateNoteEffect(noteId, {
-        encryptedPassword: note.encryptedPassword,
-        groupId: newGroupId,
-        successMessage: 'Updated!',
-      });
+      await updateNoteEffect(
+        noteId,
+        {
+          encryptedPassword: note.encryptedPassword,
+          groupId: newGroupId,
+          successMessage: 'Updated!',
+        },
+        spaceId
+      );
     },
-    [noteId, note.encryptedPassword]
+    [noteId, note.encryptedPassword, spaceId]
   );
 
   if (!note) {
@@ -89,7 +97,7 @@ const NoteForm = fastMemo(({ noteId }) => {
         onChange={textCat.set}
       />
 
-      <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} />
+      <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} spaceId={spaceId} />
 
       <Button htmlType="submit" theme="solid" disabled={!title || !text || isUpdating}>
         Update note

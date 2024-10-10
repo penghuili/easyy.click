@@ -37,6 +37,10 @@ import { Security } from './views/Security.jsx';
 import { Settings } from './views/Settings.jsx';
 import { SignIn } from './views/SignIn.jsx';
 import { SignUp } from './views/SignUp.jsx';
+import { SpaceAdd } from './views/SpaceAdd.jsx';
+import { SpaceDetails } from './views/SpaceDetails.jsx';
+import { Spaces } from './views/Spaces.jsx';
+import { SpacesReorder } from './views/SpacesReorder.jsx';
 import { Upgrade } from './views/Upgrade.jsx';
 import { Verify2FA } from './views/Verify2FA.jsx';
 import { VerifyEmail } from './views/VerifyEmail.jsx';
@@ -83,6 +87,11 @@ const loggedInRoutes = {
   '/groups/add': GroupAdd,
   '/groups/details': GroupDetails,
   '/groups/reorder': GroupsReorder,
+
+  '/spaces/add': SpaceAdd,
+  '/spaces/details': SpaceDetails,
+  '/spaces/reorder': SpacesReorder,
+  '/spaces': Spaces,
 
   '/account': Account,
   '/security': Security,

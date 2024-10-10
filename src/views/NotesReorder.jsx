@@ -13,10 +13,10 @@ import { fetchNotesEffect, updateNoteEffect } from '../store/note/noteEffect.js'
 
 const activeNoteCat = createCat(null);
 
-export const NotesReorder = fastMemo(() => {
+export const NotesReorder = fastMemo(({ queryParams: { spaceId } }) => {
   const isLoading = useCat(isLoadingNotesCat);
   const isLoadingGroups = useCat(isLoadingGroupsCat);
-  const { groups: noteGroups } = useNoteGroups();
+  const { groups: noteGroups } = useNoteGroups(spaceId);
   const isUpdating = useCat(isUpdatingNoteCat);
 
   const handleReorder = useCallback(({ item }) => {

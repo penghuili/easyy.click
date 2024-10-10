@@ -16,31 +16,32 @@ import {
 } from './groupCats';
 import { createGroup, deleteGroup, fetchGroup, fetchGroups, updateGroup } from './groupNetwork';
 
-export async function fetchGroupsEffect(force, alwaysFetchRemote = true) {
+export async function fetchGroupsEffect(force, alwaysFetchRemote = true, spaceId) {
   if (!groupsCat.get()?.length) {
-    const cachedGroups = LocalStorage.get(localStorageKeys.groups);
+    const cachedGroups = LocalStorage.get(`${localStorageKeys.groups}-${spaceId}`);
     if (cachedGroups?.length) {
-      groupsCat.set(cachedGroups);
+      groupsCat.set({ ...groupsCat.get(), [spaceId]: cachedGroups });
     }
   }
 
   if (force || !groupsCat.get()?.length) {
-    await forceFetchGroupsEffect();
+    await forceFetchGroupsEffect(spaceId);
   } else {
     if (alwaysFetchRemote || !groupsCat.get()?.length) {
-      forceFetchGroupsEffect();
+      forceFetchGroupsEffect(spaceId);
     }
   }
 }
 
-async function forceFetchGroupsEffect() {
+async function forceFetchGroupsEffect(spaceId) {
   isLoadingGroupsCat.set(true);
 
-  const { data } = await fetchGroups();
+  const { data } = await fetchGroups(spaceId);
   if (data) {
     myWorker.postMessage({
       type: workerActionTypes.DECRYPT_GROUPS,
       groups: data,
+      spaceId,
       privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
     });
   } else {
@@ -48,10 +49,10 @@ async function forceFetchGroupsEffect() {
   }
 }
 
-export async function fetchGroupEffect(groupId) {
+export async function fetchGroupEffect(groupId, spaceId) {
   isLoadingGroupCat.set(true);
 
-  const { data } = await fetchGroup(groupId);
+  const { data } = await fetchGroup(groupId, spaceId);
   if (data) {
     groupCat.set(data);
   }
@@ -59,12 +60,12 @@ export async function fetchGroupEffect(groupId) {
   isLoadingGroupCat.set(false);
 }
 
-export async function createGroupEffect(title) {
+export async function createGroupEffect(title, spaceId) {
   isCreatingGroupCat.set(true);
 
-  const { data } = await createGroup({ title });
+  const { data } = await createGroup({ title }, spaceId);
   if (data) {
-    updateGroupsState(data, 'create');
+    updateGroupsState(data, 'create', spaceId);
     setToastEffect('Created!');
   }
 
@@ -73,33 +74,33 @@ export async function createGroupEffect(title) {
   return data;
 }
 
-export async function updateGroupEffect(groupId, { encryptedPassword, title, position }) {
+export async function updateGroupEffect(groupId, { encryptedPassword, title, position }, spaceId) {
   isUpdatingGroupCat.set(true);
 
-  const { data } = await updateGroup(groupId, { encryptedPassword, title, position });
+  const { data } = await updateGroup(groupId, { encryptedPassword, title, position }, spaceId);
   if (data) {
-    updateGroupsState(data, 'update');
+    updateGroupsState(data, 'update', spaceId);
     setToastEffect('Updated!');
   }
 
   isUpdatingGroupCat.set(false);
 }
 
-export async function deleteGroupEffect(groupId) {
+export async function deleteGroupEffect(groupId, spaceId) {
   isDeletingGroupCat.set(true);
 
-  const { data } = await deleteGroup(groupId);
+  const { data } = await deleteGroup(groupId, spaceId);
 
   if (data) {
-    updateGroupsState(data, 'delete');
+    updateGroupsState(data, 'delete', spaceId);
     setToastEffect('Deleted!');
   }
 
   isDeletingGroupCat.set(false);
 }
 
-function updateGroupsState(data, type) {
-  const groupsInState = groupsCat.get() || [];
+export function updateGroupsState(data, type, spaceId) {
+  const groupsInState = groupsCat.get()[spaceId] || [];
 
   let newItems = groupsInState;
   if (type === 'update') {
@@ -115,6 +116,6 @@ function updateGroupsState(data, type) {
     newItems = data;
   }
 
-  groupsCat.set(newItems);
-  LocalStorage.set(localStorageKeys.groups, newItems);
+  groupsCat.set({ ...groupsCat.get(), [spaceId]: newItems });
+  LocalStorage.set(`${localStorageKeys.groups}-${spaceId}`, newItems);
 }

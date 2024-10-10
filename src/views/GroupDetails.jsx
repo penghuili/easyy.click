@@ -12,35 +12,39 @@ import { fetchGroupEffect, updateGroupEffect } from '../store/group/groupEffect.
 
 const titleCat = createCat('');
 
-export const GroupDetails = fastMemo(({ queryParams: { groupId } }) => {
+export const GroupDetails = fastMemo(({ queryParams: { groupId, spaceId } }) => {
   const load = useCallback(async () => {
-    await fetchGroupEffect(groupId);
+    await fetchGroupEffect(groupId, spaceId);
     const group = groupCat.get();
     if (group) {
       titleCat.set(group.title);
     }
-  }, [groupId]);
+  }, [groupId, spaceId]);
 
   return (
     <PrepareData load={load}>
       <PageContent>
         <PageHeader title="Edit tag" hasBack />
 
-        <GroupForm groupId={groupId} />
+        <GroupForm groupId={groupId} spaceId={spaceId} />
       </PageContent>
     </PrepareData>
   );
 });
 
-const GroupForm = fastMemo(({ groupId }) => {
+const GroupForm = fastMemo(({ groupId, spaceId }) => {
   const group = useCat(groupCat);
   const title = useCat(titleCat);
   const isUpdating = useCat(isUpdatingGroupCat);
 
   const handleSave = useCallback(async () => {
-    await updateGroupEffect(groupId, { encryptedPassword: group.encryptedPassword, title });
+    await updateGroupEffect(
+      groupId,
+      { encryptedPassword: group.encryptedPassword, title },
+      spaceId
+    );
     goBack();
-  }, [groupId, group.encryptedPassword, title]);
+  }, [groupId, group.encryptedPassword, title, spaceId]);
 
   if (!group) {
     return null;

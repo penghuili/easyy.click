@@ -7,8 +7,8 @@ import { updateLinkEffect } from '../store/link/linkEffect.js';
 import { Flex } from './Flex.jsx';
 import { Link } from './Link.jsx';
 
-export const Top10Links = fastMemo(() => {
-  const links = useTop10Links();
+export const Top10Links = fastMemo(({ spaceId }) => {
+  const links = useTop10Links(spaceId);
 
   if (links.length < 2) {
     return null;
@@ -50,9 +50,13 @@ export const Top10Links = fastMemo(() => {
             alignItems: 'baseline',
           }}
           onClick={() => {
-            updateLinkEffect(link.sortKey, {
-              count: (link.count || 0) + 1,
-            });
+            updateLinkEffect(
+              link.sortKey,
+              {
+                count: (link.count || 0) + 1,
+              },
+              spaceId
+            );
           }}
         >
           {link.title}

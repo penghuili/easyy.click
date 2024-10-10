@@ -10,37 +10,39 @@ import {
   isDeletingLinkCat,
   isLoadingLinkCat,
   isLoadingLinksCat,
+  isMovingLinkCat,
   isUpdatingLinkCat,
   linkCat,
   linksCat,
 } from './linkCats';
 import { createLink, deleteLink, fetchLink, fetchLinks, updateLink } from './linkNetwork';
 
-export async function fetchLinksEffect(force, alwaysFetchRemote = true) {
+export async function fetchLinksEffect(force, alwaysFetchRemote = true, spaceId) {
   if (!linksCat.get()?.length) {
-    const cachedLinks = LocalStorage.get(localStorageKeys.links);
+    const cachedLinks = LocalStorage.get(`${localStorageKeys.links}-${spaceId}`);
     if (cachedLinks?.length) {
-      linksCat.set(cachedLinks);
+      linksCat.set({ ...linksCat.get(), [spaceId]: cachedLinks });
     }
   }
 
   if (force || !linksCat.get()?.length) {
-    await forceFetchLinksEffect();
+    await forceFetchLinksEffect(spaceId);
   } else {
     if (alwaysFetchRemote || !linksCat.get()?.length) {
-      forceFetchLinksEffect();
+      forceFetchLinksEffect(spaceId);
     }
   }
 }
 
-async function forceFetchLinksEffect() {
+async function forceFetchLinksEffect(spaceId) {
   isLoadingLinksCat.set(true);
 
-  const { data } = await fetchLinks();
+  const { data } = await fetchLinks(spaceId);
   if (data) {
     myWorker.postMessage({
       type: workerActionTypes.DECRYPT_LINKS,
       links: data,
+      spaceId,
       privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
     });
   } else {
@@ -48,10 +50,10 @@ async function forceFetchLinksEffect() {
   }
 }
 
-export async function fetchLinkEffect(linkId) {
+export async function fetchLinkEffect(linkId, spaceId) {
   isLoadingLinkCat.set(true);
 
-  const { data } = await fetchLink(linkId);
+  const { data } = await fetchLink(linkId, spaceId);
   if (data) {
     linkCat.set(data);
   }
@@ -59,34 +61,52 @@ export async function fetchLinkEffect(linkId) {
   isLoadingLinkCat.set(false);
 }
 
-export async function createLinkEffect(title, link, groupId) {
+export async function createLinkEffect({ title, link, groupId, showMessage }, spaceId) {
   isCreatingLinkCat.set(true);
 
-  const { data } = await createLink({ title, link, groupId });
+  const { data } = await createLink({ title, link, groupId }, spaceId);
   if (data) {
-    updateLinksState(data, 'create');
-    setToastEffect('Encrypted and saved safely in Frankfurt!');
+    updateLinksState(data, 'create', spaceId);
+    if (showMessage) {
+      setToastEffect('Encrypted and saved safely in Frankfurt!');
+    }
   }
 
   isCreatingLinkCat.set(false);
 }
 
+export async function moveLinkEffect(link, fromSpaceId, toSpaceId) {
+  isMovingLinkCat.set(true);
+
+  await createLinkEffect({ title: link.title, link: link.link, showMessage: false }, toSpaceId);
+  await deleteLinkEffect(link.sortKey, { showMessage: false }, fromSpaceId);
+
+  setToastEffect('Moved!');
+
+  isMovingLinkCat.set(false);
+}
+
 export async function updateLinkEffect(
   linkId,
-  { encryptedPassword, title, link, groupId, position, count, successMessage }
+  { encryptedPassword, title, link, groupId, position, count, successMessage },
+  spaceId
 ) {
   isUpdatingLinkCat.set(true);
 
-  const { data } = await updateLink(linkId, {
-    encryptedPassword,
-    title,
-    link,
-    groupId,
-    position,
-    count,
-  });
+  const { data } = await updateLink(
+    linkId,
+    {
+      encryptedPassword,
+      title,
+      link,
+      groupId,
+      position,
+      count,
+    },
+    spaceId
+  );
   if (data) {
-    updateLinksState(data, 'update');
+    updateLinksState(data, 'update', spaceId);
     if (successMessage) {
       setToastEffect(successMessage);
     }
@@ -95,21 +115,23 @@ export async function updateLinkEffect(
   isUpdatingLinkCat.set(false);
 }
 
-export async function deleteLinkEffect(linkId) {
+export async function deleteLinkEffect(linkId, { showMessage }, spaceId) {
   isDeletingLinkCat.set(true);
 
-  const { data } = await deleteLink(linkId);
+  const { data } = await deleteLink(linkId, spaceId);
 
   if (data) {
-    updateLinksState(data, 'delete');
-    setToastEffect('Deleted!');
+    updateLinksState(data, 'delete', spaceId);
+    if (showMessage) {
+      setToastEffect('Deleted!');
+    }
   }
 
   isDeletingLinkCat.set(false);
 }
 
-function updateLinksState(data, type) {
-  const linksInState = linksCat.get() || [];
+export function updateLinksState(data, type, spaceId) {
+  const linksInState = linksCat.get()[spaceId] || [];
 
   let newItems = linksInState;
   if (type === 'update') {
@@ -125,6 +147,6 @@ function updateLinksState(data, type) {
     newItems = data;
   }
 
-  linksCat.set(newItems);
-  LocalStorage.set(localStorageKeys.links, newItems);
+  linksCat.set({ ...linksCat.get(), [spaceId]: newItems });
+  LocalStorage.set(`${localStorageKeys.links}-${spaceId}`, newItems);
 }

@@ -9,15 +9,15 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isCreatingGroupCat } from '../store/group/groupCats.js';
 import { createGroupEffect } from '../store/group/groupEffect.js';
 
-export const GroupAdd = fastMemo(() => {
+export const GroupAdd = fastMemo(({ queryParams: { spaceId } }) => {
   const isCreating = useCat(isCreatingGroupCat);
 
   const [title, setTitle] = useState('');
 
   const handleSave = useCallback(async () => {
-    await createGroupEffect(title);
+    await createGroupEffect(title, spaceId);
     goBack();
-  }, [title]);
+  }, [spaceId, title]);
 
   return (
     <PageContent>

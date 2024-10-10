@@ -10,37 +10,39 @@ import {
   isDeletingNoteCat,
   isLoadingNoteCat,
   isLoadingNotesCat,
+  isMovingNoteCat,
   isUpdatingNoteCat,
   noteCat,
   notesCat,
 } from './noteCats';
 import { createNote, deleteNote, fetchNote, fetchNotes, updateNote } from './noteNetwork';
 
-export async function fetchNotesEffect(force, alwaysFetchRemote = true) {
+export async function fetchNotesEffect(force, alwaysFetchRemote = true, spaceId) {
   if (!notesCat.get()?.length) {
-    const cachedNotes = LocalStorage.get(localStorageKeys.notes);
+    const cachedNotes = LocalStorage.get(`${localStorageKeys.notes}-${spaceId}`);
     if (cachedNotes?.length) {
-      notesCat.set(cachedNotes);
+      notesCat.set({ ...notesCat.get(), [spaceId]: cachedNotes });
     }
   }
 
   if (force || !notesCat.get()?.length) {
-    await forceFetchNotesEffect();
+    await forceFetchNotesEffect(spaceId);
   } else {
     if (alwaysFetchRemote || !notesCat.get()?.length) {
-      forceFetchNotesEffect();
+      forceFetchNotesEffect(spaceId);
     }
   }
 }
 
-async function forceFetchNotesEffect() {
+async function forceFetchNotesEffect(spaceId) {
   isLoadingNotesCat.set(true);
 
-  const { data } = await fetchNotes();
+  const { data } = await fetchNotes(spaceId);
   if (data) {
     myWorker.postMessage({
       type: workerActionTypes.DECRYPT_NOTES,
       notes: data,
+      spaceId,
       privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
     });
   } else {
@@ -48,10 +50,10 @@ async function forceFetchNotesEffect() {
   }
 }
 
-export async function fetchNoteEffect(noteId) {
+export async function fetchNoteEffect(noteId, spaceId) {
   isLoadingNoteCat.set(true);
 
-  const { data } = await fetchNote(noteId);
+  const { data } = await fetchNote(noteId, spaceId);
   if (data) {
     noteCat.set(data);
   }
@@ -59,27 +61,45 @@ export async function fetchNoteEffect(noteId) {
   isLoadingNoteCat.set(false);
 }
 
-export async function createNoteEffect(title, text, groupId) {
+export async function createNoteEffect({ title, text, groupId, showMessage }, spaceId) {
   isCreatingNoteCat.set(true);
 
-  const { data } = await createNote({ title, text, groupId });
+  const { data } = await createNote({ title, text, groupId }, spaceId);
   if (data) {
-    updateNotesState(data, 'create');
-    setToastEffect('Encrypted and saved safely in Frankfurt!');
+    updateNotesState(data, 'create', spaceId);
+    if (showMessage) {
+      setToastEffect('Encrypted and saved safely in Frankfurt!');
+    }
   }
 
   isCreatingNoteCat.set(false);
 }
 
+export async function moveNoteEffect(note, fromSpaceId, toSpaceId) {
+  isMovingNoteCat.set(true);
+
+  await createNoteEffect({ title: note.title, text: note.text, showMessage: false }, toSpaceId);
+  await deleteNoteEffect(note.sortKey, { showMessage: false }, fromSpaceId);
+
+  setToastEffect('Moved!');
+
+  isMovingNoteCat.set(false);
+}
+
 export async function updateNoteEffect(
   noteId,
-  { encryptedPassword, title, text, groupId, position, successMessage }
+  { encryptedPassword, title, text, groupId, position, successMessage },
+  spaceId
 ) {
   isUpdatingNoteCat.set(true);
 
-  const { data } = await updateNote(noteId, { encryptedPassword, title, text, groupId, position });
+  const { data } = await updateNote(
+    noteId,
+    { encryptedPassword, title, text, groupId, position },
+    spaceId
+  );
   if (data) {
-    updateNotesState(data, 'update');
+    updateNotesState(data, 'update', spaceId);
     if (successMessage) {
       setToastEffect(successMessage);
     }
@@ -88,21 +108,23 @@ export async function updateNoteEffect(
   isUpdatingNoteCat.set(false);
 }
 
-export async function deleteNoteEffect(noteId) {
+export async function deleteNoteEffect(noteId, { showMessage }, spaceId) {
   isDeletingNoteCat.set(true);
 
-  const { data } = await deleteNote(noteId);
+  const { data } = await deleteNote(noteId, spaceId);
 
   if (data) {
-    updateNotesState(data, 'delete');
-    setToastEffect('Deleted!');
+    updateNotesState(data, 'delete', spaceId);
+    if (showMessage) {
+      setToastEffect('Deleted!');
+    }
   }
 
   isDeletingNoteCat.set(false);
 }
 
-function updateNotesState(data, type) {
-  const notesInState = notesCat.get() || [];
+export function updateNotesState(data, type, spaceId) {
+  const notesInState = notesCat.get()[spaceId] || [];
 
   let newItems = notesInState;
   if (type === 'update') {
@@ -118,6 +140,6 @@ function updateNotesState(data, type) {
     newItems = data;
   }
 
-  notesCat.set(newItems);
-  LocalStorage.set(localStorageKeys.notes, newItems);
+  notesCat.set({ ...notesCat.get(), [spaceId]: newItems });
+  LocalStorage.set(`${localStorageKeys.notes}-${spaceId}`, newItems);
 }

@@ -11,7 +11,7 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isCreatingLinkCat } from '../store/link/linkCats.js';
 import { createLinkEffect } from '../store/link/linkEffect.js';
 
-export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) => {
+export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, spaceId } }) => {
   const isCreating = useCat(isCreatingLinkCat);
 
   const [title, setTitle] = useState('');
@@ -21,9 +21,9 @@ export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
   );
 
   const handleSave = useCallback(async () => {
-    await createLinkEffect(title, link, groupId);
+    await createLinkEffect({ title, link, groupId, showMessage: true }, spaceId);
     goBack();
-  }, [title, link, groupId]);
+  }, [title, link, groupId, spaceId]);
 
   return (
     <PageContent>
@@ -46,7 +46,7 @@ export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery } }) =
           onChange={setLink}
         />
 
-        <GroupSelector groupId={groupId} onSelect={setGroupId} />
+        <GroupSelector groupId={groupId} onSelect={setGroupId} spaceId={spaceId} />
 
         <Button htmlType="submit" theme="solid" disabled={!link || !title || isCreating}>
           Add link

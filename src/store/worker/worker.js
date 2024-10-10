@@ -5,17 +5,17 @@ self.onmessage = async function (event) {
 
   try {
     if (type === workerActionTypes.DECRYPT_LINKS) {
-      const { links, privateKey, rest } = event.data;
+      const { links, spaceId, privateKey, rest } = event.data;
       const decrypted = await decryptLinks(links, privateKey);
-      self.postMessage({ type, decryptedItems: decrypted, rest });
+      self.postMessage({ type, decryptedItems: decrypted, spaceId, rest });
     } else if (type === workerActionTypes.DECRYPT_NOTES) {
-      const { notes, privateKey, rest } = event.data;
+      const { notes, spaceId, privateKey, rest } = event.data;
       const decrypted = await decryptNotes(notes, privateKey);
-      self.postMessage({ type, decryptedItems: decrypted, rest });
+      self.postMessage({ type, decryptedItems: decrypted, spaceId, rest });
     } else if (type === workerActionTypes.DECRYPT_GROUPS) {
-      const { groups, privateKey } = event.data;
+      const { groups, spaceId, privateKey } = event.data;
       const decrypted = await decryptGroups(groups, privateKey);
-      self.postMessage({ type, decryptedItems: decrypted });
+      self.postMessage({ type, decryptedItems: decrypted, spaceId });
     } else if (type === workerActionTypes.DECRYPT_SPACES) {
       const { spaces, privateKey } = event.data;
       const decrypted = await decryptSpaces(spaces, privateKey);

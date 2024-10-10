@@ -5,7 +5,7 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { groupsCat, isDeletingGroupCat, isLoadingGroupsCat } from '../store/group/groupCats.js';
+import { isDeletingGroupCat, isLoadingGroupsCat, useGroups } from '../store/group/groupCats.js';
 import { deleteGroupEffect } from '../store/group/groupEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Flex } from './Flex.jsx';
@@ -14,35 +14,54 @@ import { PageLoading } from './PageLoading.jsx';
 
 export const confirmDeleteGroupMessage = `Only this tag will be deleted, your links / notes with this tag will be moved to "Links without tag" or "Notes without tag". Go ahead?`;
 
-export const GroupItems = fastMemo(() => {
-  const groups = useCat(groupsCat);
+export const GroupItems = fastMemo(({ spaceId }) => {
+  const groups = useGroups(spaceId);
   const isDeletingGroup = useCat(isDeletingGroupCat);
   const isLoading = useCat(isLoadingGroupsCat);
 
   const [activeGroup, setActiveGroup] = useState(null);
   const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
 
+  const renderActions = () => {
+    return (
+      <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
+        <Button
+          theme="solid"
+          onClick={() => navigateTo(`/groups/add?spaceId=${spaceId}`)}
+          icon={<RiAddLine />}
+        >
+          Add tag
+        </Button>
+
+        {groups.length > 1 && (
+          <Button
+            onClick={() => navigateTo(`/groups/reorder?spaceId=${spaceId}`)}
+            icon={<RiDragMoveLine />}
+          >
+            Reorder tags
+          </Button>
+        )}
+      </Flex>
+    );
+  };
+
   if (!groups.length) {
-    return isLoading ? (
-      <PageLoading />
-    ) : (
-      <PageEmpty>Use tags to organise your links and notes.</PageEmpty>
+    return (
+      <>
+        {renderActions()}
+
+        {isLoading ? (
+          <PageLoading />
+        ) : (
+          <PageEmpty>Use tags to organise your links and notes.</PageEmpty>
+        )}
+      </>
     );
   }
 
   return (
     <>
-      <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
-        <Button theme="solid" onClick={() => navigateTo('/groups/add')} icon={<RiAddLine />}>
-          Add tag
-        </Button>
-
-        {groups.length > 1 && (
-          <Button onClick={() => navigateTo('/groups/reorder')} icon={<RiDragMoveLine />}>
-            Reorder tags
-          </Button>
-        )}
-      </Flex>
+      {renderActions()}
 
       <Row type="flex">
         {groups.map(group => (
@@ -68,7 +87,7 @@ export const GroupItems = fastMemo(() => {
                 <Dropdown.Menu>
                   <Dropdown.Item
                     onClick={() => {
-                      navigateTo(`/groups/details?groupId=${group.sortKey}`);
+                      navigateTo(`/groups/details?groupId=${group.sortKey}&spaceId=${spaceId}`);
                     }}
                   >
                     Edit tag
@@ -107,7 +126,7 @@ export const GroupItems = fastMemo(() => {
         onConfirm={async () => {
           if (!activeGroup) return;
 
-          await deleteGroupEffect(activeGroup.sortKey);
+          await deleteGroupEffect(activeGroup.sortKey, spaceId);
           setShowDeleteGroupConfirm(false);
           setActiveGroup(null);
         }}

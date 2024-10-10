@@ -11,27 +11,34 @@ import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat, isUpdatingLinkCat, useLinkGroups } from '../store/link/linkCats.js';
 import { fetchLinksEffect, updateLinkEffect } from '../store/link/linkEffect.js';
 
-export const LinksReorder = fastMemo(() => {
+export const LinksReorder = fastMemo(({ queryParams: { spaceId } }) => {
   const isLoadingLinks = useCat(isLoadingLinksCat);
   const isLoadingGroups = useCat(isLoadingGroupsCat);
-  const { groups: linkGroups } = useLinkGroups();
+  const { groups: linkGroups } = useLinkGroups(false, spaceId);
   const isUpdating = useCat(isUpdatingLinkCat);
 
-  const handleReorder = useCallback(({ item }) => {
-    if (item) {
-      updateLinkEffect(item.sortKey, {
-        encryptedPassword: item.encryptedPassword,
-        position: item.position,
-        groupId: item.groupId === noGroupSortKey ? null : item.groupId,
-        successMessage: 'Updated!',
-      });
-    }
-  }, []);
+  const handleReorder = useCallback(
+    ({ item }) => {
+      if (item) {
+        updateLinkEffect(
+          item.sortKey,
+          {
+            encryptedPassword: item.encryptedPassword,
+            position: item.position,
+            groupId: item.groupId === noGroupSortKey ? null : item.groupId,
+            successMessage: 'Updated!',
+          },
+          spaceId
+        );
+      }
+    },
+    [spaceId]
+  );
 
   useEffect(() => {
-    fetchLinksEffect(false, false);
-    fetchGroupsEffect(false, false);
-  }, []);
+    fetchLinksEffect(false, false, spaceId);
+    fetchGroupsEffect(false, false, spaceId);
+  }, [spaceId]);
 
   return (
     <PageContent paddingBottom="0">
