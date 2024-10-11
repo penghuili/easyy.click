@@ -1,5 +1,5 @@
 import { Avatar, Button, Form, Typography } from '@douyinfe/semi-ui';
-import { RiRestartLine } from '@remixicon/react';
+import { RiMailLine, RiRestartLine } from '@remixicon/react';
 import React, { useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -19,6 +19,8 @@ import {
   resendVerificationCodeEffect,
   verifyEmailEffect,
 } from '../shared/browser/store/sharedEffects';
+import { contactEmail } from '../shared/js/constants.js';
+import { copyContactEmailEffect } from '../store/settings/settingsEffect.js';
 
 export const VerifyEmail = fastMemo(() => {
   const user = useCat(userCat);
@@ -74,6 +76,10 @@ export const VerifyEmail = fastMemo(() => {
         </Button>
 
         <LogoutLink />
+
+        <Button theme="borderless" icon={<RiMailLine />} onClick={copyContactEmailEffect}>
+          Contact: {contactEmail}
+        </Button>
 
         <DeleteAccountLink />
 

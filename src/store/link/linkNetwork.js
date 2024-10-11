@@ -50,7 +50,7 @@ export async function fetchLink(linkId, spaceId) {
   }
 }
 
-export async function createLink({ title, link, groupId }, spaceId) {
+export async function createLink({ title, link, count, groupId }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
@@ -83,6 +83,7 @@ export async function createLink({ title, link, groupId }, spaceId) {
         encryptedPassword,
         title: encryptedTitle,
         link: encryptedLink,
+        count,
         groupId,
       }
     );

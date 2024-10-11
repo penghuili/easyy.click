@@ -69,10 +69,10 @@ export async function fetchLinkEffect(linkId, spaceId) {
   isLoadingLinkCat.set(false);
 }
 
-export async function createLinkEffect({ title, link, groupId, showMessage }, spaceId) {
+export async function createLinkEffect({ title, link, count, groupId, showMessage }, spaceId) {
   isCreatingLinkCat.set(true);
 
-  const { data } = await createLink({ title, link, groupId }, spaceId);
+  const { data } = await createLink({ title, link, count, groupId }, spaceId);
   if (data) {
     updateLinksState(data, 'create', spaceId);
     if (showMessage) {
@@ -86,7 +86,15 @@ export async function createLinkEffect({ title, link, groupId, showMessage }, sp
 export async function moveLinkEffect(link, fromSpaceId, toSpaceId) {
   isMovingLinkCat.set(true);
 
-  await createLinkEffect({ title: link.title, link: link.link, showMessage: false }, toSpaceId);
+  await createLinkEffect(
+    {
+      title: link.title,
+      link: link.link,
+      count: link.count,
+      showMessage: false,
+    },
+    toSpaceId
+  );
   await deleteLinkEffect(link.sortKey, { showMessage: false }, fromSpaceId);
 
   setToastEffect('Moved!');

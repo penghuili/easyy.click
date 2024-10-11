@@ -8,19 +8,14 @@ import {
   RiServiceLine,
   RiTwitterXLine,
 } from '@remixicon/react';
-import React, { useCallback } from 'react';
+import React from 'react';
 import fastMemo from 'react-fast-memo';
 
-import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
-import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { contactEmail } from '../shared/js/constants.js';
+import { copyContactEmailEffect } from '../store/settings/settingsEffect.js';
 import { ItemsWrapper } from './ItemsWrapper.jsx';
 
 export const PublicLinks = fastMemo(() => {
-  const handleCopyEmail = useCallback(async () => {
-    await copyToClipboard('peng@tuta.com');
-    setToastEffect('Contact email is copied!');
-  }, []);
-
   return (
     <ItemsWrapper align="start">
       <a href="https://easyy.click" target="_blank" rel="noreferrer">
@@ -59,8 +54,8 @@ export const PublicLinks = fastMemo(() => {
         </Button>
       </a>
 
-      <Button theme="borderless" icon={<RiMailLine />} onClick={handleCopyEmail}>
-        Contact: peng@tuta.com
+      <Button theme="borderless" icon={<RiMailLine />} onClick={copyContactEmailEffect}>
+        Contact: {contactEmail}
       </Button>
     </ItemsWrapper>
   );

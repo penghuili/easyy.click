@@ -1,6 +1,8 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { copyToClipboard } from '../../shared/browser/copyToClipboard';
 import { setSettingsEffect, setToastEffect } from '../../shared/browser/store/sharedEffects';
+import { contactEmail } from '../../shared/js/constants';
 import {
   changelogCat,
   isCreatingChangelogCat,
@@ -49,4 +51,9 @@ export async function usedPasswordManagerEffect() {
   }
 
   isUsingPasswordManagerCat.set(false);
+}
+
+export async function copyContactEmailEffect() {
+  await copyToClipboard(contactEmail);
+  setToastEffect('Copied!');
 }

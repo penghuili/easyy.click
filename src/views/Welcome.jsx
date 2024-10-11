@@ -1,22 +1,17 @@
 import { Avatar, Button, Typography } from '@douyinfe/semi-ui';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { BabyLink } from 'react-baby-router';
 
 import { DarkMode } from '../components/DarkMode.jsx';
 import { Flex } from '../components/Flex';
 import { ItemsWrapper } from '../components/ItemsWrapper';
 import { Link } from '../components/Link.jsx';
-import { copyToClipboard } from '../lib/copyToClipboard.js';
 import { logo } from '../shared/browser/initShared';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { contactEmail } from '../shared/js/constants.js';
+import { copyContactEmailEffect } from '../store/settings/settingsEffect.js';
 
 export function Welcome() {
-  const handleCopyEmail = useCallback(async () => {
-    await copyToClipboard('peng@tuta.com');
-    setToastEffect('Contact email is copied!');
-  }, []);
-
   return (
     <PageContent>
       <ItemsWrapper>
@@ -66,8 +61,8 @@ export function Welcome() {
           x.com
         </Link>
 
-        <Link onClick={handleCopyEmail} style={{ cursor: 'pointer' }}>
-          Contact: peng@tuta.com
+        <Link onClick={copyContactEmailEffect} style={{ cursor: 'pointer' }}>
+          Contact: {contactEmail}
         </Link>
 
         <DarkMode />

@@ -6,7 +6,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { noGroupSortKey } from '../lib/constants.js';
-import { copyToClipboard } from '../lib/copyToClipboard.js';
+import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { isDeletingGroupCat } from '../store/group/groupCats.js';
 import { deleteGroupEffect } from '../store/group/groupEffect.js';
