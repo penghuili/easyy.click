@@ -70,7 +70,7 @@ const Intro = fastMemo(() => {
   );
 });
 
-const FreeTrialStatus = fastMemo(() => {
+export const FreeTrialStatus = fastMemo(() => {
   const expiresAt = useExpiresAt();
   const freeTrialUntil = useFreeTrialsUntil();
 

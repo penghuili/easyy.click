@@ -10,3 +10,13 @@ export async function freeTrial() {
     return { data: null, error };
   }
 }
+
+export async function verifyGumroadLicenseKey(licenseKey) {
+  try {
+    const data = await HTTP.post(appName, `/v1/gumroad`, { licenseKey });
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}

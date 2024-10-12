@@ -25,6 +25,7 @@ import { Demo } from './views/Demo.jsx';
 import { GroupAdd } from './views/GroupAdd.jsx';
 import { GroupDetails } from './views/GroupDetails.jsx';
 import { GroupsReorder } from './views/GroupsReorder.jsx';
+import { Gumroad } from './views/Gumroad.jsx';
 import { Home } from './views/Home.jsx';
 import { LinkAdd } from './views/LinkAdd.jsx';
 import { LinkDetails } from './views/LinkDetails.jsx';
@@ -100,6 +101,7 @@ const loggedInRoutes = {
   '/settings': Settings,
 
   '/upgrade': Upgrade,
+  '/gumroad': Gumroad,
 
   '/demo': Demo,
   '/changelog': Changelog,
