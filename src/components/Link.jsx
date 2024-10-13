@@ -7,7 +7,6 @@ export function Link({ href, onClick, target, children, style, small, m }) {
       link={{
         href,
         target,
-        rel: 'noreferrer noopener',
       }}
       onClick={onClick}
       size={small ? 'small' : undefined}

@@ -27,8 +27,9 @@ import { GroupDetails } from './views/GroupDetails.jsx';
 import { GroupsReorder } from './views/GroupsReorder.jsx';
 import { Gumroad } from './views/Gumroad.jsx';
 import { Home } from './views/Home.jsx';
-import { LinkAdd } from './views/LinkAdd.jsx';
 import { LinkDetails } from './views/LinkDetails.jsx';
+import { LinksAdd } from './views/LinksAdd.jsx';
+import { LinksImport } from './views/LinksImport.jsx';
 import { LinksReorder } from './views/LinksReorder.jsx';
 import { NoteAdd } from './views/NoteAdd.jsx';
 import { NoteDetails } from './views/NoteDetails.jsx';
@@ -81,9 +82,10 @@ const loggedInRoutes = {
   '/notes/details': NoteDetails,
   '/notes/reorder': NotesReorder,
 
-  '/links/add': LinkAdd,
+  '/links/add': LinksAdd,
   '/links/details': LinkDetails,
   '/links/reorder': LinksReorder,
+  '/links/import': LinksImport,
 
   '/groups/add': GroupAdd,
   '/groups/details': GroupDetails,

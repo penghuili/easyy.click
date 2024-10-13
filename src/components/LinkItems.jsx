@@ -1,5 +1,5 @@
 import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
-import { RiAddLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
+import { RiAddLine, RiDragMoveLine, RiImportLine, RiMore2Line } from '@remixicon/react';
 import React, { useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -62,6 +62,30 @@ export const LinkItems = fastMemo(({ spaceId }) => {
             Reorder links
           </Button>
         )}
+
+        <Dropdown
+          trigger="click"
+          position={'bottomLeft'}
+          clickToHide
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item
+                icon={<RiImportLine />}
+                onClick={() => navigateTo(`/links/import?spaceId=${spaceId}`)}
+              >
+                Import browser bookmarks
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          }
+        >
+          <Button
+            theme="borderless"
+            icon={<RiMore2Line />}
+            style={{
+              marginRight: 2,
+            }}
+          />
+        </Dropdown>
       </Flex>
     );
   }

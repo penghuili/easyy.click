@@ -14,8 +14,9 @@ export function SpaceHint({ spaceId }) {
 
   return (
     <Flex direction="row" align="center" m="0 0 1rem" gap="0.25rem">
+      This happens in space
       <RiPlanetLine color={space.color} />
-      <Typography.Text style={{ color: space.color }}>{space.title}</Typography.Text>
+      <Typography.Text style={{ color: space.color }}>{space.title}</Typography.Text>.
     </Flex>
   );
 }

@@ -1,19 +1,16 @@
-import { ArrayField, Button, Form, Input, Typography } from '@douyinfe/semi-ui';
+import { ArrayField, Button, Form, Input, Typography, useFormState } from '@douyinfe/semi-ui';
 import { RiAddLine, RiDeleteBinLine } from '@remixicon/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { Flex } from '../components/Flex.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
-import { SpaceHint } from '../components/SpaceHint.jsx';
-import { PageContent } from '../shared/browser/PageContent.jsx';
 import { debounce } from '../shared/js/debounce.js';
 import { isCreatingGroupCat, useGroups } from '../store/group/groupCats.js';
 import { createGroupEffect, fetchGroupsEffect } from '../store/group/groupEffect.js';
-import { isCreatingLinksCat, isLoadingPageInfoCat } from '../store/link/linkCats.js';
+import { isCreatingLinksCat } from '../store/link/linkCats.js';
 import { createLinksEffect, fetchPageInfoEffect } from '../store/link/linkEffect.js';
+import { Flex } from './Flex.jsx';
 
 const debouncedFetchInfo = debounce(async (pageLink, ref, linkIndex) => {
   if (!pageLink || !pageLink.trim()) {
@@ -26,67 +23,70 @@ const debouncedFetchInfo = debounce(async (pageLink, ref, linkIndex) => {
   }
 }, 500);
 
-export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, spaceId } }) => {
-  const isCreating = useCat(isCreatingLinksCat);
-  const isLoadingPageInfo = useCat(isLoadingPageInfoCat);
-  const groups = useGroups(spaceId);
-
-  const formRef = useRef(null);
-  const [formValues, setFormValues] = useState();
-
-  const filledForm =
-    !!formValues?.links?.length && formValues.links.every(link => !!link.link && !!link.title);
-
-  const handleFetchPageTitle = useCallback(async changedField => {
-    const keys = Object.keys(changedField);
-    const key = keys[0];
-    if (!key) {
-      return;
-    }
-
-    const regex = /\[(\d+)\]\[(\w+)\]/;
-    const match = key.match(regex);
-    if (!match) {
-      return;
-    }
-
-    const [, index, field] = match;
-    if (field !== 'link') {
-      return;
-    }
-
-    debouncedFetchInfo(changedField[key], formRef, index);
-  }, []);
-
-  const handleFormValuesChange = useCallback(
-    (values, changedField) => {
-      setFormValues({ ...values });
-
-      handleFetchPageTitle(changedField);
-    },
-    [handleFetchPageTitle]
-  );
-
-  const handleSave = useCallback(async () => {
-    await createLinksEffect({ links: formValues.links }, spaceId);
-    goBack();
-  }, [formValues?.links, spaceId]);
+const ComponentUsingFormState = ({ onChange }) => {
+  const formState = useFormState();
 
   useEffect(() => {
-    fetchGroupsEffect(false, true, spaceId);
-  }, [spaceId]);
+    onChange(formState.values);
+  }, [formState.values, onChange]);
 
-  return (
-    <PageContent>
-      <PageHeader title="Add links" isLoading={isCreating || isLoadingPageInfo} hasBack />
+  return null;
+};
 
-      <SpaceHint spaceId={spaceId} />
+export const CreateLinksForm = fastMemo(
+  ({ autoFocus, initLinks, spaceId, firstOneDeletable, createLabel }) => {
+    const isCreating = useCat(isCreatingLinksCat);
+    const groups = useGroups(spaceId);
 
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const formRef = useRef(null);
+    const [formValues, setFormValues] = useState({ links: initLinks });
+
+    const filledForm =
+      !!formValues?.links?.length && formValues.links.every(link => !!link.link && !!link.title);
+
+    const handleFetchPageTitle = useCallback(async changedField => {
+      const keys = Object.keys(changedField);
+      const key = keys[0];
+      if (!key) {
+        return;
+      }
+
+      const regex = /\[(\d+)\]\[(\w+)\]/;
+      const match = key.match(regex);
+      if (!match) {
+        return;
+      }
+
+      const [, index, field] = match;
+      if (field !== 'link') {
+        return;
+      }
+
+      debouncedFetchInfo(changedField[key], formRef, index);
+    }, []);
+
+    const handleFormValuesChange = useCallback(
+      (values, changedField) => {
+        setFormValues({ links: values.links.map(link => ({ ...link })) });
+
+        handleFetchPageTitle(changedField);
+      },
+      [handleFetchPageTitle]
+    );
+
+    const handleSave = useCallback(async () => {
+      await createLinksEffect({ links: formValues.links }, spaceId);
+      goBack();
+    }, [formValues, spaceId]);
+
+    useEffect(() => {
+      fetchGroupsEffect(false, true, spaceId);
+    }, [spaceId]);
+
+    return (
       <Form ref={formRef} onValueChange={handleFormValuesChange} onSubmit={handleSave}>
-        <ArrayField
-          field="links"
-          initValue={[{ link: '', title: '', groupId: groupIdInQuery || null }]}
-        >
+        <ArrayField field="links" initValue={initLinks}>
           {({ addWithInitValue, arrayFields }) => (
             <>
               {arrayFields.map(({ field, key, remove }, index) => (
@@ -103,7 +103,7 @@ export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, space
                     field={`${field}[link]`}
                     label="Link"
                     placeholder="https://example.com"
-                    autoFocus
+                    autoFocus={autoFocus}
                   />
 
                   <Form.Input
@@ -149,7 +149,7 @@ export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, space
                         Add another link
                       </Button>
                     )}
-                    {index > 0 && (
+                    {(firstOneDeletable || index > 0) && (
                       <Button
                         onClick={remove}
                         icon={<RiDeleteBinLine size={16} />}
@@ -168,12 +168,12 @@ export const LinkAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, space
         </ArrayField>
 
         <Button htmlType="submit" theme="solid" block disabled={!filledForm || isCreating}>
-          Create
+          {createLabel || 'Add links'}
         </Button>
       </Form>
-    </PageContent>
-  );
-});
+    );
+  }
+);
 
 const CreateGroup = fastMemo(({ spaceId }) => {
   const isCreating = useCat(isCreatingGroupCat);
