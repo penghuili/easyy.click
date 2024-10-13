@@ -51,7 +51,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
           onClick={() => navigateTo(`/links/add?spaceId=${spaceId}`)}
           icon={<RiAddLine />}
         >
-          Add link
+          Add links
         </Button>
 
         {links.length > 1 && (

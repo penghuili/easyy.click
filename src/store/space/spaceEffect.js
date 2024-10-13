@@ -1,5 +1,6 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
+import { eventEmitter, eventEmitterEvents } from '../../shared/browser/eventEmitter';
 import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
@@ -124,3 +125,7 @@ export function updateSpacesState(data, type) {
   spacesCat.set(newItems);
   LocalStorage.set(localStorageKeys.spaces, newItems);
 }
+
+eventEmitter.on(eventEmitterEvents.loggedIn, () => {
+  fetchSpacesEffect(false, true);
+});

@@ -6,6 +6,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
+import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderItems } from '../shared/browser/ReorderItems.jsx';
 import { isLoadingGroupsCat, isUpdatingGroupCat, useGroups } from '../store/group/groupCats.js';
@@ -51,12 +52,14 @@ export const GroupsReorder = fastMemo(({ queryParams: { spaceId } }) => {
         }
       />
 
+      <SpaceHint spaceId={spaceId} />
+
       <ReorderItems
         items={groups}
         onReorder={handleReorder}
         reverse
         renderItem={item => item.title}
-        height={`calc(100vh - 70px - 1rem)`}
+        height={`calc(100vh - 70px - 2rem)`}
       />
     </PageContent>
   );

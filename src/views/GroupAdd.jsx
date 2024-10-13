@@ -5,6 +5,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
+import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isCreatingGroupCat } from '../store/group/groupCats.js';
 import { createGroupEffect } from '../store/group/groupEffect.js';
@@ -22,6 +23,8 @@ export const GroupAdd = fastMemo(({ queryParams: { spaceId } }) => {
   return (
     <PageContent>
       <PageHeader title="Add tag" isLoading={isCreating} hasBack />
+
+      <SpaceHint spaceId={spaceId} />
 
       <Form onSubmit={handleSave}>
         <Form.Input

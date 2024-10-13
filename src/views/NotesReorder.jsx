@@ -3,6 +3,7 @@ import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
+import { SpaceHint } from '../components/SpaceHint.jsx';
 import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderGroupItems } from '../shared/browser/ReorderGroupItems.jsx';
@@ -43,6 +44,8 @@ export const NotesReorder = fastMemo(({ queryParams: { spaceId } }) => {
         hasBack
       />
 
+      <SpaceHint spaceId={spaceId} />
+
       <ReorderGroupItems
         groupItems={noteGroups}
         onReorder={handleReorder}
@@ -51,7 +54,7 @@ export const NotesReorder = fastMemo(({ queryParams: { spaceId } }) => {
         onClickItem={item => {
           activeNoteCat.set(item);
         }}
-        height={`calc(100vh - 70px)`}
+        height={`calc(100vh - 70px - 2rem)`}
       />
     </PageContent>
   );

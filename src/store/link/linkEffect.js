@@ -7,6 +7,7 @@ import { workerActionTypes } from '../worker/workerHelpers';
 import { myWorker } from '../worker/workerListeners';
 import {
   isCreatingLinkCat,
+  isCreatingLinksCat,
   isDeletingLinkCat,
   isLoadingLinkCat,
   isLoadingLinksCat,
@@ -18,6 +19,7 @@ import {
 } from './linkCats';
 import {
   createLink,
+  createLinks,
   deleteLink,
   fetchLink,
   fetchLinks,
@@ -81,6 +83,18 @@ export async function createLinkEffect({ title, link, count, groupId, showMessag
   }
 
   isCreatingLinkCat.set(false);
+}
+
+export async function createLinksEffect({ links }, spaceId) {
+  isCreatingLinksCat.set(true);
+
+  const { data } = await createLinks(links, spaceId);
+  if (data) {
+    updateLinksState(data, 'create-bulk', spaceId);
+    setToastEffect('Encrypted and saved safely in Frankfurt!');
+  }
+
+  isCreatingLinksCat.set(false);
 }
 
 export async function moveLinkEffect(link, fromSpaceId, toSpaceId) {
@@ -169,6 +183,8 @@ export function updateLinksState(data, type, spaceId) {
     newItems = newItems.filter(item => item.sortKey !== data.sortKey);
   } else if (type === 'create') {
     newItems = [...newItems, data];
+  } else if (type === 'create-bulk') {
+    newItems = [...newItems, ...data];
   } else if (type === 'fetch') {
     newItems = data;
   }

@@ -6,6 +6,7 @@ import { useCat } from 'usecat';
 
 import { GroupSelector } from '../components/GroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
+import { SpaceHint } from '../components/SpaceHint.jsx';
 import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isCreatingNoteCat } from '../store/note/noteCats.js';
@@ -28,6 +29,8 @@ export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, space
   return (
     <PageContent>
       <PageHeader title="Add note" isLoading={isCreating} hasBack />
+
+      <SpaceHint spaceId={spaceId} />
 
       <Form onSubmit={handleSave}>
         <Form.Input

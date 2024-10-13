@@ -11,15 +11,23 @@ export const isDeletingSpaceCat = createCat(false);
 export const activeSpaceCat = createCat(null);
 export const defaultSpaceId = 'personal';
 
+const personalSpace = {
+  sortKey: defaultSpaceId,
+  title: 'Personal',
+  color: 'var(--semi-color-primary)',
+};
 export function useSpaces() {
   const spaces = useCat(spacesCat);
 
+  return useMemo(() => [personalSpace, ...(spaces || [])], [spaces]);
+}
+
+export function useSpace(spaceId) {
+  const spaces = useSpaces();
+
   return useMemo(
-    () => [
-      { sortKey: defaultSpaceId, title: 'Personal', color: 'var(--semi-color-primary)' },
-      ...(spaces || []),
-    ],
-    [spaces]
+    () => spaces?.find(space => space.sortKey === spaceId) || personalSpace,
+    [spaceId, spaces]
   );
 }
 

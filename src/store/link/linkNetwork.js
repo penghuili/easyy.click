@@ -50,47 +50,89 @@ export async function fetchLink(linkId, spaceId) {
   }
 }
 
+async function encryptLink({ link, title, groupId, count, timestamp }, space) {
+  let password;
+  let encryptedPassword;
+  if (space) {
+    password = await decryptMessageAsymmetric(
+      LocalStorage.get(sharedLocalStorageKeys.privateKey),
+      space.encryptedPassword
+    );
+  } else {
+    password = generatePassword(20);
+    encryptedPassword = await encryptMessageAsymmetric(
+      LocalStorage.get(sharedLocalStorageKeys.publicKey),
+      password
+    );
+  }
+
+  const encryptedTitle = title ? await encryptMessageSymmetric(password, title) : title;
+  const encryptedLink = link ? await encryptMessageSymmetric(password, link) : link;
+
+  return {
+    sortKey: generateLinkSortKey(timestamp),
+    timestamp,
+    encryptedPassword,
+    title: encryptedTitle,
+    link: encryptedLink,
+    count,
+    groupId,
+  };
+}
+
 export async function createLink({ title, link, count, groupId }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
-    let password;
-    let encryptedPassword;
-    if (space) {
-      password = await decryptMessageAsymmetric(
-        LocalStorage.get(sharedLocalStorageKeys.privateKey),
-        space.encryptedPassword
-      );
-    } else {
-      password = generatePassword(20);
-      encryptedPassword = await encryptMessageAsymmetric(
-        LocalStorage.get(sharedLocalStorageKeys.publicKey),
-        password
-      );
-    }
-
-    const encryptedTitle = title ? await encryptMessageSymmetric(password, title) : title;
-    const encryptedLink = link ? await encryptMessageSymmetric(password, link) : link;
-
     const timestamp = Date.now();
+    const payload = await encryptLink({ link, title, groupId, count, timestamp }, space);
 
     const data = await HTTP.post(
       appName,
       space ? `/v1/links?spaceId=${space.sortKey}` : `/v1/links`,
-      {
-        sortKey: generateLinkSortKey(timestamp),
-        timestamp,
-        encryptedPassword,
-        title: encryptedTitle,
-        link: encryptedLink,
-        count,
-        groupId,
-      }
+      payload
     );
 
     const updated = space ? { ...data, encryptedPassword: space.encryptedPassword } : data;
 
     return await decryptLink(updated, LocalStorage.get(sharedLocalStorageKeys.privateKey));
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+export async function createLinks(links, spaceId) {
+  try {
+    const space = getSpace(spaceId);
+
+    const timestamp = Date.now();
+
+    const encryptedLinks = await Promise.all(
+      links.map(({ title, link, count, groupId }, index) =>
+        encryptLink({ link, title, groupId, count, timestamp: timestamp + index }, space)
+      )
+    );
+
+    const data = await HTTP.post(
+      appName,
+      space ? `/v1/links-bulk?spaceId=${space.sortKey}` : `/v1/links-bulk`,
+      { links: encryptedLinks }
+    );
+
+    const updated = space
+      ? data.map(item => ({
+          ...item,
+          encryptedPassword: space.encryptedPassword,
+        }))
+      : data;
+
+    const decrypted = await Promise.all(
+      updated.map(item => decryptLink(item, LocalStorage.get(sharedLocalStorageKeys.privateKey)))
+    );
+
+    const results = decrypted.filter(item => item.data).map(item => item.data);
+
+    return { data: results, error: null };
   } catch (error) {
     return { data: null, error };
   }

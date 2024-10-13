@@ -6,6 +6,7 @@ import { createCat, useCat } from 'usecat';
 
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
+import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { groupCat, isUpdatingGroupCat } from '../store/group/groupCats.js';
 import { fetchGroupEffect, updateGroupEffect } from '../store/group/groupEffect.js';
@@ -25,6 +26,8 @@ export const GroupDetails = fastMemo(({ queryParams: { groupId, spaceId } }) => 
     <PrepareData load={load}>
       <PageContent>
         <PageHeader title="Edit tag" hasBack />
+
+        <SpaceHint spaceId={spaceId} />
 
         <GroupForm groupId={groupId} spaceId={spaceId} />
       </PageContent>

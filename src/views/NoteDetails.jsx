@@ -7,6 +7,7 @@ import { createCat, useCat } from 'usecat';
 import { GroupSelector } from '../components/GroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PrepareData } from '../components/PrepareData.jsx';
+import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { isUpdatingNoteCat, noteCat } from '../store/note/noteCats.js';
 import { fetchNoteEffect, updateNoteEffect } from '../store/note/noteEffect';
@@ -30,6 +31,8 @@ export const NoteDetails = fastMemo(({ queryParams: { noteId, spaceId } }) => {
     <PrepareData load={load}>
       <PageContent>
         <PageHeader title="Edit note" hasBack />
+
+        <SpaceHint spaceId={spaceId} />
 
         <NoteForm noteId={noteId} spaceId={spaceId} />
       </PageContent>

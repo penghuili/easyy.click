@@ -1,4 +1,4 @@
-import { Avatar, Button, Spin } from '@douyinfe/semi-ui';
+import { Button, Image, Spin } from '@douyinfe/semi-ui';
 import { RiArrowLeftLine } from '@remixicon/react';
 import React, { useMemo } from 'react';
 import { goBack } from 'react-baby-router';
@@ -21,7 +21,7 @@ export function PageHeader({ title, right, isLoading, hasBack }) {
       );
     }
 
-    return <Avatar src={logo} size="small" style={{ marginRight: '0.5rem' }} />;
+    return <Image src={logo} width={32} height={32} style={{ marginRight: '0.5rem' }} />;
   }, [hasBack]);
 
   return (

@@ -14,6 +14,7 @@ import { useEarlyUser } from '../lib/useEarlyUser.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt, useFreeTrialsUntil, userCat } from '../shared/browser/store/sharedCats.js';
+import { contactEmail } from '../shared/js/constants.js';
 import { formatDate } from '../shared/js/date.js';
 import { isFreeTryingCat } from '../store/pay/payCats.js';
 import { freeTrialEffect } from '../store/pay/payEffects.js';
@@ -31,6 +32,11 @@ export const Upgrade = fastMemo(() => {
         <Prices />
 
         <UpgradeAction />
+
+        <Typography.Paragraph style={{ textAlign: 'center' }}>
+          Contact me (<Typography.Text copyable>{contactEmail}</Typography.Text>) if you need a
+          discount.
+        </Typography.Paragraph>
       </PageContent>
     </PrepareData>
   );
@@ -59,7 +65,7 @@ const Intro = fastMemo(() => {
   return (
     <>
       <Typography.Paragraph style={{ marginBottom: '1rem' }}>
-        Open frequently used links, copy frequently used notes.
+        Manage frequently used links and notes.
       </Typography.Paragraph>
       <Typography.Paragraph>
         <Link href="https://easyy.click" target="_blank">
