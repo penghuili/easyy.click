@@ -61,10 +61,10 @@ export async function fetchNoteEffect(noteId, spaceId) {
   isLoadingNoteCat.set(false);
 }
 
-export async function createNoteEffect({ title, text, groupId, showMessage }, spaceId) {
+export async function createNoteEffect({ title, text, groupId, moved, showMessage }, spaceId) {
   isCreatingNoteCat.set(true);
 
-  const { data } = await createNote({ title, text, groupId }, spaceId);
+  const { data } = await createNote({ title, text, groupId, moved }, spaceId);
   if (data) {
     updateNotesState(data, 'create', spaceId);
     if (showMessage) {
@@ -78,7 +78,10 @@ export async function createNoteEffect({ title, text, groupId, showMessage }, sp
 export async function moveNoteEffect(note, fromSpaceId, toSpaceId) {
   isMovingNoteCat.set(true);
 
-  await createNoteEffect({ title: note.title, text: note.text, showMessage: false }, toSpaceId);
+  await createNoteEffect(
+    { title: note.title, text: note.text, moved: true, showMessage: false },
+    toSpaceId
+  );
   await deleteNoteEffect(note.sortKey, { showMessage: false }, fromSpaceId);
 
   setToastEffect('Moved!');

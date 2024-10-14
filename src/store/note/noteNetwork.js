@@ -49,7 +49,7 @@ export async function fetchNote(noteId, spaceId) {
   }
 }
 
-export async function createNote({ title, text, groupId }, spaceId) {
+export async function createNote({ title, text, groupId, moved }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
@@ -83,6 +83,7 @@ export async function createNote({ title, text, groupId }, spaceId) {
         title: encryptedTitle,
         text: encryptedText,
         groupId,
+        moved,
       }
     );
 

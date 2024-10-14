@@ -1,6 +1,6 @@
-import { ArrayField, Button, Form, Input, Typography, useFormState } from '@douyinfe/semi-ui';
+import { ArrayField, Button, Form, Input, Typography } from '@douyinfe/semi-ui';
 import { RiAddLine, RiDeleteBinLine } from '@remixicon/react';
-import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -23,22 +23,11 @@ const debouncedFetchInfo = debounce(async (pageLink, ref, linkIndex) => {
   }
 }, 500);
 
-const ComponentUsingFormState = ({ onChange }) => {
-  const formState = useFormState();
-
-  useEffect(() => {
-    onChange(formState.values);
-  }, [formState.values, onChange]);
-
-  return null;
-};
-
 export const CreateLinksForm = fastMemo(
   ({ autoFocus, initLinks, spaceId, firstOneDeletable, createLabel }) => {
     const isCreating = useCat(isCreatingLinksCat);
     const groups = useGroups(spaceId);
 
-    const [, forceUpdate] = useReducer(x => x + 1, 0);
     const formRef = useRef(null);
     const [formValues, setFormValues] = useState({ links: initLinks });
 

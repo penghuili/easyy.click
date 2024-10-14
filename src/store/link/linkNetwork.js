@@ -80,7 +80,7 @@ async function encryptLink({ link, title, groupId, count, timestamp }, space) {
   };
 }
 
-export async function createLink({ title, link, count, groupId }, spaceId) {
+export async function createLink({ title, link, count, groupId, moved }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
@@ -90,7 +90,7 @@ export async function createLink({ title, link, count, groupId }, spaceId) {
     const data = await HTTP.post(
       appName,
       space ? `/v1/links?spaceId=${space.sortKey}` : `/v1/links`,
-      payload
+      { ...payload, moved }
     );
 
     const updated = space ? { ...data, encryptedPassword: space.encryptedPassword } : data;
