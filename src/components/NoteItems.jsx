@@ -21,6 +21,7 @@ import { useSpaces } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
 import { Flex } from './Flex.jsx';
 import { confirmDeleteGroupMessage } from './GroupItems.jsx';
+import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
 import { PageLoading } from './PageLoading.jsx';
 
@@ -41,6 +42,10 @@ export const NoteItems = fastMemo(({ spaceId }) => {
   const [showDeleteNoteConfirm, setShowDeleteNoteConfirm] = useState(false);
   const [activeGroup, setActiveGroup] = useState(null);
   const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
+
+  const [newSpace, setNewSpace] = useState(null);
+  const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
+  const [showMoveModal, setShowMoveModal] = useState(false);
 
   const handleCopy = useCallback(note => {
     copyToClipboard(note.text);
@@ -192,7 +197,9 @@ export const NoteItems = fastMemo(({ spaceId }) => {
                                 <Dropdown.Item
                                   key={space.sortKey}
                                   onClick={() => {
-                                    moveNoteEffect(item, spaceId, space.sortKey);
+                                    setActiveNote(item);
+                                    setNewSpace(space);
+                                    setShowMoveModal(true);
                                   }}
                                   disabled={isMoving}
                                 >
@@ -236,6 +243,26 @@ export const NoteItems = fastMemo(({ spaceId }) => {
           )}
         </div>
       ))}
+
+      <GroupSelectorForMove
+        open={showMoveModal}
+        onOpenChange={setShowMoveModal}
+        groupId={newSpaceGroupId}
+        onSelect={setNewSpaceGroupId}
+        spaceId={newSpace?.sortKey}
+        onConfirm={async () => {
+          if (!activeNote || !newSpace) {
+            return;
+          }
+
+          await moveNoteEffect(activeNote, spaceId, newSpace.sortKey, newSpaceGroupId);
+
+          setShowMoveModal(false);
+          setActiveNote(null);
+          setNewSpace(null);
+        }}
+        isSaving={isMoving}
+      />
 
       <Confirm
         message="Are you sure to delete this note?"

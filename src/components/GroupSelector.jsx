@@ -6,7 +6,7 @@ import { isCreatingGroupCat, useGroups } from '../store/group/groupCats';
 import { createGroupEffect, fetchGroupsEffect } from '../store/group/groupEffect';
 import { Flex } from './Flex';
 
-export function GroupSelector({ field, groupId, onSelect, spaceId }) {
+export function GroupSelector({ groupId, onSelect, spaceId }) {
   const groups = useGroups(spaceId);
   const isCreating = useCat(isCreatingGroupCat);
 
@@ -32,7 +32,6 @@ export function GroupSelector({ field, groupId, onSelect, spaceId }) {
       <Flex m="0 0 1rem">
         {groups.length ? (
           <RadioGroup
-            field={field}
             value={groupId}
             onChange={e => onSelect(e.target.value)}
             direction="horizontal"

@@ -75,11 +75,11 @@ export async function createNoteEffect({ title, text, groupId, moved, showMessag
   isCreatingNoteCat.set(false);
 }
 
-export async function moveNoteEffect(note, fromSpaceId, toSpaceId) {
+export async function moveNoteEffect(note, fromSpaceId, toSpaceId, toGroupId) {
   isMovingNoteCat.set(true);
 
   await createNoteEffect(
-    { title: note.title, text: note.text, moved: true, showMessage: false },
+    { title: note.title, text: note.text, groupId: toGroupId, moved: true, showMessage: false },
     toSpaceId
   );
   await deleteNoteEffect(note.sortKey, { showMessage: false }, fromSpaceId);

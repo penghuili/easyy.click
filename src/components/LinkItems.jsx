@@ -20,6 +20,7 @@ import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
 import { Flex } from './Flex.jsx';
 import { confirmDeleteGroupMessage } from './GroupItems.jsx';
+import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
 import { Link } from './Link.jsx';
 import { PageEmpty } from './PageEmpty.jsx';
 import { PageLoading } from './PageLoading.jsx';
@@ -42,6 +43,10 @@ export const LinkItems = fastMemo(({ spaceId }) => {
   const [showDeleteLinkConfirm, setShowDeleteLinkConfirm] = useState(false);
   const [activeGroup, setActiveGroup] = useState(null);
   const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
+
+  const [newSpace, setNewSpace] = useState(null);
+  const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
+  const [showMoveModal, setShowMoveModal] = useState(false);
 
   function renderActions() {
     return (
@@ -213,7 +218,9 @@ export const LinkItems = fastMemo(({ spaceId }) => {
                                 <Dropdown.Item
                                   key={space.sortKey}
                                   onClick={() => {
-                                    moveLinkEffect(link, spaceId, space.sortKey);
+                                    setActiveLink(link);
+                                    setNewSpace(space);
+                                    setShowMoveModal(true);
                                   }}
                                   disabled={isMoving}
                                 >
@@ -258,12 +265,34 @@ export const LinkItems = fastMemo(({ spaceId }) => {
         </div>
       ))}
 
+      <GroupSelectorForMove
+        open={showMoveModal}
+        onOpenChange={setShowMoveModal}
+        groupId={newSpaceGroupId}
+        onSelect={setNewSpaceGroupId}
+        spaceId={newSpace?.sortKey}
+        onConfirm={async () => {
+          if (!activeLink || !newSpace) {
+            return;
+          }
+
+          await moveLinkEffect(activeLink, spaceId, newSpace.sortKey, newSpaceGroupId);
+
+          setShowMoveModal(false);
+          setActiveLink(null);
+          setNewSpace(null);
+        }}
+        isSaving={isMoving}
+      />
+
       <Confirm
         message="Are you sure to delete this link?"
         open={showDeleteLinkConfirm}
         onOpenChange={setShowDeleteLinkConfirm}
         onConfirm={async () => {
-          if (!activeLink) return;
+          if (!activeLink) {
+            return;
+          }
 
           await deleteLinkEffect(activeLink?.sortKey, { showMessage: true }, spaceId);
           setShowDeleteLinkConfirm(false);
@@ -277,7 +306,9 @@ export const LinkItems = fastMemo(({ spaceId }) => {
         open={showDeleteGroupConfirm}
         onOpenChange={setShowDeleteGroupConfirm}
         onConfirm={async () => {
-          if (!activeGroup) return;
+          if (!activeGroup) {
+            return;
+          }
 
           await deleteGroupEffect(activeGroup.sortKey, spaceId);
           setShowDeleteGroupConfirm(false);

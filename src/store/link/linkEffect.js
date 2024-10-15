@@ -100,13 +100,14 @@ export async function createLinksEffect({ links }, spaceId) {
   isCreatingLinksCat.set(false);
 }
 
-export async function moveLinkEffect(link, fromSpaceId, toSpaceId) {
+export async function moveLinkEffect(link, fromSpaceId, toSpaceId, toGroupId) {
   isMovingLinkCat.set(true);
 
   await createLinkEffect(
     {
       title: link.title,
       link: link.link,
+      groupId: toGroupId,
       count: link.count,
       moved: true,
       showMessage: false,
