@@ -57,7 +57,7 @@ export const CreateLinksForm = fastMemo(
 
     const handleFormValuesChange = useCallback(
       (values, changedField) => {
-        setFormValues({ links: values.links.map(link => ({ ...link })) });
+        setFormValues({ links: (values.links || []).map(link => ({ ...link })) });
 
         handleFetchPageTitle(changedField);
       },
@@ -102,7 +102,12 @@ export const CreateLinksForm = fastMemo(
                   />
 
                   {groups?.length ? (
-                    <Form.RadioGroup field={`${field}[groupId]`} label="Tag" direction="horizontal">
+                    <Form.RadioGroup
+                      field={`${field}[groupId]`}
+                      label="Tag"
+                      direction="horizontal"
+                      mode="advanced"
+                    >
                       {groups.map(group => (
                         <Form.Radio key={group.sortKey} value={group.sortKey}>
                           {group.title}

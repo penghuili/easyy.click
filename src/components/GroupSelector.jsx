@@ -36,6 +36,7 @@ export function GroupSelector({ field, groupId, onSelect, spaceId }) {
             value={groupId}
             onChange={e => onSelect(e.target.value)}
             direction="horizontal"
+            mode="advanced"
           >
             {groups.map(group => (
               <Radio key={group.sortKey} value={group.sortKey}>
