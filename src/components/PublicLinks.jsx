@@ -6,6 +6,7 @@ import {
   RiLockLine,
   RiMailLine,
   RiServiceLine,
+  RiTelegramLine,
   RiTwitterXLine,
 } from '@remixicon/react';
 import React from 'react';
@@ -45,6 +46,12 @@ export const PublicLinks = fastMemo(() => {
       <a href="https://easyy.click/terms" target="_blank" rel="noreferrer">
         <Button theme="borderless" icon={<RiServiceLine />}>
           Terms
+        </Button>
+      </a>
+
+      <a href="https://t.me/easyyclick" target="_blank" rel="noreferrer">
+        <Button theme="borderless" icon={<RiTelegramLine />}>
+          Telegram channel
         </Button>
       </a>
 
