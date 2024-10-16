@@ -1,3 +1,3 @@
 # easyy.click
 
-![screenshots](intro2.gif)
+![screenshots](intro3.gif)

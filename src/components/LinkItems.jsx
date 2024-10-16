@@ -311,6 +311,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
             onClick={() => {
               setLinksToDelete({});
               setShowDeleteMultiple(false);
+              setShowDeleteMultipleConfirm(false);
             }}
           >
             Cancel
@@ -325,7 +326,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
           >
             {linksToDeleteSortKeys?.length
               ? `Delete ${linksToDeleteSortKeys?.length} ${linksToDeleteSortKeys?.length === 1 ? 'link' : 'links'}`
-              : 'Delete'}
+              : 'Delete links'}
           </Button>
         </Flex>
       )}
