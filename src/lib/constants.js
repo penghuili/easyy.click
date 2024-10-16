@@ -7,5 +7,3 @@ export const localStorageKeys = {
   activeTab: 'easyy-active-tab',
   changelog: 'easyy-changelog',
 };
-
-export const noGroupSortKey = 'no-group';

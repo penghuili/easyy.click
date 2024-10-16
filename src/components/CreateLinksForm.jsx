@@ -1,12 +1,12 @@
 import { ArrayField, Button, Form, Input, Typography } from '@douyinfe/semi-ui';
 import { RiAddLine, RiDeleteBinLine } from '@remixicon/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { debounce } from '../shared/js/debounce.js';
-import { isCreatingGroupCat, useGroups } from '../store/group/groupCats.js';
+import { importedGroupSortKey, isCreatingGroupCat, useGroups } from '../store/group/groupCats.js';
 import { createGroupEffect, fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isCreatingLinksCat } from '../store/link/linkCats.js';
 import { createLinksEffect, fetchPageInfoEffect } from '../store/link/linkEffect.js';
@@ -24,9 +24,15 @@ const debouncedFetchInfo = debounce(async (pageLink, ref, linkIndex) => {
 }, 500);
 
 export const CreateLinksForm = fastMemo(
-  ({ autoFocus, initLinks, spaceId, firstOneDeletable, createLabel }) => {
+  ({ autoFocus, initLinks, spaceId, firstOneDeletable, showImportedGroup, createLabel }) => {
     const isCreating = useCat(isCreatingLinksCat);
-    const groups = useGroups(spaceId);
+    const createdGroups = useGroups(spaceId);
+    const groups = useMemo(() => {
+      return [
+        ...createdGroups,
+        ...(showImportedGroup ? [{ sortKey: importedGroupSortKey, title: 'Imported links' }] : []),
+      ];
+    }, [createdGroups, showImportedGroup]);
 
     const formRef = useRef(null);
     const [formValues, setFormValues] = useState({ links: initLinks });

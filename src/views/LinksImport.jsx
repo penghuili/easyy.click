@@ -10,6 +10,7 @@ import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { importedGroupSortKey } from '../store/group/groupCats.js';
 import { isCreatingLinksCat, isLoadingPageInfoCat } from '../store/link/linkCats.js';
 
 export const LinksImport = fastMemo(({ queryParams: { spaceId } }) => {
@@ -89,7 +90,7 @@ export const LinksImport = fastMemo(({ queryParams: { spaceId } }) => {
               const bookmarks = Array.from(links).map(link => ({
                 link: link.href,
                 title: link.textContent,
-                groupId: null,
+                groupId: importedGroupSortKey,
               }));
               if (bookmarks.length) {
                 setLinks(bookmarks);
@@ -118,6 +119,7 @@ export const LinksImport = fastMemo(({ queryParams: { spaceId } }) => {
             initLinks={links}
             spaceId={spaceId}
             firstOneDeletable
+            showImportedGroup
             createLabel="Import bookmarks"
           />
         </div>

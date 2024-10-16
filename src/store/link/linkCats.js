@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { createCat, useCat } from 'usecat';
 
-import { noGroupSortKey } from '../../lib/constants';
-import { useGroups } from '../group/groupCats';
+import { importedGroupSortKey, noGroupSortKey, useGroups } from '../group/groupCats';
 
 export const linksCat = createCat({});
 export const linkCat = createCat(null);
@@ -26,10 +25,13 @@ export function useLinkGroups(showEmptyGroups = false, spaceId) {
     });
 
     const noGroupLinks = [];
+    const importedLinks = [];
 
     (links[spaceId] || []).forEach(link => {
       if (obj[link.groupId]) {
         obj[link.groupId].items.push(link);
+      } else if (link.groupId === importedGroupSortKey) {
+        importedLinks.push(link);
       } else {
         noGroupLinks.push(link);
       }
@@ -38,6 +40,7 @@ export function useLinkGroups(showEmptyGroups = false, spaceId) {
     return [
       ...groups.map(group => obj[group.sortKey]),
       { sortKey: noGroupSortKey, title: 'Links without tag', items: noGroupLinks },
+      { sortKey: importedGroupSortKey, title: 'Imported links', items: importedLinks },
     ].filter(
       group => group.sortKey === noGroupSortKey || showEmptyGroups || group.items.length > 0
     );

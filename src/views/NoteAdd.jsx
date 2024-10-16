@@ -7,8 +7,8 @@ import { useCat } from 'usecat';
 import { GroupSelector } from '../components/GroupSelector.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
-import { noGroupSortKey } from '../lib/constants.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { noGroupSortKey } from '../store/group/groupCats.js';
 import { isCreatingNoteCat } from '../store/note/noteCats.js';
 import { createNoteEffect } from '../store/note/noteEffect';
 

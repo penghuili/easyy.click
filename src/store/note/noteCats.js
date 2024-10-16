@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { createCat, useCat } from 'usecat';
 
-import { noGroupSortKey } from '../../lib/constants';
-import { useGroups } from '../group/groupCats';
+import { noGroupSortKey, useGroups } from '../group/groupCats';
 
 export const notesCat = createCat({});
 export const noteCat = createCat(null);
