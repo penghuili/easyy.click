@@ -9,6 +9,7 @@ import {
   isCreatingLinkCat,
   isCreatingLinksCat,
   isDeletingLinkCat,
+  isDeletingLinksCat,
   isLoadingLinkCat,
   isLoadingLinksCat,
   isLoadingPageInfoCat,
@@ -21,6 +22,7 @@ import {
   createLink,
   createLinks,
   deleteLink,
+  deleteLinks,
   fetchLink,
   fetchLinks,
   getPageInfo,
@@ -165,6 +167,19 @@ export async function deleteLinkEffect(linkId, { showMessage }, spaceId) {
   isDeletingLinkCat.set(false);
 }
 
+export async function deleteLinksEffect(linkIds, spaceId) {
+  isDeletingLinksCat.set(true);
+
+  const { data } = await deleteLinks(linkIds, spaceId);
+
+  if (data) {
+    updateLinksState(linkIds, 'delete-bulk', spaceId);
+    setToastEffect(`Deleted ${linkIds.length} links!`);
+  }
+
+  isDeletingLinksCat.set(false);
+}
+
 export async function fetchPageInfoEffect(link) {
   isLoadingPageInfoCat.set(true);
 
@@ -186,6 +201,12 @@ export function updateLinksState(data, type, spaceId) {
     );
   } else if (type === 'delete') {
     newItems = newItems.filter(item => item.sortKey !== data.sortKey);
+  } else if (type === 'delete-bulk') {
+    const obj = {};
+    data?.forEach(id => {
+      obj[id] = true;
+    });
+    newItems = newItems.filter(item => !obj[item.sortKey]);
   } else if (type === 'create') {
     newItems = [...newItems, data];
   } else if (type === 'create-bulk') {

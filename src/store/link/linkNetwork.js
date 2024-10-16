@@ -189,6 +189,22 @@ export async function deleteLink(linkId, spaceId) {
   }
 }
 
+export async function deleteLinks(linkIds, spaceId) {
+  try {
+    const space = getSpace(spaceId);
+
+    const data = await HTTP.post(
+      appName,
+      space ? `/v1/links-delete-bulk?spaceId=${spaceId}` : `/v1/links-delete-bulk`,
+      { linkIds }
+    );
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function getPageInfo(link) {
   try {
     const data = await HTTP.post(appName, `/v1/link-info`, { link });

@@ -1,4 +1,4 @@
-import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
+import { Button, Checkbox, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
 import { RiAddLine, RiDragMoveLine, RiImportLine, RiMore2Line } from '@remixicon/react';
 import React, { useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
@@ -9,11 +9,17 @@ import { isDeletingGroupCat, noGroupSortKey } from '../store/group/groupCats.js'
 import { deleteGroupEffect } from '../store/group/groupEffect.js';
 import {
   isDeletingLinkCat,
+  isDeletingLinksCat,
   isLoadingLinksCat,
   isMovingLinkCat,
   useLinkGroups,
 } from '../store/link/linkCats.js';
-import { deleteLinkEffect, moveLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
+import {
+  deleteLinkEffect,
+  deleteLinksEffect,
+  moveLinkEffect,
+  updateLinkEffect,
+} from '../store/link/linkEffect.js';
 import { useSpaces } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
@@ -28,6 +34,7 @@ import { Top10Links } from './Top10Links.jsx';
 export const LinkItems = fastMemo(({ spaceId }) => {
   const { groups: linkGroups, links } = useLinkGroups(false, spaceId);
   const isDeletingLink = useCat(isDeletingLinkCat);
+  const isDeletingLinks = useCat(isDeletingLinksCat);
   const isDeletingGroup = useCat(isDeletingGroupCat);
   const isMoving = useCat(isMovingLinkCat);
   const isLoading = useCat(isLoadingLinksCat);
@@ -46,6 +53,18 @@ export const LinkItems = fastMemo(({ spaceId }) => {
   const [newSpace, setNewSpace] = useState(null);
   const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
   const [showMoveModal, setShowMoveModal] = useState(false);
+
+  const [showDeleteMultiple, setShowDeleteMultiple] = useState(false);
+  const [linksToDelete, setLinksToDelete] = useState({});
+  const [showDeleteMultipleConfirm, setShowDeleteMultipleConfirm] = useState(false);
+
+  const linksToDeleteSortKeys = useMemo(() => {
+    if (!showDeleteMultiple) {
+      return [];
+    }
+
+    return Object.keys(linksToDelete).filter(key => linksToDelete[key]);
+  }, [linksToDelete, showDeleteMultiple]);
 
   function renderActions() {
     return (
@@ -79,6 +98,15 @@ export const LinkItems = fastMemo(({ spaceId }) => {
               >
                 Import browser bookmarks
               </Dropdown.Item>
+              {links?.length > 1 && (
+                <Dropdown.Item
+                  type="danger"
+                  icon={<RiImportLine />}
+                  onClick={() => setShowDeleteMultiple(true)}
+                >
+                  Delete multiple links
+                </Dropdown.Item>
+              )}
             </Dropdown.Menu>
           }
         >
@@ -171,6 +199,10 @@ export const LinkItems = fastMemo(({ spaceId }) => {
                     span={12}
                     md={8}
                     style={{
+                      display: 'flex',
+                      gap: '0.5rem',
+                      alignItems: 'center',
+
                       overflow: 'hidden',
                       position: 'relative',
                       padding: '0.5rem 1.5rem 0.5rem 0',
@@ -193,67 +225,76 @@ export const LinkItems = fastMemo(({ spaceId }) => {
                       {link.title}
                     </Link>
 
-                    <Dropdown
-                      trigger="click"
-                      position={'bottomLeft'}
-                      clickToHide
-                      render={
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() => {
-                              navigateTo(
-                                `/links/details?linkId=${link.sortKey}&spaceId=${spaceId}`
-                              );
-                            }}
-                          >
-                            Edit link
-                          </Dropdown.Item>
-
-                          {otherSpaces.length > 0 && (
-                            <>
-                              <Dropdown.Divider />
-
-                              {otherSpaces.map(space => (
-                                <Dropdown.Item
-                                  key={space.sortKey}
-                                  onClick={() => {
-                                    setActiveLink(link);
-                                    setNewSpace(space);
-                                    setShowMoveModal(true);
-                                  }}
-                                  disabled={isMoving}
-                                >
-                                  Move to "{space.title}"
-                                </Dropdown.Item>
-                              ))}
-
-                              <Dropdown.Divider />
-                            </>
-                          )}
-
-                          <Dropdown.Item
-                            type="danger"
-                            onClick={() => {
-                              setActiveLink(link);
-                              setShowDeleteLinkConfirm(true);
-                            }}
-                          >
-                            Delete link
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      }
-                    >
-                      <Button
-                        theme="borderless"
-                        icon={<RiMore2Line width="20" height="20" />}
-                        size="small"
-                        style={{
-                          position: 'absolute',
-                          top: '0.5rem',
-                          right: '0.5rem',
+                    {showDeleteMultiple ? (
+                      <Checkbox
+                        checked={!!linksToDelete[link.sortKey]}
+                        onChange={e => {
+                          setLinksToDelete({ ...linksToDelete, [link.sortKey]: e.target.checked });
                         }}
                       />
-                    </Dropdown>
+                    ) : (
+                      <Dropdown
+                        trigger="click"
+                        position={'bottomLeft'}
+                        clickToHide
+                        render={
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => {
+                                navigateTo(
+                                  `/links/details?linkId=${link.sortKey}&spaceId=${spaceId}`
+                                );
+                              }}
+                            >
+                              Edit link
+                            </Dropdown.Item>
+
+                            {otherSpaces.length > 0 && (
+                              <>
+                                <Dropdown.Divider />
+
+                                {otherSpaces.map(space => (
+                                  <Dropdown.Item
+                                    key={space.sortKey}
+                                    onClick={() => {
+                                      setActiveLink(link);
+                                      setNewSpace(space);
+                                      setShowMoveModal(true);
+                                    }}
+                                    disabled={isMoving}
+                                  >
+                                    Move to "{space.title}"
+                                  </Dropdown.Item>
+                                ))}
+
+                                <Dropdown.Divider />
+                              </>
+                            )}
+
+                            <Dropdown.Item
+                              type="danger"
+                              onClick={() => {
+                                setActiveLink(link);
+                                setShowDeleteLinkConfirm(true);
+                              }}
+                            >
+                              Delete link
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        }
+                      >
+                        <Button
+                          theme="borderless"
+                          icon={<RiMore2Line width="20" height="20" />}
+                          size="small"
+                          style={{
+                            position: 'absolute',
+                            top: '0.5rem',
+                            right: '0.5rem',
+                          }}
+                        />
+                      </Dropdown>
+                    )}
                   </Col>
                 ))}
               </Row>
@@ -263,6 +304,31 @@ export const LinkItems = fastMemo(({ spaceId }) => {
           )}
         </div>
       ))}
+
+      {showDeleteMultiple && (
+        <Flex direction="row" justify="between">
+          <Button
+            onClick={() => {
+              setLinksToDelete({});
+              setShowDeleteMultiple(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="danger"
+            theme="solid"
+            onClick={() => {
+              setShowDeleteMultipleConfirm(true);
+            }}
+            disabled={!linksToDeleteSortKeys?.length}
+          >
+            {linksToDeleteSortKeys?.length
+              ? `Delete ${linksToDeleteSortKeys?.length} ${linksToDeleteSortKeys?.length === 1 ? 'link' : 'links'}`
+              : 'Delete'}
+          </Button>
+        </Flex>
+      )}
 
       <GroupSelectorForMove
         open={showMoveModal}
@@ -282,6 +348,23 @@ export const LinkItems = fastMemo(({ spaceId }) => {
           setNewSpace(null);
         }}
         isSaving={isMoving}
+      />
+
+      <Confirm
+        message={'Are you sure to delete selected links?'}
+        open={showDeleteMultipleConfirm}
+        onOpenChange={setShowDeleteMultipleConfirm}
+        onConfirm={async () => {
+          if (!linksToDeleteSortKeys?.length) {
+            return;
+          }
+
+          await deleteLinksEffect(linksToDeleteSortKeys, spaceId);
+          setShowDeleteMultipleConfirm(false);
+          setShowDeleteMultiple(false);
+          setLinksToDelete({});
+        }}
+        isSaving={isDeletingLinks}
       />
 
       <Confirm
