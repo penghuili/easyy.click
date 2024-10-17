@@ -14,17 +14,22 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import {
   isDeletingSpaceCat,
   isLoadingSpacesCat,
+  isUpdatingSpaceCat,
+  useArchivedSpaces,
   useCreatedSpaces,
 } from '../store/space/spaceCats.js';
-import { deleteSpaceEffect, fetchSpacesEffect } from '../store/space/spaceEffect.js';
+import {
+  deleteSpaceEffect,
+  fetchSpacesEffect,
+  updateSpaceEffect,
+} from '../store/space/spaceEffect.js';
 
 export const Spaces = fastMemo(() => {
   const spaces = useCreatedSpaces();
+  const archivedSpaces = useArchivedSpaces();
   const isLoading = useCat(isLoadingSpacesCat);
+  const isUpdating = useCat(isUpdatingSpaceCat);
   const isDeleting = useCat(isDeletingSpaceCat);
-
-  const [activeSpace, setActiveSpace] = useState(null);
-  const [showDeleteSpaceConfirm, setShowDeleteSpaceConfirm] = useState(false);
 
   useEffect(() => {
     fetchSpacesEffect(false, true);
@@ -67,73 +72,118 @@ export const Spaces = fastMemo(() => {
       <>
         {renderActions()}
 
-        <Row type="flex">
-          {spaces.map(space => (
-            <Col
-              key={space.sortKey}
-              span={12}
-              md={8}
-              style={{
-                overflow: 'hidden',
-                position: 'relative',
-                padding: '0.5rem 1.5rem 0.5rem 0',
-              }}
-            >
-              <Card
-                bodyStyle={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Typography.Title heading={5} style={{ color: space.color }}>
-                  {space.title}
-                </Typography.Title>
+        <SpaceItems spaces={spaces} />
+      </>
+    );
+  };
 
-                <Dropdown
-                  trigger="click"
-                  position={'bottomLeft'}
-                  clickToHide
-                  render={
-                    <Dropdown.Menu>
-                      <Dropdown.Item
-                        onClick={() => {
-                          navigateTo(`/spaces/details?spaceId=${space.sortKey}`);
-                        }}
-                      >
-                        Edit
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        type="danger"
-                        onClick={() => {
-                          setActiveSpace(space);
-                          setShowDeleteSpaceConfirm(true);
-                        }}
-                      >
-                        Delete
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  }
-                >
-                  <Button
-                    theme="borderless"
-                    icon={<RiMore2Line width="20" height="20" />}
-                    size="small"
-                  />
-                </Dropdown>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+  const renderArchived = () => {
+    if (!archivedSpaces.length) {
+      return null;
+    }
+
+    return (
+      <>
+        <Typography.Title heading={4} style={{ margin: '3rem 0 1rem' }}>
+          Archived spaces
+        </Typography.Title>
+
+        <SpaceItems spaces={archivedSpaces} />
       </>
     );
   };
 
   return (
     <PageContent>
-      <PageHeader title="Spaces" isLoading={isLoading} hasBack />
+      <PageHeader title="Spaces" isLoading={isLoading || isUpdating || isDeleting} hasBack />
 
       {renderContent()}
+
+      {renderArchived()}
+    </PageContent>
+  );
+});
+
+const SpaceItems = fastMemo(({ spaces }) => {
+  const isDeleting = useCat(isDeletingSpaceCat);
+
+  const [activeSpace, setActiveSpace] = useState(null);
+  const [showDeleteSpaceConfirm, setShowDeleteSpaceConfirm] = useState(false);
+
+  if (!spaces?.length) {
+    return null;
+  }
+
+  return (
+    <>
+      <Row type="flex">
+        {spaces.map(space => (
+          <Col
+            key={space.sortKey}
+            span={12}
+            md={8}
+            style={{
+              overflow: 'hidden',
+              position: 'relative',
+              padding: '0.5rem 1.5rem 0.5rem 0',
+            }}
+          >
+            <Card
+              bodyStyle={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography.Title heading={5} style={{ color: space.color }}>
+                {space.title}
+              </Typography.Title>
+
+              <Dropdown
+                trigger="click"
+                position={'bottomLeft'}
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => {
+                        navigateTo(`/spaces/details?spaceId=${space.sortKey}`);
+                      }}
+                    >
+                      Edit
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => {
+                        updateSpaceEffect(space.sortKey, {
+                          archived: !space.archived,
+                          successMessage: !space.archived ? 'Archived!' : 'Activated!',
+                        });
+                      }}
+                    >
+                      {space.archived ? 'Activate' : 'Archive'}
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      type="danger"
+                      onClick={() => {
+                        setActiveSpace(space);
+                        setShowDeleteSpaceConfirm(true);
+                      }}
+                    >
+                      Delete
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button
+                  theme="borderless"
+                  icon={<RiMore2Line width="20" height="20" />}
+                  size="small"
+                />
+              </Dropdown>
+            </Card>
+          </Col>
+        ))}
+      </Row>
 
       <Confirm
         message="All links, notes and tags in this space will also be deleted. Are you sure you want to delete this space?"
@@ -148,6 +198,6 @@ export const Spaces = fastMemo(() => {
         }}
         isSaving={isDeleting}
       />
-    </PageContent>
+    </>
   );
 });

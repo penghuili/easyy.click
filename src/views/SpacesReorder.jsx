@@ -20,7 +20,6 @@ export const SpacesReorder = fastMemo(() => {
   const handleReorder = useCallback(({ item }) => {
     if (item) {
       updateSpaceEffect(item.sortKey, {
-        encryptedPassword: item.encryptedPassword,
         position: item.position,
       });
     }

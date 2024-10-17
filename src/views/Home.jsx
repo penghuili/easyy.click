@@ -12,6 +12,7 @@ import { LinkItems } from '../components/LinkItems.jsx';
 import { NoteItems } from '../components/NoteItems.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceSelector } from '../components/SpaceSelector.jsx';
+import { SpaceStats } from '../components/SpaceStats.jsx';
 import { localStorageKeys } from '../lib/constants.js';
 import { LocalStorage } from '../shared/browser/LocalStorage.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -69,6 +70,9 @@ export const Home = fastMemo(({ queryParams: { spaceId } }) => {
         </TabPane>
         <TabPane tab="Tags" itemKey="tags">
           <GroupItems spaceId={innerSpaceId} />
+        </TabPane>
+        <TabPane tab="Stats" itemKey="stats">
+          <SpaceStats spaceId={innerSpaceId} />
         </TabPane>
       </Tabs>
     </PageContent>

@@ -57,7 +57,10 @@ export async function createSpace({ title, color }) {
   }
 }
 
-export async function updateSpace(spaceId, { encryptedPassword, title, position, color }) {
+export async function updateSpace(
+  spaceId,
+  { encryptedPassword, title, position, color, archived }
+) {
   try {
     const encryptedTitle = await encryptMessageWithEncryptedPassword(encryptedPassword, title);
 
@@ -65,6 +68,7 @@ export async function updateSpace(spaceId, { encryptedPassword, title, position,
       title: encryptedTitle,
       position,
       color,
+      archived,
     });
 
     return await decryptSpace(data, LocalStorage.get(sharedLocalStorageKeys.privateKey));

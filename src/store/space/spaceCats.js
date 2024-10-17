@@ -16,10 +16,17 @@ const personalSpace = {
   title: 'Personal',
   color: 'var(--semi-color-primary)',
 };
+
 export function useSpaces() {
   const spaces = useCat(spacesCat);
 
-  return useMemo(() => [personalSpace, ...(spaces || [])], [spaces]);
+  return useMemo(() => [personalSpace, ...(spaces || [])].filter(s => !s.archived), [spaces]);
+}
+
+export function useArchivedSpaces() {
+  const spaces = useCat(spacesCat);
+
+  return useMemo(() => (spaces || []).filter(s => s.archived), [spaces]);
 }
 
 export function useSpace(spaceId) {

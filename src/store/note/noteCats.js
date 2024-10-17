@@ -12,8 +12,14 @@ export const isMovingNoteCat = createCat(false);
 export const isUpdatingNoteCat = createCat(false);
 export const isDeletingNoteCat = createCat(false);
 
-export function useNoteGroups(spaceId) {
+export function useNotes(spaceId) {
   const notes = useCat(notesCat);
+
+  return useMemo(() => notes[spaceId] || [], [notes, spaceId]);
+}
+
+export function useNoteGroups(spaceId) {
+  const notes = useNotes(spaceId);
   const groups = useGroups(spaceId);
 
   const groupsWithLinks = useMemo(() => {
@@ -24,7 +30,7 @@ export function useNoteGroups(spaceId) {
 
     const noGroupLinks = [];
 
-    (notes[spaceId] || []).forEach(link => {
+    notes.forEach(link => {
       if (obj[link.groupId]) {
         obj[link.groupId].items.push(link);
       } else {
@@ -36,10 +42,10 @@ export function useNoteGroups(spaceId) {
       ...groups.map(group => obj[group.sortKey]),
       { sortKey: noGroupSortKey, title: 'Notes without tag', items: noGroupLinks },
     ].filter(group => group.sortKey === noGroupSortKey || group.items.length > 0);
-  }, [groups, notes, spaceId]);
+  }, [groups, notes]);
 
   return {
     groups: groupsWithLinks,
-    notes: notes[spaceId] || [],
+    notes,
   };
 }

@@ -15,8 +15,14 @@ export const isDeletingLinkCat = createCat(false);
 export const isDeletingLinksCat = createCat(false);
 export const isLoadingPageInfoCat = createCat(false);
 
-export function useLinkGroups(showEmptyGroups = false, spaceId) {
+export function useLinks(spaceId) {
   const links = useCat(linksCat);
+
+  return useMemo(() => links[spaceId] || [], [links, spaceId]);
+}
+
+export function useLinkGroups(showEmptyGroups = false, spaceId) {
+  const links = useLinks(spaceId);
   const groups = useGroups(spaceId);
 
   const groupsWithLinks = useMemo(() => {
@@ -28,7 +34,7 @@ export function useLinkGroups(showEmptyGroups = false, spaceId) {
     const noGroupLinks = [];
     const importedLinks = [];
 
-    (links[spaceId] || []).forEach(link => {
+    links.forEach(link => {
       if (obj[link.groupId]) {
         obj[link.groupId].items.push(link);
       } else if (link.groupId === importedGroupSortKey) {
@@ -45,21 +51,21 @@ export function useLinkGroups(showEmptyGroups = false, spaceId) {
     ].filter(
       group => group.sortKey === noGroupSortKey || showEmptyGroups || group.items.length > 0
     );
-  }, [groups, links, showEmptyGroups, spaceId]);
+  }, [groups, links, showEmptyGroups]);
 
   return {
     groups: groupsWithLinks,
-    links: links[spaceId] || [],
+    links,
   };
 }
 
 export function useTop10Links(spaceId) {
-  const links = useCat(linksCat);
+  const links = useLinks(spaceId);
 
   return useMemo(() => {
-    return (links[spaceId] || [])
+    return links
       .filter(link => link.count > 0)
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
-  }, [links, spaceId]);
+  }, [links]);
 }

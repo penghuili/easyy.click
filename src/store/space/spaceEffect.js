@@ -77,13 +77,22 @@ export async function createSpaceEffect(title, color) {
   return data;
 }
 
-export async function updateSpaceEffect(spaceId, { encryptedPassword, title, position, color }) {
+export async function updateSpaceEffect(
+  spaceId,
+  { encryptedPassword, title, position, color, archived, successMessage }
+) {
   isUpdatingSpaceCat.set(true);
 
-  const { data } = await updateSpace(spaceId, { encryptedPassword, title, position, color });
+  const { data } = await updateSpace(spaceId, {
+    encryptedPassword,
+    title,
+    position,
+    color,
+    archived,
+  });
   if (data) {
     updateSpacesState(data, 'update');
-    setToastEffect('Updated!');
+    setToastEffect(successMessage || 'Updated!');
   }
 
   isUpdatingSpaceCat.set(false);
