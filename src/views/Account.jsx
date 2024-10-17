@@ -5,6 +5,7 @@ import { BabyLink } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { AppVersion } from '../components/AppVersion.jsx';
 import { ItemsWrapper } from '../components/ItemsWrapper.jsx';
 import { LogoutLink } from '../components/LogoutLink.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
@@ -57,6 +58,8 @@ export const Account = fastMemo(() => {
         <ItemsWrapper align="start">
           <LogoutLink />
         </ItemsWrapper>
+
+        <AppVersion />
       </PageContent>
     </PrepareData>
   );
