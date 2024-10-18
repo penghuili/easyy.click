@@ -94,11 +94,12 @@ export const CreateLinksForm = fastMemo(
                     padding: '0 0.5rem 1rem',
                   }}
                 >
-                  <Form.Input
+                  <Form.TextArea
                     field={`${field}[link]`}
                     label="Link"
                     placeholder="https://example.com"
                     autoFocus={autoFocus}
+                    autosize
                   />
 
                   <Form.Input

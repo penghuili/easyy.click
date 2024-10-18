@@ -51,7 +51,7 @@ export const PublicLinks = fastMemo(() => {
 
       <a href="https://t.me/easyyclick" target="_blank" rel="noreferrer">
         <Button theme="borderless" icon={<RiTelegramLine />}>
-          Telegram channel
+          Changelog
         </Button>
       </a>
 

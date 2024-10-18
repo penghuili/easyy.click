@@ -55,10 +55,8 @@ export function Welcome() {
           Terms
         </Link>
 
-        {/* <Link href="/changelog">Changelog</Link> */}
-
         <Link href="https://t.me/easyyclick" target="_blank" rel="noreferrer">
-          Telegram channel
+          Changelog
         </Link>
 
         <Link href="https://x.com/easyydotclick" target="_blank" rel="noreferrer">

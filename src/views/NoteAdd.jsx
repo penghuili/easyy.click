@@ -48,6 +48,7 @@ export const NoteAdd = fastMemo(({ queryParams: { groupId: groupIdInQuery, space
           placeholder="Which note do you copy paste regularly?"
           value={text}
           onChange={setText}
+          autosize
         />
 
         <GroupSelector groupId={groupId} onSelect={setGroupId} spaceId={spaceId} />

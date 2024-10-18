@@ -98,6 +98,7 @@ const NoteForm = fastMemo(({ noteId, spaceId }) => {
         placeholder="Which note do you copy paste regularly?"
         value={text}
         onChange={textCat.set}
+        autosize
       />
 
       <GroupSelector groupId={groupId} onSelect={handleUpdateGroup} spaceId={spaceId} />

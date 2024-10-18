@@ -91,6 +91,7 @@ const LinkForm = fastMemo(({ linkId, spaceId }) => {
         placeholder="https://example.com"
         value={linkValue}
         onChange={linkValueCat.set}
+        autosize
       />
 
       <Form.Input

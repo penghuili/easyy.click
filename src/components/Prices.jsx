@@ -73,6 +73,7 @@ export const Prices = React.memo(() => {
           { text: 'All links and notes are encrypted', enabled: true },
           { text: 'Group links / notes with tags', enabled: true },
           { text: 'Unlimited spaces', enabled: true },
+          { text: 'Import your browser bookmarks', enabled: true },
         ].map(benifit => (
           <Flex key={benifit.text} direction="row" justify="start" align="start" gap="0.5rem" m="0">
             <RiCheckLine color="white" />{' '}
