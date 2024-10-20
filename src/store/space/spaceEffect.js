@@ -18,7 +18,15 @@ import {
   spaceCat,
   spacesCat,
 } from './spaceCats';
-import { createSpace, deleteSpace, fetchSpace, fetchSpaces, updateSpace } from './spaceNetwork';
+import {
+  createSpace,
+  deleteSpace,
+  fetchSpace,
+  fetchSpaces,
+  shareSpaceLinks,
+  unshareSpaceLinks,
+  updateSpace,
+} from './spaceNetwork';
 
 export async function fetchSpacesEffect(force, alwaysFetchRemote = true) {
   if (!spacesCat.get()?.length) {
@@ -93,6 +101,30 @@ export async function updateSpaceEffect(
   if (data) {
     updateSpacesState(data, 'update');
     setToastEffect(successMessage || 'Updated!');
+  }
+
+  isUpdatingSpaceCat.set(false);
+}
+
+export async function shareSpaceLinksEffect(spaceId, payload) {
+  isUpdatingSpaceCat.set(true);
+
+  const { data } = await shareSpaceLinks(spaceId, payload);
+  if (data) {
+    updateSpacesState(data, 'update');
+    setToastEffect('Links in this space is now public!');
+  }
+
+  isUpdatingSpaceCat.set(false);
+}
+
+export async function unshareSpaceLinksEffect(spaceId) {
+  isUpdatingSpaceCat.set(true);
+
+  const { data } = await unshareSpaceLinks(spaceId);
+  if (data) {
+    updateSpacesState(data, 'update');
+    setToastEffect('Links in this space is no longer public.');
   }
 
   isUpdatingSpaceCat.set(false);

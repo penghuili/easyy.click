@@ -77,6 +77,28 @@ export async function updateSpace(
   }
 }
 
+export async function shareSpaceLinks(spaceId, data) {
+  try {
+    const result = await HTTP.post(appName, `/v1/spaces/${spaceId}/share-links`, {
+      data,
+    });
+
+    return await decryptSpace(result, LocalStorage.get(sharedLocalStorageKeys.privateKey));
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+export async function unshareSpaceLinks(spaceId) {
+  try {
+    const result = await HTTP.post(appName, `/v1/spaces/${spaceId}/unshare-links`, {});
+
+    return await decryptSpace(result, LocalStorage.get(sharedLocalStorageKeys.privateKey));
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function deleteSpace(spaceId) {
   try {
     const data = await HTTP.delete(appName, `/v1/spaces/${spaceId}`);

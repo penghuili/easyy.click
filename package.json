@@ -58,6 +58,8 @@
     "build": "npm run cs && vite build",
     "dt": "node ./scripts/update-build-env.js dev && node ./scripts/upload.js",
     "dp": "node ./scripts/update-build-env.js prod && node ./scripts/upload.js",
+    "vt": "node ./scripts/update-build-env.js dev && node ./scripts/update-version.js",
+    "vp": "node ./scripts/update-build-env.js prod && node ./scripts/update-version.js",
     "lint": "eslint .",
     "ana": "vite --profile",
     "rr": "node scripts/react-versions.js"

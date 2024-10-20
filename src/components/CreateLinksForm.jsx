@@ -71,7 +71,7 @@ export const CreateLinksForm = fastMemo(
     );
 
     const handleSave = useCallback(async () => {
-      await createLinksEffect({ links: formValues.links }, spaceId);
+      await createLinksEffect({ links: formValues.links, showMessage: true }, spaceId);
       goBack();
     }, [formValues, spaceId]);
 

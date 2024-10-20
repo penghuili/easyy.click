@@ -118,6 +118,48 @@ export async function updateGroup(groupId, { encryptedPassword, title, position 
   }
 }
 
+export async function shareGroupLinks(groupId, data, spaceId) {
+  try {
+    const space = getSpace(spaceId);
+
+    const result = await HTTP.post(
+      appName,
+      space
+        ? `/v1/link-groups/${groupId}/share-links?spaceId=${space.sortKey}`
+        : `/v1/link-groups/${groupId}/share-links`,
+      {
+        data,
+      }
+    );
+
+    const updated = space ? { ...result, encryptedPassword: space.encryptedPassword } : result;
+
+    return await decryptGroup(updated, LocalStorage.get(sharedLocalStorageKeys.privateKey));
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+export async function unshareGroupLinks(groupId, spaceId) {
+  try {
+    const space = getSpace(spaceId);
+
+    const result = await HTTP.post(
+      appName,
+      space
+        ? `/v1/link-groups/${groupId}/unshare-links?spaceId=${space.sortKey}`
+        : `/v1/link-groups/${groupId}/unshare-links`,
+      {}
+    );
+
+    const updated = space ? { ...result, encryptedPassword: space.encryptedPassword } : result;
+
+    return await decryptGroup(updated, LocalStorage.get(sharedLocalStorageKeys.privateKey));
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function deleteGroup(groupId, spaceId) {
   try {
     const space = getSpace(spaceId);

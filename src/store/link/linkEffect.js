@@ -90,16 +90,20 @@ export async function createLinkEffect(
   isCreatingLinkCat.set(false);
 }
 
-export async function createLinksEffect({ links }, spaceId) {
+export async function createLinksEffect({ links, showMessage }, spaceId) {
   isCreatingLinksCat.set(true);
 
   const { data } = await createLinks(links, spaceId);
   if (data) {
     updateLinksState(data, 'create-bulk', spaceId);
-    setToastEffect('Encrypted and saved safely in Frankfurt!');
+    if (showMessage) {
+      setToastEffect('Encrypted and saved safely in Frankfurt!');
+    }
   }
 
   isCreatingLinksCat.set(false);
+
+  return data;
 }
 
 export async function moveLinkEffect(link, fromSpaceId, toSpaceId, toGroupId) {
@@ -119,6 +123,39 @@ export async function moveLinkEffect(link, fromSpaceId, toSpaceId, toGroupId) {
   await deleteLinkEffect(link.sortKey, { showMessage: false }, fromSpaceId);
 
   setToastEffect('Moved!');
+
+  isMovingLinkCat.set(false);
+}
+
+export async function moveLinksEffect(links, fromSpaceId, toSpaceId, toGroupId) {
+  isMovingLinkCat.set(true);
+
+  const success = await createLinksEffect(
+    {
+      links: links.map(link => ({
+        title: link.title,
+        link: link.link,
+        groupId: toGroupId,
+        count: link.count,
+        moved: true,
+      })),
+      showMessage: false,
+    },
+    toSpaceId
+  );
+  if (success) {
+    const deleted = await deleteLinksEffect(
+      links.map(link => link.sortKey),
+      {
+        showMessage: false,
+      },
+      fromSpaceId
+    );
+
+    if (deleted) {
+      setToastEffect(`Moved ${links.length} links!`);
+    }
+  }
 
   isMovingLinkCat.set(false);
 }
@@ -167,17 +204,21 @@ export async function deleteLinkEffect(linkId, { showMessage }, spaceId) {
   isDeletingLinkCat.set(false);
 }
 
-export async function deleteLinksEffect(linkIds, spaceId) {
+export async function deleteLinksEffect(linkIds, { showMessage }, spaceId) {
   isDeletingLinksCat.set(true);
 
   const { data } = await deleteLinks(linkIds, spaceId);
 
   if (data) {
     updateLinksState(linkIds, 'delete-bulk', spaceId);
-    setToastEffect(`Deleted ${linkIds.length} links!`);
+    if (showMessage) {
+      setToastEffect(`Deleted ${linkIds.length} links!`);
+    }
   }
 
   isDeletingLinksCat.set(false);
+
+  return data;
 }
 
 export async function fetchPageInfoEffect(link) {

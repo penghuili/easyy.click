@@ -14,7 +14,15 @@ import {
   isLoadingGroupsCat,
   isUpdatingGroupCat,
 } from './groupCats';
-import { createGroup, deleteGroup, fetchGroup, fetchGroups, updateGroup } from './groupNetwork';
+import {
+  createGroup,
+  deleteGroup,
+  fetchGroup,
+  fetchGroups,
+  shareGroupLinks,
+  unshareGroupLinks,
+  updateGroup,
+} from './groupNetwork';
 
 export async function fetchGroupsEffect(force, alwaysFetchRemote = true, spaceId) {
   if (!groupsCat.get()[spaceId]?.length) {
@@ -81,6 +89,30 @@ export async function updateGroupEffect(groupId, { encryptedPassword, title, pos
   if (data) {
     updateGroupsState(data, 'update', spaceId);
     setToastEffect('Updated!');
+  }
+
+  isUpdatingGroupCat.set(false);
+}
+
+export async function shareGroupLinksEffect(groupId, payload, spaceId) {
+  isUpdatingGroupCat.set(true);
+
+  const { data } = await shareGroupLinks(groupId, payload, spaceId);
+  if (data) {
+    updateGroupsState(data, 'update', spaceId);
+    setToastEffect('Links in this tag is now public!');
+  }
+
+  isUpdatingGroupCat.set(false);
+}
+
+export async function unshareGroupLinksEffect(groupId, spaceId) {
+  isUpdatingGroupCat.set(true);
+
+  const { data } = await unshareGroupLinks(groupId, spaceId);
+  if (data) {
+    updateGroupsState(data, 'update', spaceId);
+    setToastEffect('Links in this tag is no longer public.');
   }
 
   isUpdatingGroupCat.set(false);
