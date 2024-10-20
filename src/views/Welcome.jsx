@@ -6,10 +6,9 @@ import { DarkMode } from '../components/DarkMode.jsx';
 import { Flex } from '../components/Flex';
 import { ItemsWrapper } from '../components/ItemsWrapper';
 import { Link } from '../components/Link.jsx';
+import { PublicLinks } from '../components/PublicLinks.jsx';
 import { logo } from '../shared/browser/initShared';
 import { PageContent } from '../shared/browser/PageContent.jsx';
-import { contactEmail } from '../shared/js/constants.js';
-import { copyContactEmailEffect } from '../store/settings/settingsEffect.js';
 
 export function Welcome() {
   return (
@@ -19,9 +18,7 @@ export function Welcome() {
           <Avatar src={logo} /> <Typography.Title heading={2}>easyy.click</Typography.Title>
         </Flex>
 
-        <Typography.Paragraph>
-          Open frequently used links, copy frequently used notes.
-        </Typography.Paragraph>
+        <Typography.Paragraph>Manage frequently used links and notes.</Typography.Paragraph>
         <Typography.Paragraph>
           <Link href="https://easyy.click" target="_blank">
             See how it works &gt;&gt;
@@ -34,39 +31,13 @@ export function Welcome() {
           <Button theme="solid">Sign up</Button>
         </BabyLink>
         <BabyLink to="/sign-in">
-          <Button theme="outline">Sign in</Button>
+          <Button>Sign in</Button>
         </BabyLink>
       </ItemsWrapper>
 
+      <PublicLinks />
+
       <ItemsWrapper align="start">
-        <Link href="https://easyy.click/encryption/" target="_blank" rel="noreferrer">
-          Encryption
-        </Link>
-
-        <Link href="https://github.com/penghuili/easyy.click" target="_blank" rel="noreferrer">
-          Source code
-        </Link>
-
-        <Link href="https://easyy.click/privacy" target="_blank" rel="noreferrer">
-          Privacy
-        </Link>
-
-        <Link href="https://easyy.click/terms" target="_blank" rel="noreferrer">
-          Terms
-        </Link>
-
-        <Link href="https://t.me/easyyclick" target="_blank" rel="noreferrer">
-          Changelog
-        </Link>
-
-        <Link href="https://x.com/easyydotclick" target="_blank" rel="noreferrer">
-          x.com
-        </Link>
-
-        <Link onClick={copyContactEmailEffect} style={{ cursor: 'pointer' }}>
-          Contact: {contactEmail}
-        </Link>
-
         <DarkMode />
       </ItemsWrapper>
     </PageContent>
