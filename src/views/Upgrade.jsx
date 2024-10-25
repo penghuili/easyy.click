@@ -138,6 +138,9 @@ const UpgradeAction = fastMemo(() => {
           Remember to use the same email (<Typography.Text copyable>{user?.email}</Typography.Text>)
           on the payment page.
         </Typography.Paragraph>
+        <Typography.Paragraph style={{ marginTop: '1rem', textAlign: 'center' }} strong>
+          Refresh the page after payment.
+        </Typography.Paragraph>
       </Flex>
     </>
   );

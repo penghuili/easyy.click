@@ -41,6 +41,7 @@ import { SignIn } from './views/SignIn.jsx';
 import { SignUp } from './views/SignUp.jsx';
 import { SpaceAdd } from './views/SpaceAdd.jsx';
 import { SpaceDetails } from './views/SpaceDetails.jsx';
+import { SpaceExport } from './views/SpaceExport.jsx';
 import { Spaces } from './views/Spaces.jsx';
 import { SpacesReorder } from './views/SpacesReorder.jsx';
 import { Upgrade } from './views/Upgrade.jsx';
@@ -94,6 +95,7 @@ const loggedInRoutes = {
   '/spaces/add': SpaceAdd,
   '/spaces/details': SpaceDetails,
   '/spaces/reorder': SpacesReorder,
+  '/spaces/export': SpaceExport,
   '/spaces': Spaces,
 
   '/account': Account,

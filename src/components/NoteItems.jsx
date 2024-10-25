@@ -1,5 +1,5 @@
 import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
-import { RiAddLine, RiDragMoveLine, RiMore2Line } from '@remixicon/react';
+import { RiAddLine, RiDragMoveLine, RiExportLine, RiMore2Line } from '@remixicon/react';
 import React, { useCallback, useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -69,6 +69,32 @@ export const NoteItems = fastMemo(({ spaceId }) => {
           >
             Reorder notes
           </Button>
+        )}
+
+        {!!notes?.length && (
+          <Dropdown
+            trigger="click"
+            position={'bottomLeft'}
+            clickToHide
+            render={
+              <Dropdown.Menu>
+                <Dropdown.Item
+                  icon={<RiExportLine />}
+                  onClick={() => navigateTo(`/spaces/export?spaceId=${spaceId}`)}
+                >
+                  Export notes
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            }
+          >
+            <Button
+              theme="borderless"
+              icon={<RiMore2Line />}
+              style={{
+                marginRight: 2,
+              }}
+            />
+          </Dropdown>
         )}
       </Flex>
     );

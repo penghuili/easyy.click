@@ -4,6 +4,7 @@ import {
   RiDeleteBinLine,
   RiDragMoveLine,
   RiEdit2Line,
+  RiExportLine,
   RiExternalLinkLine,
   RiImportLine,
   RiLockLine,
@@ -182,6 +183,14 @@ export const LinkItems = fastMemo(({ spaceId }) => {
               >
                 Import browser bookmarks
               </Dropdown.Item>
+
+              <Dropdown.Item
+                icon={<RiExportLine />}
+                onClick={() => navigateTo(`/spaces/export?spaceId=${spaceId}`)}
+              >
+                Export links
+              </Dropdown.Item>
+
               {links?.length > 1 && (
                 <>
                   <Dropdown.Divider />
@@ -192,7 +201,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
 
                   <Dropdown.Item
                     type="danger"
-                    icon={<RiImportLine />}
+                    icon={<RiDeleteBinLine />}
                     onClick={() => setShowDeleteMultiple(true)}
                   >
                     Delete multiple links
