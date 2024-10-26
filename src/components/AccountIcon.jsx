@@ -10,7 +10,7 @@ import fastMemo from 'react-fast-memo';
 
 import styles from './AccountIcon.module.css';
 
-export const AccountIcon = fastMemo(() => {
+export const AccountIcon = fastMemo(({ onClick }) => {
   const [date, setDate] = useState(new Date());
 
   const top = useMemo(() => {
@@ -45,12 +45,15 @@ export const AccountIcon = fastMemo(() => {
   }, []);
 
   return (
-    <div className={styles.accountIcons}>
-      <div className={styles.accountIconsContent} style={{ top, height: 24 * 4 }}>
-        <RiEmotion2Line />
-        <RiEmotionHappyLine />
-        <RiEmotionLine />
-        <RiEmotionLaughLine />
+    <div className={styles.accountIcons} onClick={onClick}>
+      <div
+        className={styles.accountIconsContent}
+        style={{ top, height: 24 * 4, cursor: 'pointer' }}
+      >
+        <RiEmotion2Line color="var(--semi-color-primary)" />
+        <RiEmotionHappyLine color="var(--semi-color-primary)" />
+        <RiEmotionLine color="var(--semi-color-primary)" />
+        <RiEmotionLaughLine color="var(--semi-color-primary)" />
       </div>
     </div>
   );

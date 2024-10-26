@@ -1,6 +1,7 @@
 import { Button, Checkbox, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
 import {
   RiAddLine,
+  RiCornerUpRightLine,
   RiDeleteBinLine,
   RiDragMoveLine,
   RiEdit2Line,
@@ -74,7 +75,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
   const [activeGroup, setActiveGroup] = useState(null);
   const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
 
-  const [newSpace, setNewSpace] = useState(null);
+  const [newSpaceId, setNewSpaceId] = useState(null);
   const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
   const [showMoveLinkModal, setShowMoveLinkModal] = useState(false);
   const [showMoveLinksModal, setShowMoveLinksModal] = useState(false);
@@ -351,19 +352,17 @@ export const LinkItems = fastMemo(({ spaceId }) => {
 
                     {otherSpaces.length > 0 && (
                       <>
-                        {otherSpaces.map(space => (
-                          <Dropdown.Item
-                            key={space.sortKey}
-                            onClick={() => {
-                              setActiveGroup(group);
-                              setNewSpace(space);
-                              setShowMoveLinksModal(true);
-                            }}
-                            disabled={isMoving}
-                          >
-                            Move links to "{space.title}"
-                          </Dropdown.Item>
-                        ))}
+                        <Dropdown.Item
+                          key={space.sortKey}
+                          icon={<RiCornerUpRightLine />}
+                          onClick={() => {
+                            setActiveGroup(group);
+                            setShowMoveLinksModal(true);
+                          }}
+                          disabled={isMoving}
+                        >
+                          Move to ...
+                        </Dropdown.Item>
 
                         <Dropdown.Divider />
                       </>
@@ -443,6 +442,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
                         render={
                           <Dropdown.Menu>
                             <Dropdown.Item
+                              icon={<RiEdit2Line />}
                               onClick={() => {
                                 navigateTo(
                                   `/links/details?linkId=${link.sortKey}&spaceId=${spaceId}`
@@ -456,19 +456,17 @@ export const LinkItems = fastMemo(({ spaceId }) => {
                               <>
                                 <Dropdown.Divider />
 
-                                {otherSpaces.map(space => (
-                                  <Dropdown.Item
-                                    key={space.sortKey}
-                                    onClick={() => {
-                                      setActiveLink(link);
-                                      setNewSpace(space);
-                                      setShowMoveLinkModal(true);
-                                    }}
-                                    disabled={isMoving}
-                                  >
-                                    Move to "{space.title}"
-                                  </Dropdown.Item>
-                                ))}
+                                <Dropdown.Item
+                                  key={space.sortKey}
+                                  icon={<RiCornerUpRightLine />}
+                                  onClick={() => {
+                                    setActiveLink(link);
+                                    setShowMoveLinkModal(true);
+                                  }}
+                                  disabled={isMoving}
+                                >
+                                  Move to ...
+                                </Dropdown.Item>
 
                                 <Dropdown.Divider />
                               </>
@@ -476,6 +474,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
 
                             <Dropdown.Item
                               type="danger"
+                              icon={<RiDeleteBinLine />}
                               onClick={() => {
                                 setActiveLink(link);
                                 setShowDeleteLinkConfirm(true);
@@ -535,41 +534,45 @@ export const LinkItems = fastMemo(({ spaceId }) => {
       )}
 
       <GroupSelectorForMove
+        excludeSpaceId={spaceId}
         open={showMoveLinkModal}
         onOpenChange={setShowMoveLinkModal}
         groupId={newSpaceGroupId}
-        onSelect={setNewSpaceGroupId}
-        spaceId={newSpace?.sortKey}
+        onSelectGroup={setNewSpaceGroupId}
+        spaceId={newSpaceId}
+        onSelectSpace={setNewSpaceId}
         onConfirm={async () => {
-          if (!activeLink || !newSpace) {
+          if (!activeLink || !newSpaceId) {
             return;
           }
 
-          await moveLinkEffect(activeLink, spaceId, newSpace.sortKey, newSpaceGroupId);
+          await moveLinkEffect(activeLink, spaceId, newSpaceId, newSpaceGroupId);
 
           setShowMoveLinkModal(false);
           setActiveLink(null);
-          setNewSpace(null);
+          setNewSpaceId(null);
         }}
         isSaving={isMoving}
       />
 
       <GroupSelectorForMove
+        excludeSpaceId={spaceId}
         open={showMoveLinksModal}
         onOpenChange={setShowMoveLinksModal}
         groupId={newSpaceGroupId}
-        onSelect={setNewSpaceGroupId}
-        spaceId={newSpace?.sortKey}
+        onSelectGroup={setNewSpaceGroupId}
+        spaceId={newSpaceId}
+        onSelectSpace={setNewSpaceId}
         onConfirm={async () => {
-          if (!activeGroup || !newSpace) {
+          if (!activeGroup || !newSpaceId) {
             return;
           }
 
-          await moveLinksEffect(activeGroup.items, spaceId, newSpace.sortKey, newSpaceGroupId);
+          await moveLinksEffect(activeGroup.items, spaceId, newSpaceId, newSpaceGroupId);
 
           setShowMoveLinksModal(false);
           setActiveGroup(null);
-          setNewSpace(null);
+          setNewSpaceId(null);
         }}
         isSaving={isMoving}
       />

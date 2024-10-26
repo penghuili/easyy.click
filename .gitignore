@@ -11,7 +11,10 @@
 # production
 /build
 /dist
+/dist-ext
+/dist-ext-bg
 bundle-stats.html
+easyyclick.zip
 
 # misc
 .DS_Store

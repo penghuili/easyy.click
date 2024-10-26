@@ -27,6 +27,7 @@ import { GroupDetails } from './views/GroupDetails.jsx';
 import { GroupsReorder } from './views/GroupsReorder.jsx';
 import { Gumroad } from './views/Gumroad.jsx';
 import { Home } from './views/Home.jsx';
+import { Inbox } from './views/Inbox.jsx';
 import { LinkDetails } from './views/LinkDetails.jsx';
 import { LinksAdd } from './views/LinksAdd.jsx';
 import { LinksImport } from './views/LinksImport.jsx';
@@ -97,6 +98,8 @@ const loggedInRoutes = {
   '/spaces/reorder': SpacesReorder,
   '/spaces/export': SpaceExport,
   '/spaces': Spaces,
+
+  '/inbox': Inbox,
 
   '/account': Account,
   '/security': Security,

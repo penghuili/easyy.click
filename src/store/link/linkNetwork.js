@@ -10,7 +10,7 @@ import {
 } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
 import { encryptMessageWithEncryptedPassword } from '../note/noteNetwork';
-import { getSpace } from '../space/spaceCats';
+import { getSpace, hasSpacePassword } from '../space/spaceCats';
 import { decryptLink } from '../worker/workerHelpers';
 
 export async function fetchLinks(spaceId) {
@@ -23,7 +23,7 @@ export async function fetchLinks(spaceId) {
     );
 
     return {
-      data: space
+      data: hasSpacePassword(space)
         ? links.map(item => ({ ...item, encryptedPassword: space.encryptedPassword }))
         : links,
       error: null,
@@ -42,7 +42,9 @@ export async function fetchLink(linkId, spaceId) {
       space ? `/v1/links/${linkId}?spaceId=${space.sortKey}` : `/v1/links/${linkId}`
     );
 
-    const uppdated = space ? { ...link, encryptedPassword: space.encryptedPassword } : link;
+    const uppdated = hasSpacePassword(space)
+      ? { ...link, encryptedPassword: space.encryptedPassword }
+      : link;
 
     return await decryptLink(uppdated, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
@@ -93,7 +95,9 @@ export async function createLink({ title, link, count, groupId, moved }, spaceId
       { ...payload, moved }
     );
 
-    const updated = space ? { ...data, encryptedPassword: space.encryptedPassword } : data;
+    const updated = hasSpacePassword(space)
+      ? { ...data, encryptedPassword: space.encryptedPassword }
+      : data;
 
     return await decryptLink(updated, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {
@@ -119,7 +123,7 @@ export async function createLinks(links, spaceId) {
       { links: encryptedLinks }
     );
 
-    const updated = space
+    const updated = hasSpacePassword(space)
       ? data.map(item => ({
           ...item,
           encryptedPassword: space.encryptedPassword,
@@ -166,7 +170,9 @@ export async function updateLink(
       }
     );
 
-    const updated = space ? { ...data, encryptedPassword: space.encryptedPassword } : data;
+    const updated = hasSpacePassword(space)
+      ? { ...data, encryptedPassword: space.encryptedPassword }
+      : data;
 
     return await decryptLink(updated, LocalStorage.get(sharedLocalStorageKeys.privateKey));
   } catch (error) {

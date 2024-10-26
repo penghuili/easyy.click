@@ -10,6 +10,7 @@ export const isUpdatingSpaceCat = createCat(false);
 export const isDeletingSpaceCat = createCat(false);
 export const activeSpaceCat = createCat(null);
 export const defaultSpaceId = 'personal';
+export const inboxSpaceId = 'inbox';
 
 const personalSpace = {
   sortKey: defaultSpaceId,
@@ -49,6 +50,10 @@ export function getSpace(spaceId) {
     return null;
   }
 
+  if (spaceId === inboxSpaceId) {
+    return { sortKey: inboxSpaceId, title: 'Inbox', color: 'var(--semi-color-primary)' };
+  }
+
   const spaces = spacesCat.get();
   const found = spaces?.find(item => item.sortKey === spaceId);
   if (!found) {
@@ -56,4 +61,8 @@ export function getSpace(spaceId) {
   }
 
   return found;
+}
+
+export function hasSpacePassword(space) {
+  return space && space.encryptedPassword;
 }

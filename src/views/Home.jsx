@@ -1,5 +1,5 @@
-import { Button, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { RiRefreshLine } from '@remixicon/react';
+import { Badge, Button, TabPane, Tabs } from '@douyinfe/semi-ui';
+import { RiNotificationLine, RiRefreshLine } from '@remixicon/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { navigateTo, replaceTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -14,10 +14,12 @@ import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceSelector } from '../components/SpaceSelector.jsx';
 import { SpaceStats } from '../components/SpaceStats.jsx';
 import { localStorageKeys } from '../lib/constants.js';
+import { useAdmin } from '../lib/useAdmin.js';
 import { LocalStorage } from '../shared/browser/LocalStorage.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
-import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
+import { settingsCat, useExpiresAt } from '../shared/browser/store/sharedCats.js';
+import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
@@ -30,6 +32,7 @@ async function load(force, spaceId) {
   fetchLinksEffect(force, true, spaceId);
   fetchNotesEffect(force, true, spaceId);
   fetchGroupsEffect(force, true, spaceId);
+  fetchSettingsEffect(false);
 }
 
 export const Home = fastMemo(({ queryParams: { spaceId } }) => {
@@ -85,6 +88,8 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
   const isLoadingGroups = useCat(isLoadingGroupsCat);
   const isMovingLink = useCat(isMovingLinkCat);
   const isMovingNote = useCat(isMovingNoteCat);
+  const settings = useCat(settingsCat);
+  const isAdmin = useAdmin();
 
   const isLoading =
     isLoadingNotes || isLoadingLinks || isLoadingGroups || isMovingLink || isMovingNote;
@@ -115,10 +120,18 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
         <>
           <UpgradeButton />
 
-          <Button
-            type="primary"
-            theme="borderless"
-            icon={<AccountIcon />}
+          {isAdmin && (
+            <Badge count={settings?.inboxLinksCount > 0 ? settings.inboxLinksCount : null}>
+              <RiNotificationLine
+                color="var(--semi-color-primary)"
+                onClick={() => {
+                  navigateTo('/inbox');
+                }}
+                style={{ cursor: 'pointer', margin: '0 0.25rem' }}
+              />
+            </Badge>
+          )}
+          <AccountIcon
             onClick={() => {
               navigateTo('/account');
             }}

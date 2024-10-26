@@ -1,7 +1,7 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
 import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
-import { setToastEffect } from '../../shared/browser/store/sharedEffects';
+import { fetchSettingsEffect, setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
 import { workerActionTypes } from '../worker/workerHelpers';
 import { myWorker } from '../worker/workerListeners';
@@ -85,6 +85,8 @@ export async function createLinkEffect(
     if (showMessage) {
       setToastEffect('Encrypted and saved safely in Frankfurt!');
     }
+
+    fetchSettingsEffect(false);
   }
 
   isCreatingLinkCat.set(false);
@@ -99,6 +101,8 @@ export async function createLinksEffect({ links, showMessage }, spaceId) {
     if (showMessage) {
       setToastEffect('Encrypted and saved safely in Frankfurt!');
     }
+
+    fetchSettingsEffect(false);
   }
 
   isCreatingLinksCat.set(false);
@@ -123,6 +127,8 @@ export async function moveLinkEffect(link, fromSpaceId, toSpaceId, toGroupId) {
   await deleteLinkEffect(link.sortKey, { showMessage: false }, fromSpaceId);
 
   setToastEffect('Moved!');
+
+  fetchSettingsEffect(false);
 
   isMovingLinkCat.set(false);
 }
@@ -154,6 +160,8 @@ export async function moveLinksEffect(links, fromSpaceId, toSpaceId, toGroupId) 
 
     if (deleted) {
       setToastEffect(`Moved ${links.length} links!`);
+
+      fetchSettingsEffect(false);
     }
   }
 
@@ -199,6 +207,8 @@ export async function deleteLinkEffect(linkId, { showMessage }, spaceId) {
     if (showMessage) {
       setToastEffect('Deleted!');
     }
+
+    fetchSettingsEffect(false);
   }
 
   isDeletingLinkCat.set(false);
@@ -214,6 +224,8 @@ export async function deleteLinksEffect(linkIds, { showMessage }, spaceId) {
     if (showMessage) {
       setToastEffect(`Deleted ${linkIds.length} links!`);
     }
+
+    fetchSettingsEffect(false);
   }
 
   isDeletingLinksCat.set(false);

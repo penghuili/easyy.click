@@ -1,5 +1,13 @@
 import { Button, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
-import { RiAddLine, RiDragMoveLine, RiExportLine, RiMore2Line } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiCornerUpRightLine,
+  RiDeleteBinLine,
+  RiDragMoveLine,
+  RiEdit2Line,
+  RiExportLine,
+  RiMore2Line,
+} from '@remixicon/react';
 import React, { useCallback, useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -42,7 +50,7 @@ export const NoteItems = fastMemo(({ spaceId }) => {
   const [activeGroup, setActiveGroup] = useState(null);
   const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
 
-  const [newSpace, setNewSpace] = useState(null);
+  const [newSpaceId, setNewSpaceId] = useState(null);
   const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
   const [showMoveModal, setShowMoveModal] = useState(false);
 
@@ -205,6 +213,7 @@ export const NoteItems = fastMemo(({ spaceId }) => {
                       render={
                         <Dropdown.Menu>
                           <Dropdown.Item
+                            icon={<RiEdit2Line />}
                             onClick={() => {
                               navigateTo(
                                 `/notes/details?noteId=${item.sortKey}&spaceId=${spaceId}`
@@ -218,19 +227,16 @@ export const NoteItems = fastMemo(({ spaceId }) => {
                             <>
                               <Dropdown.Divider />
 
-                              {otherSpaces.map(space => (
-                                <Dropdown.Item
-                                  key={space.sortKey}
-                                  onClick={() => {
-                                    setActiveNote(item);
-                                    setNewSpace(space);
-                                    setShowMoveModal(true);
-                                  }}
-                                  disabled={isMoving}
-                                >
-                                  Move to "{space.title}"
-                                </Dropdown.Item>
-                              ))}
+                              <Dropdown.Item
+                                icon={<RiCornerUpRightLine />}
+                                onClick={() => {
+                                  setActiveNote(item);
+                                  setShowMoveModal(true);
+                                }}
+                                disabled={isMoving}
+                              >
+                                Move to ...
+                              </Dropdown.Item>
 
                               <Dropdown.Divider />
                             </>
@@ -238,6 +244,7 @@ export const NoteItems = fastMemo(({ spaceId }) => {
 
                           <Dropdown.Item
                             type="danger"
+                            icon={<RiDeleteBinLine />}
                             onClick={() => {
                               setActiveNote(item);
                               setShowDeleteNoteConfirm(true);
@@ -270,21 +277,23 @@ export const NoteItems = fastMemo(({ spaceId }) => {
       ))}
 
       <GroupSelectorForMove
+        excludeSpaceId={spaceId}
         open={showMoveModal}
         onOpenChange={setShowMoveModal}
         groupId={newSpaceGroupId}
-        onSelect={setNewSpaceGroupId}
-        spaceId={newSpace?.sortKey}
+        onSelectGroup={setNewSpaceGroupId}
+        spaceId={newSpaceId}
+        onSelectSpace={setNewSpaceId}
         onConfirm={async () => {
-          if (!activeNote || !newSpace) {
+          if (!activeNote || !newSpaceId) {
             return;
           }
 
-          await moveNoteEffect(activeNote, spaceId, newSpace.sortKey, newSpaceGroupId);
+          await moveNoteEffect(activeNote, spaceId, newSpaceId, newSpaceGroupId);
 
           setShowMoveModal(false);
           setActiveNote(null);
-          setNewSpace(null);
+          setNewSpaceId(null);
         }}
         isSaving={isMoving}
       />
