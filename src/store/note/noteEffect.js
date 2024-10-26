@@ -1,13 +1,15 @@
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../lib/LocalStorage';
 import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
-import { setToastEffect } from '../../shared/browser/store/sharedEffects';
+import { fetchSettingsEffect, setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
 import { workerActionTypes } from '../worker/workerHelpers';
 import { myWorker } from '../worker/workerListeners';
 import {
   isCreatingNoteCat,
+  isCreatingNotesCat,
   isDeletingNoteCat,
+  isDeletingNotesCat,
   isLoadingNoteCat,
   isLoadingNotesCat,
   isMovingNoteCat,
@@ -15,7 +17,15 @@ import {
   noteCat,
   notesCat,
 } from './noteCats';
-import { createNote, deleteNote, fetchNote, fetchNotes, updateNote } from './noteNetwork';
+import {
+  createNote,
+  createNotes,
+  deleteNote,
+  deleteNotes,
+  fetchNote,
+  fetchNotes,
+  updateNote,
+} from './noteNetwork';
 
 export async function fetchNotesEffect(force, alwaysFetchRemote = true, spaceId) {
   if (!notesCat.get()[spaceId]?.length) {
@@ -75,6 +85,24 @@ export async function createNoteEffect({ title, text, groupId, moved, showMessag
   isCreatingNoteCat.set(false);
 }
 
+export async function createNotesEffect({ notes, moved, showMessage }, spaceId) {
+  isCreatingNotesCat.set(true);
+
+  const { data } = await createNotes({ notes, moved }, spaceId);
+  if (data) {
+    updateNotesState(data, 'create-bulk', spaceId);
+    if (showMessage) {
+      setToastEffect('Encrypted and saved safely in Frankfurt!');
+    }
+
+    fetchSettingsEffect(false);
+  }
+
+  isCreatingNotesCat.set(false);
+
+  return data;
+}
+
 export async function moveNoteEffect(note, fromSpaceId, toSpaceId, toGroupId) {
   isMovingNoteCat.set(true);
 
@@ -85,6 +113,40 @@ export async function moveNoteEffect(note, fromSpaceId, toSpaceId, toGroupId) {
   await deleteNoteEffect(note.sortKey, { showMessage: false }, fromSpaceId);
 
   setToastEffect('Moved!');
+
+  isMovingNoteCat.set(false);
+}
+
+export async function moveNotesEffect(notes, fromSpaceId, toSpaceId, toGroupId) {
+  isMovingNoteCat.set(true);
+
+  const success = await createNotesEffect(
+    {
+      notes: notes.map(link => ({
+        title: link.title,
+        text: link.text,
+        groupId: toGroupId,
+      })),
+      moved: true,
+      showMessage: false,
+    },
+    toSpaceId
+  );
+  if (success) {
+    const deleted = await deleteNotesEffect(
+      notes.map(link => link.sortKey),
+      {
+        showMessage: false,
+      },
+      fromSpaceId
+    );
+
+    if (deleted) {
+      setToastEffect(`Moved ${notes.length} notes!`);
+
+      fetchSettingsEffect(false);
+    }
+  }
 
   isMovingNoteCat.set(false);
 }
@@ -112,7 +174,7 @@ export async function updateNoteEffect(
 }
 
 export async function deleteNoteEffect(noteId, { showMessage }, spaceId) {
-  isDeletingNoteCat.set(true);
+  isDeletingNotesCat.set(true);
 
   const { data } = await deleteNote(noteId, spaceId);
 
@@ -123,7 +185,26 @@ export async function deleteNoteEffect(noteId, { showMessage }, spaceId) {
     }
   }
 
+  isDeletingNotesCat.set(false);
+}
+
+export async function deleteNotesEffect(noteIds, { showMessage }, spaceId) {
+  isDeletingNoteCat.set(true);
+
+  const { data } = await deleteNotes(noteIds, spaceId);
+
+  if (data) {
+    updateNotesState(noteIds, 'delete-bulk', spaceId);
+    if (showMessage) {
+      setToastEffect(`Deleted ${noteIds.length} links!`);
+    }
+
+    fetchSettingsEffect(false);
+  }
+
   isDeletingNoteCat.set(false);
+
+  return data;
 }
 
 export function updateNotesState(data, type, spaceId) {
@@ -137,8 +218,16 @@ export function updateNotesState(data, type, spaceId) {
     );
   } else if (type === 'delete') {
     newItems = newItems.filter(item => item.sortKey !== data.sortKey);
+  } else if (type === 'delete-bulk') {
+    const obj = {};
+    data?.forEach(id => {
+      obj[id] = true;
+    });
+    newItems = newItems.filter(item => !obj[item.sortKey]);
   } else if (type === 'create') {
     newItems = [...newItems, data];
+  } else if (type === 'create-bulk') {
+    newItems = [...newItems, ...data];
   } else if (type === 'fetch') {
     newItems = data;
   }

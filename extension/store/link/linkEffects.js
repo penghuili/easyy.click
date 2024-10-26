@@ -1,11 +1,11 @@
-import { isCreatingLinkCat, isCreationgSuccessfulCat } from './linkCats';
+import { isCreateLinkSuccessfulCat, isCreatingLinkCat } from './linkCats';
 import { createLink } from './linkNetwork';
 
-export async function createLinkEffect({ title, link, count, groupId, moved }) {
+export async function createLinkEffect({ title, link, fromUrl }) {
   isCreatingLinkCat.set(true);
 
-  const { data } = await createLink({ title, link, count, groupId, moved });
-  isCreationgSuccessfulCat.set(!!data);
+  const { data } = await createLink({ title, link, fromUrl });
+  isCreateLinkSuccessfulCat.set(!!data);
 
   isCreatingLinkCat.set(false);
 }

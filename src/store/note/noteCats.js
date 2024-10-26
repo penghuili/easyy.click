@@ -8,9 +8,11 @@ export const noteCat = createCat(null);
 export const isLoadingNotesCat = createCat(false);
 export const isLoadingNoteCat = createCat(false);
 export const isCreatingNoteCat = createCat(false);
+export const isCreatingNotesCat = createCat(false);
 export const isMovingNoteCat = createCat(false);
 export const isUpdatingNoteCat = createCat(false);
 export const isDeletingNoteCat = createCat(false);
+export const isDeletingNotesCat = createCat(false);
 
 export function useNotes(spaceId) {
   const notes = useCat(notesCat);

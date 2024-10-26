@@ -18,8 +18,14 @@ export async function decryptLink(link, privateKey) {
     const decryptedLink = link.link
       ? await decryptMessageSymmetric(decryptedPassword, link.link)
       : link.link;
+    const decryptedFromUrl = link.fromUrl
+      ? await decryptMessageSymmetric(decryptedPassword, link.fromUrl)
+      : link.fromUrl;
 
-    return { data: { ...link, title: decryptedTitle, link: decryptedLink }, error: null };
+    return {
+      data: { ...link, title: decryptedTitle, link: decryptedLink, fromUrl: decryptedFromUrl },
+      error: null,
+    };
   } catch (error) {
     sendError({ userId: link?.id, linkId: link?.sortKey, error });
 
@@ -37,8 +43,14 @@ export async function decryptNote(note, privateKey) {
     const decryptedText = note.text
       ? await decryptMessageSymmetric(decryptedPassword, note.text)
       : note.text;
+    const decryptedFromUrl = note.fromUrl
+      ? await decryptMessageSymmetric(decryptedPassword, note.fromUrl)
+      : note.fromUrl;
 
-    return { data: { ...note, title: decryptedTitle, text: decryptedText }, error: null };
+    return {
+      data: { ...note, title: decryptedTitle, text: decryptedText, fromUrl: decryptedFromUrl },
+      error: null,
+    };
   } catch (error) {
     sendError({ userId: note?.id, noteId: note?.sortKey, error });
 

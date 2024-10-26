@@ -10,7 +10,7 @@ import { PageLoading } from '../src/components/PageLoading';
 import { bgActions } from './lib/constants';
 import { authErrorCat, isInitingCat, isLoggedInCat, isSigningInCat } from './store/auth/authCats';
 import { initEffect, logoutEffect, signInEffect } from './store/auth/authEffects';
-import { isCreatingLinkCat, isCreationgSuccessfulCat } from './store/link/linkCats';
+import { isCreateLinkSuccessfulCat, isCreatingLinkCat } from './store/link/linkCats';
 
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true };
@@ -24,7 +24,7 @@ function Popup() {
   const errorMessage = useCat(authErrorCat);
   const isLoggedIn = useCat(isLoggedInCat);
   const isCreatingLink = useCat(isCreatingLinkCat);
-  const isCreationgSuccessful = useCat(isCreationgSuccessfulCat);
+  const isCreationgSuccessful = useCat(isCreateLinkSuccessfulCat);
 
   const [activeTab, setActiveTab] = useState(null);
 

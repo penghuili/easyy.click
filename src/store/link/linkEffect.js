@@ -92,10 +92,10 @@ export async function createLinkEffect(
   isCreatingLinkCat.set(false);
 }
 
-export async function createLinksEffect({ links, showMessage }, spaceId) {
+export async function createLinksEffect({ links, moved, showMessage }, spaceId) {
   isCreatingLinksCat.set(true);
 
-  const { data } = await createLinks(links, spaceId);
+  const { data } = await createLinks({ links, moved }, spaceId);
   if (data) {
     updateLinksState(data, 'create-bulk', spaceId);
     if (showMessage) {
@@ -145,6 +145,7 @@ export async function moveLinksEffect(links, fromSpaceId, toSpaceId, toGroupId) 
         count: link.count,
         moved: true,
       })),
+      moved: true,
       showMessage: false,
     },
     toSpaceId

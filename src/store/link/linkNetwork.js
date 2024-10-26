@@ -105,7 +105,7 @@ export async function createLink({ title, link, count, groupId, moved }, spaceId
   }
 }
 
-export async function createLinks(links, spaceId) {
+export async function createLinks({ links, moved }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
@@ -120,7 +120,7 @@ export async function createLinks(links, spaceId) {
     const data = await HTTP.post(
       appName,
       space ? `/v1/links-bulk?spaceId=${space.sortKey}` : `/v1/links-bulk`,
-      { links: encryptedLinks }
+      { links: encryptedLinks, moved }
     );
 
     const updated = hasSpacePassword(space)

@@ -5,6 +5,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { InboxLinkItems } from '../components/InboxLinkItems.jsx';
+import { InboxNoteItems } from '../components/InboxNoteItems.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
@@ -48,7 +49,9 @@ export const Inbox = fastMemo(() => {
         <TabPane tab="Links" itemKey="links">
           <InboxLinkItems />
         </TabPane>
-        <TabPane tab="Notes" itemKey="notes"></TabPane>
+        <TabPane tab="Notes" itemKey="notes">
+          <InboxNoteItems />
+        </TabPane>
       </Tabs>
     </PageContent>
   );

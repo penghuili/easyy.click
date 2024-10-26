@@ -1,4 +1,5 @@
 import { httpErrorCodes } from '../../../src/shared/js/httpErrorCodes';
+import { extStorage, storageKeys } from '../../lib/storage';
 import {
   authErrorCat,
   isInitingCat,
@@ -24,6 +25,8 @@ export async function signInEffect(email, password) {
     isLoggedInCat.set(true);
   }
 
+  await extStorage.set(storageKeys.loggedIn, !error);
+
   isSigningInCat.set(false);
 }
 
@@ -33,6 +36,7 @@ export async function initEffect() {
   const { isValid } = await checkRefreshToken();
 
   isLoggedInCat.set(isValid);
+  await extStorage.set(storageKeys.loggedIn, isValid);
 
   isInitingCat.set(false);
 

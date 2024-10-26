@@ -51,9 +51,5 @@ export async function signIn(email, password) {
 }
 
 export async function logout() {
-  await extStorage.remove(storageKeys.accessTokenExpiresAt);
-  await extStorage.remove(storageKeys.refreshToken);
-  await extStorage.remove(storageKeys.accessToken);
-  await extStorage.remove(storageKeys.publicKey);
-  await extStorage.remove(storageKeys.privateKey);
+  await extStorage.resetTokens();
 }

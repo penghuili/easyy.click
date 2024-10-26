@@ -1,7 +1,7 @@
 import { EventEmitter, eventEmitterEvents } from './eventEmitter.js';
 import { extStorage, storageKeys } from './storage.js';
 
-const apiUrl = 'https://api.peng37.com/easyy';
+const apiUrl = 'https://api.peng37.com/easyy-test';
 
 const eventEmitter = new EventEmitter();
 

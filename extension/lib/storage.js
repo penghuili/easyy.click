@@ -8,6 +8,7 @@ export const storageKeys = {
   accessTokenExpiresAt: 'accessTokenExpiresAt',
   publicKey: 'publicKey',
   privateKey: 'privateKey',
+  loggedIn: 'loggedIn',
 };
 
 export const extStorage = {
@@ -52,5 +53,6 @@ export const extStorage = {
     await extStorage.remove(storageKeys.accessTokenExpiresAt);
     await extStorage.remove(storageKeys.publicKey);
     await extStorage.remove(storageKeys.privateKey);
+    await extStorage.remove(storageKeys.loggedIn);
   },
 };
