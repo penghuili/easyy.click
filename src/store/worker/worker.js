@@ -1,3 +1,4 @@
+import { asyncForEach } from '../../shared/js/asyncForEach';
 import { decryptGroup, decryptLink, decryptNote, workerActionTypes } from './workerHelpers';
 
 self.onmessage = async function (event) {
@@ -27,21 +28,48 @@ self.onmessage = async function (event) {
 };
 
 async function decryptLinks(links, privateKey) {
-  const results = await Promise.all(links.map(link => decryptLink(link, privateKey)));
-  return results.map(r => r.data).filter(Boolean);
+  const results = [];
+  await asyncForEach(links, async link => {
+    const { data } = await decryptLink(link, privateKey);
+    if (data) {
+      results.push(data);
+    }
+  });
+  return results;
 }
 
 async function decryptNotes(notes, privateKey) {
-  const results = await Promise.all(notes.map(note => decryptNote(note, privateKey)));
-  return results.map(r => r.data).filter(Boolean);
+  const results = [];
+
+  await asyncForEach(notes, async note => {
+    const { data } = await decryptNote(note, privateKey);
+    if (data) {
+      results.push(data);
+    }
+  });
+
+  return results;
 }
 
 async function decryptGroups(groups, privateKey) {
-  const results = await Promise.all(groups.map(group => decryptGroup(group, privateKey)));
-  return results.map(r => r.data).filter(Boolean);
+  const results = [];
+  await asyncForEach(groups, async group => {
+    const { data } = await decryptGroup(group, privateKey);
+    if (data) {
+      results.push(data);
+    }
+  });
+  return results;
 }
 
 async function decryptSpaces(spaces, privateKey) {
-  const results = await Promise.all(spaces.map(space => decryptGroup(space, privateKey)));
-  return results.map(r => r.data).filter(Boolean);
+  const results = [];
+  await asyncForEach(spaces, async space => {
+    const { data } = await decryptGroup(space, privateKey);
+    if (data) {
+      results.push(data);
+    }
+  });
+
+  return results;
 }

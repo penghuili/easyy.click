@@ -1,4 +1,4 @@
-import { Button, TabPane, Tabs } from '@douyinfe/semi-ui';
+import { Badge, Button, TabPane, Tabs } from '@douyinfe/semi-ui';
 import { RiRefreshLine } from '@remixicon/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import fastMemo from 'react-fast-memo';
@@ -8,6 +8,7 @@ import { InboxLinkItems } from '../components/InboxLinkItems.jsx';
 import { InboxNoteItems } from '../components/InboxNoteItems.jsx';
 import { PageHeader } from '../components/PageHeader.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { settingsCat } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';
@@ -25,6 +26,8 @@ async function load(force) {
 }
 
 export const Inbox = fastMemo(() => {
+  const settings = useCat(settingsCat);
+
   const [tab, setTab] = useState('links');
 
   const handleChangeTab = useCallback(newTab => {
@@ -46,10 +49,24 @@ export const Inbox = fastMemo(() => {
         size="small"
         style={{ marginLeft: '0.5rem' }}
       >
-        <TabPane tab="Links" itemKey="links">
+        <TabPane
+          tab={
+            <Badge count={settings?.inboxLinksCount > 0 ? settings.inboxLinksCount : null}>
+              Links
+            </Badge>
+          }
+          itemKey="links"
+        >
           <InboxLinkItems />
         </TabPane>
-        <TabPane tab="Notes" itemKey="notes">
+        <TabPane
+          tab={
+            <Badge count={settings?.inboxNotesCount > 0 ? settings.inboxNotesCount : null}>
+              Notes
+            </Badge>
+          }
+          itemKey="notes"
+        >
           <InboxNoteItems />
         </TabPane>
       </Tabs>

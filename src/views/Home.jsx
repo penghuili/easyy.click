@@ -1,5 +1,5 @@
 import { Badge, Button, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { RiNotificationLine, RiRefreshLine } from '@remixicon/react';
+import { RiInbox2Line, RiRefreshLine } from '@remixicon/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { navigateTo, replaceTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -91,6 +91,10 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
   const settings = useCat(settingsCat);
   const isAdmin = useAdmin();
 
+  const counts = useMemo(() => {
+    return (settings?.inboxLinksCount || 0) + (settings?.inboxNotesCount || 0);
+  }, [settings?.inboxLinksCount, settings?.inboxNotesCount]);
+
   const isLoading =
     isLoadingNotes || isLoadingLinks || isLoadingGroups || isMovingLink || isMovingNote;
 
@@ -121,8 +125,8 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
           <UpgradeButton />
 
           {isAdmin && (
-            <Badge count={settings?.inboxLinksCount > 0 ? settings.inboxLinksCount : null}>
-              <RiNotificationLine
+            <Badge count={counts > 0 ? counts : null}>
+              <RiInbox2Line
                 color="var(--semi-color-primary)"
                 onClick={() => {
                   navigateTo('/inbox');
@@ -158,7 +162,7 @@ const UpgradeButton = fastMemo(() => {
       size="small"
       style={{ marginRight: '0.5rem', position: 'relative', overflow: 'hidden' }}
     >
-      Upgrade
+      Pro
       <Shine />
     </Button>
   );
