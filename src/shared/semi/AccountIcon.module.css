@@ -1,0 +1,19 @@
+.accountIcons {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  overflow: hidden;
+  margin-left: 0.75rem;
+}
+
+.accountIconsContent {
+  position: absolute;
+  left: 0;
+  width: 25px;
+  transition: top 0.3s ease-in-out;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}

@@ -5,7 +5,6 @@ import { navigateTo, replaceTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { AccountIcon } from '../components/AccountIcon.jsx';
 import { FreeTrialEnding } from '../components/FreeTrialEnding.jsx';
 import { GroupItems } from '../components/GroupItems.jsx';
 import { InboxIcon } from '../components/InboxIcon.jsx';
@@ -19,6 +18,7 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
+import { AccountIcon } from '../shared/semi/AccountIcon.jsx';
 import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';

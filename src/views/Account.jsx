@@ -15,6 +15,7 @@ import {
   userCat,
 } from '../shared/browser/store/sharedCats.js';
 import { formatDate, formatDateTime } from '../shared/js/date';
+import { AlsoBuilt } from '../shared/semi/AlsoBuilt.jsx';
 import { ItemsWrapper } from '../shared/semi/ItemsWrapper.jsx';
 import { LogoutLink } from '../shared/semi/LogoutLink.jsx';
 import { PageHeader } from '../shared/semi/PageHeader.jsx';
@@ -53,6 +54,7 @@ export const Account = fastMemo(() => {
           <LogoutLink />
         </ItemsWrapper>
 
+        <AlsoBuilt />
         <AppVersion />
       </PageContent>
     </PrepareData>

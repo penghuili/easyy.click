@@ -21,3 +21,6 @@ body * {
 .semi-button-size-small {
   font-size: 13px;
 }
+.semi-typography.semi-typography-link {
+  font-weight: normal;
+}

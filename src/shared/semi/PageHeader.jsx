@@ -21,7 +21,9 @@ export function PageHeader({ title, right, isLoading, hasBack }) {
       );
     }
 
-    return <Image src={logo} width={32} height={32} style={{ marginRight: '0.5rem' }} />;
+    return (
+      <Image src={logo} width={32} height={32} style={{ marginRight: '0.5rem' }} preview={false} />
+    );
   }, [hasBack]);
 
   return (
