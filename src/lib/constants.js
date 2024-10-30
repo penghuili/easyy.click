@@ -7,3 +7,6 @@ export const localStorageKeys = {
   activeTab: 'easyy-active-tab',
   changelog: 'easyy-changelog',
 };
+
+export const browserExtensionLink =
+  'https://chromewebstore.google.com/detail/easyyclick/jmkopbdehmakhbgfbelcpnhhlnpdamem';

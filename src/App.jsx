@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { AppWrapper } from './components/AppWrapper.jsx';
-import { Scrollbar } from './components/Scrollbar.jsx';
 import { Router } from './Router.jsx';
 import { disablePullToRefresh } from './shared/browser/bodySccroll.js';
 import { initShared } from './shared/browser/initShared.js';
+import { Scrollbar } from './shared/browser/Scrollbar.jsx';
 import { Toast } from './shared/browser/Toast.jsx';
 import { apps } from './shared/js/apps.js';
+import { AppWrapper } from './shared/semi/AppWrapper.jsx';
 
 disablePullToRefresh();
 
@@ -15,7 +15,7 @@ initShared({
   app: apps['easyy.click'].name,
   privacyUrl: 'https://easyy.click/privacy',
   termsUrl: 'https://easyy.click/terms',
-  showNewVersion: true,
+  resetPassword: false,
 });
 
 function App() {

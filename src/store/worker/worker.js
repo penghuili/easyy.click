@@ -1,4 +1,4 @@
-import { asyncForEach } from '../../shared/js/asyncForEach';
+import { asyncMap } from '../../shared/js/asyncMap';
 import { decryptGroup, decryptLink, decryptNote, workerActionTypes } from './workerHelpers';
 
 self.onmessage = async function (event) {
@@ -28,48 +28,35 @@ self.onmessage = async function (event) {
 };
 
 async function decryptLinks(links, privateKey) {
-  const results = [];
-  await asyncForEach(links, async link => {
+  const results = await asyncMap(links, async link => {
     const { data } = await decryptLink(link, privateKey);
-    if (data) {
-      results.push(data);
-    }
+    return data;
   });
-  return results;
+  return results.filter(Boolean);
 }
 
 async function decryptNotes(notes, privateKey) {
-  const results = [];
-
-  await asyncForEach(notes, async note => {
+  const results = await asyncMap(notes, async note => {
     const { data } = await decryptNote(note, privateKey);
-    if (data) {
-      results.push(data);
-    }
+    return data;
   });
 
-  return results;
+  return results.filter(Boolean);
 }
 
 async function decryptGroups(groups, privateKey) {
-  const results = [];
-  await asyncForEach(groups, async group => {
+  const results = await asyncMap(groups, async group => {
     const { data } = await decryptGroup(group, privateKey);
-    if (data) {
-      results.push(data);
-    }
+    return data;
   });
-  return results;
+  return results.filter(Boolean);
 }
 
 async function decryptSpaces(spaces, privateKey) {
-  const results = [];
-  await asyncForEach(spaces, async space => {
+  const results = await asyncMap(spaces, async space => {
     const { data } = await decryptGroup(space, privateKey);
-    if (data) {
-      results.push(data);
-    }
+    return data;
   });
 
-  return results;
+  return results.filter(Boolean);
 }

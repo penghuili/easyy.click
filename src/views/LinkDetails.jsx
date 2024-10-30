@@ -5,10 +5,10 @@ import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
 import { GroupSelector } from '../components/GroupSelector.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
-import { PrepareData } from '../components/PrepareData.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
+import { PrepareData } from '../shared/semi/PrepareData.jsx';
 import { isUpdatingLinkCat, linkCat } from '../store/link/linkCats.js';
 import { fetchLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
 

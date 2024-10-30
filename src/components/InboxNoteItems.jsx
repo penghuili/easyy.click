@@ -7,6 +7,8 @@ import { useCat } from 'usecat';
 
 import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { Flex } from '../shared/semi/Flex.jsx';
+import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
   isDeletingNoteCat,
   isDeletingNotesCat,
@@ -22,10 +24,8 @@ import {
 } from '../store/note/noteEffect.js';
 import { inboxSpaceId } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
-import { Flex } from './Flex.jsx';
+import { ExtensionIntro } from './ExtensionIntro.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
-import { PageEmpty } from './PageEmpty.jsx';
-import { PageLoading } from './PageLoading.jsx';
 
 export const InboxNoteItems = fastMemo(() => {
   const { notes } = useNoteGroups(inboxSpaceId);
@@ -57,7 +57,7 @@ export const InboxNoteItems = fastMemo(() => {
   }, [notesToUpdateObj]);
 
   if (!notes.length) {
-    return <>{isLoading ? <PageLoading /> : <PageEmpty>No notes in inbox.</PageEmpty>}</>;
+    return <>{isLoading ? <PageLoading /> : <ExtensionIntro />}</>;
   }
 
   return (

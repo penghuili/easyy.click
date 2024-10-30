@@ -2,9 +2,9 @@ import { Button, Input, Radio, RadioGroup, Typography } from '@douyinfe/semi-ui'
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCat } from 'usecat';
 
+import { Flex } from '../shared/semi/Flex';
 import { isCreatingGroupCat, useGroups } from '../store/group/groupCats';
 import { createGroupEffect, fetchGroupsEffect } from '../store/group/groupEffect';
-import { Flex } from './Flex';
 
 export function GroupSelector({ groupId, onSelect, spaceId }) {
   const groups = useGroups(spaceId);

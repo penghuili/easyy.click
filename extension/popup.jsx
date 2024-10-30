@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom/client';
 import { useCat } from 'usecat';
 import browser from 'webextension-polyfill';
 
-import { Flex } from '../src/components/Flex';
-import { Link } from '../src/components/Link';
-import { PageLoading } from '../src/components/PageLoading';
+import { Flex } from '../src/shared/semi/Flex';
+import { Link } from '../src/shared/semi/Link';
+import { PageLoading } from '../src/shared/semi/PageLoading';
 import { bgActions } from './lib/constants';
 import { authErrorCat, isInitingCat, isLoggedInCat, isSigningInCat } from './store/auth/authCats';
 import { initEffect, logoutEffect, signInEffect } from './store/auth/authEffects';
@@ -137,6 +137,9 @@ function Popup() {
         {!!activeTab && (
           <>
             <Flex>
+              <Image src="/icons/icon-192.png" width={32} height={32} />
+              <Typography.Title heading={4}>Save current tab</Typography.Title>
+
               <TextArea autosize value={tabTitle} onChange={newValue => setTabTitle(newValue)} />
 
               <Link href={activeTab.url} target="_blank">
@@ -159,8 +162,13 @@ function Popup() {
 
             <Divider style={{ margin: '1rem 0' }} />
 
-            <Flex direction="row" justify="end">
-              <Button onClick={logoutEffect}>Log out</Button>
+            <Flex direction="row" justify="between" align="center" gap="0.5rem">
+              <a href="https://app.easyy.click/inbox" target="_blank">
+                <Button>Open Inbox</Button>
+              </a>
+              <Button theme="outline" onClick={logoutEffect}>
+                Log out
+              </Button>
             </Flex>
           </>
         )}

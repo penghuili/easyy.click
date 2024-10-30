@@ -3,8 +3,6 @@ import { BabyRoutes } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { PageLoading } from './components/PageLoading.jsx';
-import { PrepareData } from './components/PrepareData.jsx';
 import { isMobileWidth } from './lib/device.js';
 import { hasValidFreeTrial } from './lib/hasValidFreeTrial.js';
 import {
@@ -16,16 +14,22 @@ import {
   useIsEmailVerified,
 } from './shared/browser/store/sharedCats.js';
 import { initEffect } from './shared/browser/store/sharedEffects.js';
+import { ChangeEmail } from './shared/semi/ChangeEmail.jsx';
+import { ChangePassword } from './shared/semi/ChangePassword.jsx';
+import { PageLoading } from './shared/semi/PageLoading.jsx';
+import { PrepareData } from './shared/semi/PrepareData.jsx';
+import { ResetPassword } from './shared/semi/ResetPassword.jsx';
+import { Security } from './shared/semi/Security.jsx';
+import { Settings } from './shared/semi/Settings.jsx';
+import { SignIn } from './shared/semi/SignIn.jsx';
+import { SignUp } from './shared/semi/SignUp.jsx';
+import { Verify2FA } from './shared/semi/Verify2FA.jsx';
+import { VerifyEmail } from './shared/semi/VerifyEmail.jsx';
 import { Account } from './views/Account.jsx';
-import { ChangeEmail } from './views/ChangeEmail.jsx';
-import { Changelog } from './views/Changelog.jsx';
-import { ChangelogAdd } from './views/ChangelogAdd.jsx';
-import { ChangePassword } from './views/ChangePassword.jsx';
-import { Demo } from './views/Demo.jsx';
+import { BrowserExtension } from './views/BrowserExtension.jsx';
 import { GroupAdd } from './views/GroupAdd.jsx';
 import { GroupDetails } from './views/GroupDetails.jsx';
 import { GroupsReorder } from './views/GroupsReorder.jsx';
-import { Gumroad } from './views/Gumroad.jsx';
 import { Home } from './views/Home.jsx';
 import { Inbox } from './views/Inbox.jsx';
 import { LinkDetails } from './views/LinkDetails.jsx';
@@ -35,19 +39,12 @@ import { LinksReorder } from './views/LinksReorder.jsx';
 import { NoteAdd } from './views/NoteAdd.jsx';
 import { NoteDetails } from './views/NoteDetails.jsx';
 import { NotesReorder } from './views/NotesReorder.jsx';
-import { ResetPassword } from './views/ResetPassword.jsx';
-import { Security } from './views/Security.jsx';
-import { Settings } from './views/Settings.jsx';
-import { SignIn } from './views/SignIn.jsx';
-import { SignUp } from './views/SignUp.jsx';
 import { SpaceAdd } from './views/SpaceAdd.jsx';
 import { SpaceDetails } from './views/SpaceDetails.jsx';
 import { SpaceExport } from './views/SpaceExport.jsx';
 import { Spaces } from './views/Spaces.jsx';
 import { SpacesReorder } from './views/SpacesReorder.jsx';
 import { Upgrade } from './views/Upgrade.jsx';
-import { Verify2FA } from './views/Verify2FA.jsx';
-import { VerifyEmail } from './views/VerifyEmail.jsx';
 import { Welcome } from './views/Welcome.jsx';
 
 async function load() {
@@ -67,8 +64,7 @@ const publicRoutes = {
   '/sign-in': SignIn,
   '/sign-in/2fa': Verify2FA,
   '/reset-password': ResetPassword,
-
-  '/changelog': Changelog,
+  '/extension': BrowserExtension,
 
   '/': Welcome,
 };
@@ -106,13 +102,9 @@ const loggedInRoutes = {
   '/security/email': ChangeEmail,
   '/security/password': ChangePassword,
   '/settings': Settings,
+  '/extension': BrowserExtension,
 
   '/upgrade': Upgrade,
-  '/gumroad': Gumroad,
-
-  '/demo': Demo,
-  '/changelog': Changelog,
-  '/changelog/add': ChangelogAdd,
 
   '/': Home,
 };

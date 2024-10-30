@@ -1,7 +1,6 @@
 import { localStorageKeys } from '../../lib/constants';
-import { LocalStorage } from '../../lib/LocalStorage';
 import { eventEmitter, eventEmitterEvents } from '../../shared/browser/eventEmitter';
-import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
 import { updateGroupsState } from '../group/groupEffect';

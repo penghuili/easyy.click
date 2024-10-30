@@ -4,10 +4,10 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { createCat, useCat } from 'usecat';
 
-import { PageHeader } from '../components/PageHeader.jsx';
-import { PrepareData } from '../components/PrepareData.jsx';
 import { SpaceColorSelector } from '../components/SpaceColorSelector.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
+import { PrepareData } from '../shared/semi/PrepareData.jsx';
 import { isUpdatingSpaceCat, spaceCat } from '../store/space/spaceCats.js';
 import { fetchSpaceEffect, updateSpaceEffect } from '../store/space/spaceEffect.js';
 

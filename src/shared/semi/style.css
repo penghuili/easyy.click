@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--semi-color-text-0);
+  background-color: var(--semi-color-bg-0);
+}
+
+body * {
+  box-sizing: border-box;
+}
+
+.remixicon {
+  width: 20px;
+  height: 20px;
+}
+.remixicon:not([width='24']) {
+  width: auto !important;
+  height: auto !important;
+}
+
+.semi-button-size-small {
+  font-size: 13px;
+}

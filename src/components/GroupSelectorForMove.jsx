@@ -3,7 +3,7 @@ import React from 'react';
 import fastMemo from 'react-fast-memo';
 
 import { isMobileWidth } from '../shared/browser/device';
-import { Flex } from './Flex';
+import { Flex } from '../shared/semi/Flex';
 import { GroupSelector } from './GroupSelector';
 import { SpaceSelector } from './SpaceSelector';
 

@@ -1,8 +1,8 @@
 import { generateLinkSortKey } from '../../lib/generateSortKey';
-import { LocalStorage } from '../../lib/LocalStorage';
 import { HTTP } from '../../shared/browser/HTTP';
 import { appName } from '../../shared/browser/initShared';
-import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { asyncMap } from '../../shared/js/asyncMap';
 import {
   decryptMessageAsymmetric,
   encryptMessageAsymmetric,
@@ -111,11 +111,12 @@ export async function createLinks({ links, moved }, spaceId) {
 
     const timestamp = Date.now();
 
-    const encryptedLinks = await Promise.all(
-      links.map(({ title, link, count, groupId }, index) =>
-        encryptLink({ link, title, groupId, count, timestamp: timestamp + index }, space)
-      )
-    );
+    const encryptedLinks = await asyncMap(links, async ({ title, link, count, groupId }, index) => {
+      return await encryptLink(
+        { link, title, groupId, count, timestamp: timestamp + index },
+        space
+      );
+    });
 
     const data = await HTTP.post(
       appName,
@@ -130,13 +131,12 @@ export async function createLinks({ links, moved }, spaceId) {
         }))
       : data;
 
-    const decrypted = await Promise.all(
-      updated.map(item => decryptLink(item, LocalStorage.get(sharedLocalStorageKeys.privateKey)))
-    );
+    const decrypted = await asyncMap(updated, async item => {
+      const { data } = await decryptLink(item, LocalStorage.get(sharedLocalStorageKeys.privateKey));
+      return data;
+    });
 
-    const results = decrypted.filter(item => item.data).map(item => item.data);
-
-    return { data: results, error: null };
+    return { data: decrypted.filter(Boolean), error: null };
   } catch (error) {
     return { data: null, error };
   }

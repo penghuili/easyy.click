@@ -5,12 +5,12 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { Flex } from '../shared/semi/Flex.jsx';
+import { PageEmpty } from '../shared/semi/PageEmpty.jsx';
+import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import { isDeletingGroupCat, isLoadingGroupsCat, useGroups } from '../store/group/groupCats.js';
 import { deleteGroupEffect } from '../store/group/groupEffect.js';
 import { Confirm } from './Confirm.jsx';
-import { Flex } from './Flex.jsx';
-import { PageEmpty } from './PageEmpty.jsx';
-import { PageLoading } from './PageLoading.jsx';
 
 export const confirmDeleteGroupMessage = `Only this tag will be deleted, your links / notes with this tag will be moved to "Links without tag" or "Notes without tag". Go ahead?`;
 

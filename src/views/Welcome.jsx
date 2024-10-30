@@ -2,13 +2,13 @@ import { Avatar, Button, Typography } from '@douyinfe/semi-ui';
 import React from 'react';
 import { BabyLink } from 'react-baby-router';
 
-import { DarkMode } from '../components/DarkMode.jsx';
-import { Flex } from '../components/Flex';
-import { ItemsWrapper } from '../components/ItemsWrapper';
-import { Link } from '../components/Link.jsx';
 import { PublicLinks } from '../components/PublicLinks.jsx';
 import { logo } from '../shared/browser/initShared';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { DarkMode } from '../shared/semi/DarkMode.jsx';
+import { Flex } from '../shared/semi/Flex';
+import { ItemsWrapper } from '../shared/semi/ItemsWrapper.jsx';
+import { Link } from '../shared/semi/Link.jsx';
 
 export function Welcome() {
   return (

@@ -5,9 +5,9 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { GroupSelector } from '../components/GroupSelector.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { noGroupSortKey } from '../store/group/groupCats.js';
 import { isCreatingNoteCat } from '../store/note/noteCats.js';
 import { createNoteEffect } from '../store/note/noteEffect';

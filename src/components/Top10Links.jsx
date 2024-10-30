@@ -2,10 +2,10 @@ import { Typography } from '@douyinfe/semi-ui';
 import React from 'react';
 import fastMemo from 'react-fast-memo';
 
+import { Flex } from '../shared/semi/Flex.jsx';
+import { Link } from '../shared/semi/Link.jsx';
 import { useTop10Links } from '../store/link/linkCats.js';
 import { updateLinkEffect } from '../store/link/linkEffect.js';
-import { Flex } from './Flex.jsx';
-import { Link } from './Link.jsx';
 
 export const Top10Links = fastMemo(({ spaceId }) => {
   const links = useTop10Links(spaceId);

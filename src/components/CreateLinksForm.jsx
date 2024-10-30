@@ -6,11 +6,11 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { debounce } from '../shared/js/debounce.js';
+import { Flex } from '../shared/semi/Flex.jsx';
 import { importedGroupSortKey, isCreatingGroupCat, useGroups } from '../store/group/groupCats.js';
 import { createGroupEffect, fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isCreatingLinksCat } from '../store/link/linkCats.js';
 import { createLinksEffect, fetchPageInfoEffect } from '../store/link/linkEffect.js';
-import { Flex } from './Flex.jsx';
 
 const debouncedFetchInfo = debounce(async (pageLink, ref, linkIndex) => {
   if (!pageLink || !pageLink.trim()) {

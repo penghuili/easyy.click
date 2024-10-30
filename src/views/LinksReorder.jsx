@@ -2,10 +2,10 @@ import React, { useCallback, useEffect } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderGroupItems } from '../shared/browser/ReorderGroupItems.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat, noGroupSortKey } from '../store/group/groupCats.js';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat, isUpdatingLinkCat, useLinkGroups } from '../store/link/linkCats.js';

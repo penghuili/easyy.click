@@ -5,11 +5,11 @@ import { useCat } from 'usecat';
 
 import { CreateLinksForm } from '../components/CreateLinksForm.jsx';
 import { FilePicker } from '../components/FilePicker.jsx';
-import { Link } from '../components/Link.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { Link } from '../shared/semi/Link.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { importedGroupSortKey } from '../store/group/groupCats.js';
 import { isCreatingLinksCat, isLoadingPageInfoCat } from '../store/link/linkCats.js';
 

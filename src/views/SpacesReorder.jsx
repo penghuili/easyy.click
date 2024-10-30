@@ -2,9 +2,9 @@ import React, { useCallback, useEffect } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { PageHeader } from '../components/PageHeader.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderItems } from '../shared/browser/ReorderItems.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import {
   isLoadingSpacesCat,
   isUpdatingSpaceCat,

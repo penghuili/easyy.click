@@ -1,5 +1,5 @@
-import { Badge, Button, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { RiInbox2Line, RiRefreshLine } from '@remixicon/react';
+import { Button, TabPane, Tabs } from '@douyinfe/semi-ui';
+import { RiRefreshLine } from '@remixicon/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { navigateTo, replaceTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -8,18 +8,18 @@ import { useCat } from 'usecat';
 import { AccountIcon } from '../components/AccountIcon.jsx';
 import { FreeTrialEnding } from '../components/FreeTrialEnding.jsx';
 import { GroupItems } from '../components/GroupItems.jsx';
+import { InboxIcon } from '../components/InboxIcon.jsx';
 import { LinkItems } from '../components/LinkItems.jsx';
 import { NoteItems } from '../components/NoteItems.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceSelector } from '../components/SpaceSelector.jsx';
 import { SpaceStats } from '../components/SpaceStats.jsx';
 import { localStorageKeys } from '../lib/constants.js';
-import { useAdmin } from '../lib/useAdmin.js';
 import { LocalStorage } from '../shared/browser/LocalStorage.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
-import { settingsCat, useExpiresAt } from '../shared/browser/store/sharedCats.js';
+import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
@@ -88,12 +88,6 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
   const isLoadingGroups = useCat(isLoadingGroupsCat);
   const isMovingLink = useCat(isMovingLinkCat);
   const isMovingNote = useCat(isMovingNoteCat);
-  const settings = useCat(settingsCat);
-  const isAdmin = useAdmin();
-
-  const counts = useMemo(() => {
-    return (settings?.inboxLinksCount || 0) + (settings?.inboxNotesCount || 0);
-  }, [settings?.inboxLinksCount, settings?.inboxNotesCount]);
 
   const isLoading =
     isLoadingNotes || isLoadingLinks || isLoadingGroups || isMovingLink || isMovingNote;
@@ -124,17 +118,8 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
         <>
           <UpgradeButton />
 
-          {isAdmin && (
-            <Badge count={counts > 0 ? counts : null}>
-              <RiInbox2Line
-                color="var(--semi-color-primary)"
-                onClick={() => {
-                  navigateTo('/inbox');
-                }}
-                style={{ cursor: 'pointer', margin: '0 0.25rem' }}
-              />
-            </Badge>
-          )}
+          <InboxIcon />
+
           <AccountIcon
             onClick={() => {
               navigateTo('/account');

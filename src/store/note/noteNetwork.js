@@ -1,8 +1,8 @@
 import { generateNoteSortKey } from '../../lib/generateSortKey';
-import { LocalStorage } from '../../lib/LocalStorage';
 import { HTTP } from '../../shared/browser/HTTP';
 import { appName } from '../../shared/browser/initShared';
-import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { asyncMap } from '../../shared/js/asyncMap';
 import {
   decryptMessageAsymmetric,
   encryptMessageAsymmetric,
@@ -81,11 +81,9 @@ export async function createNotes({ notes, moved }, spaceId) {
 
     const timestamp = Date.now();
 
-    const encryptedNotes = await Promise.all(
-      notes.map(({ title, text, groupId }, index) =>
-        encryptNote({ title, text, groupId, timestamp: timestamp + index }, space)
-      )
-    );
+    const encryptedNotes = await asyncMap(notes, async ({ title, text, groupId }, index) => {
+      return await encryptNote({ title, text, groupId, timestamp: timestamp + index }, space);
+    });
 
     const data = await HTTP.post(
       appName,
@@ -100,13 +98,12 @@ export async function createNotes({ notes, moved }, spaceId) {
         }))
       : data;
 
-    const decrypted = await Promise.all(
-      updated.map(item => decryptNote(item, LocalStorage.get(sharedLocalStorageKeys.privateKey)))
-    );
+    const decrypted = await asyncMap(updated, async item => {
+      const { data } = await decryptNote(item, LocalStorage.get(sharedLocalStorageKeys.privateKey));
+      return data;
+    });
 
-    const results = decrypted.filter(item => item.data).map(item => item.data);
-
-    return { data: results, error: null };
+    return { data: decrypted.filter(Boolean), error: null };
   } catch (error) {
     return { data: null, error };
   }

@@ -3,11 +3,6 @@ import React from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { themeCssColor } from '../components/AppWrapper.jsx';
-import { Flex } from '../components/Flex.jsx';
-import { Link } from '../components/Link.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
-import { PrepareData } from '../components/PrepareData.jsx';
 import { Prices } from '../components/Prices.jsx';
 import { hasValidFreeTrial } from '../lib/hasValidFreeTrial.js';
 import { useEarlyUser } from '../lib/useEarlyUser.js';
@@ -15,24 +10,26 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt, useFreeTrialsUntil, userCat } from '../shared/browser/store/sharedCats.js';
 import { formatDate } from '../shared/js/date.js';
+import { themeCssColor } from '../shared/semi/AppWrapper.jsx';
+import { Flex } from '../shared/semi/Flex.jsx';
+import { Link } from '../shared/semi/Link.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isFreeTryingCat } from '../store/pay/payCats.js';
 import { freeTrialEffect } from '../store/pay/payEffects.js';
 
 export const Upgrade = fastMemo(() => {
   return (
-    <PrepareData>
-      <PageContent>
-        <Header />
+    <PageContent>
+      <Header />
 
-        <Intro />
+      <Intro />
 
-        <FreeTrialStatus />
+      <FreeTrialStatus />
 
-        <Prices />
+      <Prices />
 
-        <UpgradeAction />
-      </PageContent>
-    </PrepareData>
+      <UpgradeAction />
+    </PageContent>
   );
 });
 
@@ -119,7 +116,6 @@ const UpgradeAction = fastMemo(() => {
         <a
           href={isEarlyUser ? import.meta.env.VITE_PAY_LINK1 : import.meta.env.VITE_PAY_LINK2}
           target="_blank"
-          rel="noreferrer noopener"
           style={{
             position: 'relative',
             overflow: 'hidden',

@@ -5,6 +5,9 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { Flex } from '../shared/semi/Flex.jsx';
+import { Link } from '../shared/semi/Link.jsx';
+import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
   isDeletingLinkCat,
   isDeletingLinksCat,
@@ -21,12 +24,9 @@ import {
 } from '../store/link/linkEffect.js';
 import { inboxSpaceId } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
+import { ExtensionIntro } from './ExtensionIntro.jsx';
 import { Favicon } from './Favicon.jsx';
-import { Flex } from './Flex.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
-import { Link } from './Link.jsx';
-import { PageEmpty } from './PageEmpty.jsx';
-import { PageLoading } from './PageLoading.jsx';
 
 export const InboxLinkItems = fastMemo(() => {
   const { links } = useLinkGroups(false, inboxSpaceId);
@@ -58,7 +58,7 @@ export const InboxLinkItems = fastMemo(() => {
   }, [linksToUpdateObj]);
 
   if (!links.length) {
-    return <>{isLoading ? <PageLoading /> : <PageEmpty>No links in inbox.</PageEmpty>}</>;
+    return <>{isLoading ? <PageLoading /> : <ExtensionIntro />}</>;
   }
 
   return (

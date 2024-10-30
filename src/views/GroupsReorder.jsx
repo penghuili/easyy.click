@@ -5,10 +5,10 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { ReorderItems } from '../shared/browser/ReorderItems.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat, isUpdatingGroupCat, useGroups } from '../store/group/groupCats.js';
 import { fetchGroupsEffect, updateGroupEffect } from '../store/group/groupEffect.js';
 

@@ -1,8 +1,7 @@
 import { generateGroupSortKey } from '../../lib/generateSortKey';
-import { LocalStorage } from '../../lib/LocalStorage';
 import { HTTP } from '../../shared/browser/HTTP';
 import { appName } from '../../shared/browser/initShared';
-import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import {
   decryptMessageAsymmetric,
   encryptMessageAsymmetric,

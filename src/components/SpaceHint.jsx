@@ -2,8 +2,8 @@ import { Typography } from '@douyinfe/semi-ui';
 import { RiPlanetLine } from '@remixicon/react';
 import React from 'react';
 
+import { Flex } from '../shared/semi/Flex';
 import { useSpace } from '../store/space/spaceCats';
-import { Flex } from './Flex';
 
 export function SpaceHint({ spaceId }) {
   const space = useSpace(spaceId);

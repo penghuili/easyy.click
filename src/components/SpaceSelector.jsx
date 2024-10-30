@@ -3,9 +3,9 @@ import { RiPlanetLine } from '@remixicon/react';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { navigateTo } from 'react-baby-router';
 
+import { Flex } from '../shared/semi/Flex';
 import { useSpaces } from '../store/space/spaceCats';
 import { fetchSpacesEffect } from '../store/space/spaceEffect';
-import { Flex } from './Flex';
 
 export function SpaceSelector({ value, onChange, excludeId, showBottom = true }) {
   const spaces = useSpaces();

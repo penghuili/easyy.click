@@ -2,7 +2,7 @@ import { Radio, RadioGroup, Typography } from '@douyinfe/semi-ui';
 import { RiSquareFill } from '@remixicon/react';
 import React from 'react';
 
-import { Flex } from './Flex';
+import { Flex } from '../shared/semi/Flex';
 
 export const spaceColors = [
   'rgb(249, 57, 32)',

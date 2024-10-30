@@ -10,13 +10,15 @@ import fastMemo from 'react-fast-memo';
 
 import styles from './AccountIcon.module.css';
 
+const iconSize = 25;
+
 export const AccountIcon = fastMemo(({ onClick }) => {
   const [date, setDate] = useState(new Date());
 
   const top = useMemo(() => {
     const weekday = format(date, 'EEEEEE');
     if (weekday === 'Sa' || weekday === 'Su') {
-      return -72;
+      return -iconSize * 3;
     }
 
     const time = format(date, 'HH:mm');
@@ -25,13 +27,13 @@ export const AccountIcon = fastMemo(({ onClick }) => {
       return 0;
     }
     if (time < '12:00') {
-      return -24;
+      return -iconSize;
     }
     if (time < '18:00') {
-      return -48;
+      return -iconSize * 2;
     }
 
-    return -72;
+    return -iconSize * 3;
   }, [date]);
 
   useEffect(() => {
@@ -48,12 +50,12 @@ export const AccountIcon = fastMemo(({ onClick }) => {
     <div className={styles.accountIcons} onClick={onClick}>
       <div
         className={styles.accountIconsContent}
-        style={{ top, height: 24 * 4, cursor: 'pointer' }}
+        style={{ top, height: iconSize * 4, cursor: 'pointer' }}
       >
-        <RiEmotion2Line color="var(--semi-color-primary)" />
-        <RiEmotionHappyLine color="var(--semi-color-primary)" />
-        <RiEmotionLine color="var(--semi-color-primary)" />
-        <RiEmotionLaughLine color="var(--semi-color-primary)" />
+        <RiEmotion2Line size={iconSize} color="var(--semi-color-primary)" />
+        <RiEmotionHappyLine size={iconSize} color="var(--semi-color-primary)" />
+        <RiEmotionLine size={iconSize} color="var(--semi-color-primary)" />
+        <RiEmotionLaughLine size={iconSize} color="var(--semi-color-primary)" />
       </div>
     </div>
   );

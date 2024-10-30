@@ -4,9 +4,9 @@ import { goBack } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { PageHeader } from '../components/PageHeader.jsx';
 import { spaceColors, SpaceColorSelector } from '../components/SpaceColorSelector.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isCreatingSpaceCat } from '../store/space/spaceCats.js';
 import { createSpaceEffect } from '../store/space/spaceEffect.js';
 

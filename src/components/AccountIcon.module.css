@@ -1,7 +1,7 @@
 .accountIcons {
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
   overflow: hidden;
   margin-left: 0.75rem;
 }
@@ -9,7 +9,7 @@
 .accountIconsContent {
   position: absolute;
   left: 0;
-  width: 24px;
+  width: 25px;
   transition: top 0.3s ease-in-out;
 
   display: flex;

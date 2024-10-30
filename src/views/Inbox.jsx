@@ -6,10 +6,10 @@ import { useCat } from 'usecat';
 
 import { InboxLinkItems } from '../components/InboxLinkItems.jsx';
 import { InboxNoteItems } from '../components/InboxNoteItems.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { settingsCat } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';

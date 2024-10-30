@@ -6,11 +6,11 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { Confirm } from '../components/Confirm.jsx';
-import { Flex } from '../components/Flex.jsx';
-import { PageEmpty } from '../components/PageEmpty.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
-import { PageLoading } from '../components/PageLoading.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { Flex } from '../shared/semi/Flex.jsx';
+import { PageEmpty } from '../shared/semi/PageEmpty.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
+import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
   isDeletingSpaceCat,
   isLoadingSpacesCat,

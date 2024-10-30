@@ -4,10 +4,10 @@ import React, { useCallback, useEffect } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { Link } from '../components/Link.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
 import { SpaceHint } from '../components/SpaceHint.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
+import { Link } from '../shared/semi/Link.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isCreatingLinksCat, isLoadingPageInfoCat, useLinkGroups } from '../store/link/linkCats.js';
 import { fetchLinksEffect } from '../store/link/linkEffect.js';

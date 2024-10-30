@@ -1,17 +1,12 @@
 import { Button, Descriptions, Typography } from '@douyinfe/semi-ui';
-import { RiMoneyDollarCircleLine, RiSettings3Line, RiShieldCheckLine } from '@remixicon/react';
+import { RiSettings3Line, RiShieldCheckLine, RiVipCrown2Line } from '@remixicon/react';
 import React, { useMemo } from 'react';
 import { BabyLink } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { AppVersion } from '../components/AppVersion.jsx';
-import { ItemsWrapper } from '../components/ItemsWrapper.jsx';
-import { LogoutLink } from '../components/LogoutLink.jsx';
-import { PageHeader } from '../components/PageHeader.jsx';
-import { PrepareData } from '../components/PrepareData.jsx';
 import { PublicLinks } from '../components/PublicLinks.jsx';
-import { UsedPasswordManager } from '../components/UsedPasswordManager.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import {
   isLoadingAccountCat,
@@ -20,6 +15,11 @@ import {
   userCat,
 } from '../shared/browser/store/sharedCats.js';
 import { formatDate, formatDateTime } from '../shared/js/date';
+import { ItemsWrapper } from '../shared/semi/ItemsWrapper.jsx';
+import { LogoutLink } from '../shared/semi/LogoutLink.jsx';
+import { PageHeader } from '../shared/semi/PageHeader.jsx';
+import { PrepareData } from '../shared/semi/PrepareData.jsx';
+import { UsedPasswordManager } from '../shared/semi/UsedPasswordManager.jsx';
 
 export const Account = fastMemo(() => {
   return (
@@ -35,22 +35,16 @@ export const Account = fastMemo(() => {
           <UpgradeLink />
 
           <BabyLink to="/security">
-            <Button theme="borderless" icon={<RiShieldCheckLine />}>
+            <Button theme="outline" icon={<RiShieldCheckLine />}>
               Security
             </Button>
           </BabyLink>
 
           <BabyLink to="/settings">
-            <Button theme="borderless" icon={<RiSettings3Line />}>
+            <Button theme="outline" icon={<RiSettings3Line />}>
               Settings
             </Button>
           </BabyLink>
-
-          {/* <BabyLink to="/changelog">
-            <Button theme="borderless" icon={<RiFunctionAddLine />}>
-              Changelog
-            </Button>
-          </BabyLink> */}
         </ItemsWrapper>
 
         <PublicLinks />
@@ -104,7 +98,7 @@ const UpgradeLink = fastMemo(() => {
 
   return (
     <BabyLink to="/upgrade">
-      <Button theme="borderless" icon={<RiMoneyDollarCircleLine />}>
+      <Button theme="solid" icon={<RiVipCrown2Line />}>
         Upgrade
       </Button>
     </BabyLink>

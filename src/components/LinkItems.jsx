@@ -17,6 +17,10 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { Flex } from '../shared/semi/Flex.jsx';
+import { Link } from '../shared/semi/Link.jsx';
+import { PageEmpty } from '../shared/semi/PageEmpty.jsx';
+import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
   isDeletingGroupCat,
   isUpdatingGroupCat,
@@ -45,12 +49,8 @@ import { isUpdatingSpaceCat, useSpace, useSpaces } from '../store/space/spaceCat
 import { shareSpaceLinksEffect, unshareSpaceLinksEffect } from '../store/space/spaceEffect.js';
 import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
-import { Flex } from './Flex.jsx';
 import { confirmDeleteGroupMessage } from './GroupItems.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
-import { Link } from './Link.jsx';
-import { PageEmpty } from './PageEmpty.jsx';
-import { PageLoading } from './PageLoading.jsx';
 import { Top10Links } from './Top10Links.jsx';
 
 export const LinkItems = fastMemo(({ spaceId }) => {

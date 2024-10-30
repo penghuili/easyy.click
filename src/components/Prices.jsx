@@ -5,7 +5,7 @@ import React from 'react';
 import { useEarlyUser } from '../lib/useEarlyUser.js';
 import { classNames } from '../shared/browser/classNames.js';
 import { Countdown } from '../shared/browser/CountDown.jsx';
-import { Flex } from './Flex.jsx';
+import { Flex } from '../shared/semi/Flex.jsx';
 import styles from './Prices.module.css';
 
 export const Prices = React.memo(() => {
@@ -70,10 +70,18 @@ export const Prices = React.memo(() => {
         {[
           { text: 'Unlimited links', enabled: true },
           { text: 'Unlimited notes', enabled: true },
-          { text: 'All links and notes are encrypted', enabled: true },
-          { text: 'Group links / notes with tags', enabled: true },
+          { text: 'Unlimited tags', enabled: true },
           { text: 'Unlimited spaces', enabled: true },
+          {
+            text: 'All links, notes, tags, spaces are encrypted',
+            enabled: true,
+          },
           { text: 'Import your browser bookmarks', enabled: true },
+          { text: 'Export your links and notes', enabled: true },
+          { text: 'Bulk add links', enabled: true },
+          { text: 'Bulk delete links', enabled: true },
+          { text: 'Share your links', enabled: true },
+          { text: 'Browser extension', enabled: true },
         ].map(benifit => (
           <Flex key={benifit.text} direction="row" justify="start" align="start" gap="0.5rem" m="0">
             <RiCheckLine color="white" />{' '}

@@ -1,6 +1,5 @@
 import { localStorageKeys } from '../../lib/constants';
-import { LocalStorage } from '../../lib/LocalStorage';
-import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { fetchSettingsEffect, setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
 import { workerActionTypes } from '../worker/workerHelpers';
@@ -80,6 +79,8 @@ export async function createNoteEffect({ title, text, groupId, moved, showMessag
     if (showMessage) {
       setToastEffect('Encrypted and saved safely in Frankfurt!');
     }
+
+    fetchSettingsEffect(false);
   }
 
   isCreatingNoteCat.set(false);
@@ -115,6 +116,8 @@ export async function moveNoteEffect(note, fromSpaceId, toSpaceId, toGroupId) {
   setToastEffect('Moved!');
 
   isMovingNoteCat.set(false);
+
+  fetchSettingsEffect(false);
 }
 
 export async function moveNotesEffect(notes, fromSpaceId, toSpaceId, toGroupId) {
@@ -183,6 +186,8 @@ export async function deleteNoteEffect(noteId, { showMessage }, spaceId) {
     if (showMessage) {
       setToastEffect('Deleted!');
     }
+
+    fetchSettingsEffect(false);
   }
 
   isDeletingNotesCat.set(false);

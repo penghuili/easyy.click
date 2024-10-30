@@ -1,8 +1,7 @@
 import { generateSpaceSortKey } from '../../lib/generateSortKey';
-import { LocalStorage } from '../../lib/LocalStorage';
 import { HTTP } from '../../shared/browser/HTTP';
 import { appName } from '../../shared/browser/initShared';
-import { sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
+import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { encryptMessageAsymmetric, encryptMessageSymmetric } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
 import { orderByPosition } from '../../shared/js/position';

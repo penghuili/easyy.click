@@ -15,6 +15,9 @@ import { useCat } from 'usecat';
 
 import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { Flex } from '../shared/semi/Flex.jsx';
+import { PageEmpty } from '../shared/semi/PageEmpty.jsx';
+import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import { isDeletingGroupCat, noGroupSortKey } from '../store/group/groupCats.js';
 import { deleteGroupEffect } from '../store/group/groupEffect.js';
 import {
@@ -26,11 +29,8 @@ import {
 import { deleteNoteEffect, moveNoteEffect } from '../store/note/noteEffect.js';
 import { useSpaces } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
-import { Flex } from './Flex.jsx';
 import { confirmDeleteGroupMessage } from './GroupItems.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
-import { PageEmpty } from './PageEmpty.jsx';
-import { PageLoading } from './PageLoading.jsx';
 
 export const NoteItems = fastMemo(({ spaceId }) => {
   const { groups: noteGroups, notes } = useNoteGroups(spaceId);
