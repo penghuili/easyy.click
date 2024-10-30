@@ -41,6 +41,7 @@ async function encryptNote({ text, title, fromUrl, groupId, count, timestamp }) 
     count,
     groupId,
     fromUrl: encryptedFromUrl,
+    extension: true,
   };
 }
 

@@ -77,10 +77,16 @@ const AccountInfo = fastMemo(() => {
       { key: 'Email', value: account.email },
       { key: 'User Id', value: <Typography.Text copyable>{account.id}</Typography.Text> },
       { key: 'Created at', value: formatDateTime(account.createdAt) },
-      {
-        key: 'Payment',
-        value: expiresAt ? 'Lifetime access' : `Free trial until ${formatDate(freeTrialUntil)}`,
-      },
+      ...(freeTrialUntil
+        ? [
+            {
+              key: 'Payment',
+              value: expiresAt
+                ? 'Lifetime access'
+                : `Free trial until ${formatDate(freeTrialUntil)}`,
+            },
+          ]
+        : []),
     ];
   }, [account.createdAt, account.email, account.id, expiresAt, freeTrialUntil]);
 

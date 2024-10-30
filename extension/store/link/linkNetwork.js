@@ -49,6 +49,7 @@ async function encryptLink({ link, title, fromUrl, timestamp }) {
     title: encryptedTitle,
     link: encryptedLink,
     fromUrl: encryptedFromUrl,
+    extension: true,
   };
 }
 

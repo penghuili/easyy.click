@@ -21,6 +21,7 @@ import { PrepareData } from './shared/semi/PrepareData.jsx';
 import { ResetPassword } from './shared/semi/ResetPassword.jsx';
 import { Security } from './shared/semi/Security.jsx';
 import { Settings } from './shared/semi/Settings.jsx';
+import { Setup2FA } from './shared/semi/Setup2FA.jsx';
 import { SignIn } from './shared/semi/SignIn.jsx';
 import { SignUp } from './shared/semi/SignUp.jsx';
 import { Verify2FA } from './shared/semi/Verify2FA.jsx';
@@ -101,6 +102,7 @@ const loggedInRoutes = {
   '/security': Security,
   '/security/email': ChangeEmail,
   '/security/password': ChangePassword,
+  '/security/2fa': Setup2FA,
   '/settings': Settings,
   '/extension': BrowserExtension,
 

@@ -197,7 +197,7 @@ export async function generate2FASecretEffect() {
 
   const { data } = await generate2FASecret();
   if (data) {
-    userCat.set(prev => ({ ...prev, twoFactorUri: data.uri }));
+    userCat.set({ ...userCat.get(), twoFactorUri: data.uri });
   }
 
   isGenerating2FACat.set(false);
