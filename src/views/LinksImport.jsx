@@ -1,4 +1,5 @@
 import { Button, Progress, Typography } from '@douyinfe/semi-ui';
+import { format } from 'date-fns';
 import React, { useCallback, useMemo, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -36,9 +37,14 @@ export const LinksImport = fastMemo(() => {
     let currentSpaceIndex = 1;
     let currentSpaceCount = 0;
 
+    const timestamp = format(new Date(), 'yyMMddHHmm');
     groups.forEach(group => {
       if (!currentSpace) {
-        currentSpace = { title: `Imported links ${currentSpaceIndex}`, count: 0, groups: [] };
+        currentSpace = {
+          title: `Imported ${timestamp} ${currentSpaceIndex}`,
+          count: 0,
+          groups: [],
+        };
         arr.push(currentSpace);
       }
       currentSpaceCount += group.items.length;
