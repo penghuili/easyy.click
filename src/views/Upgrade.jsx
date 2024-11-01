@@ -1,4 +1,4 @@
-import { Button, Typography } from '@douyinfe/semi-ui';
+import { Button, Card, Typography } from '@douyinfe/semi-ui';
 import React from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -27,6 +27,8 @@ export const Upgrade = fastMemo(() => {
       <FreeTrialStatus />
 
       <Prices />
+
+      <Competitors />
 
       <UpgradeAction />
     </PageContent>
@@ -141,3 +143,51 @@ const UpgradeAction = fastMemo(() => {
     </>
   );
 });
+
+function Competitors() {
+  return (
+    <Card style={{ margin: '2rem 0' }}>
+      <Typography.Title heading={3} style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        In comparison
+      </Typography.Title>
+      <CompetitorItem
+        name="start.me"
+        link="https://about.start.me/pricing"
+        price="$24 / year"
+        emoji="😨"
+      />
+      <CompetitorItem
+        name="raindrop.io"
+        link="https://raindrop.io/pro/buy"
+        price="$28 / year"
+        emoji="🙀"
+      />
+      <CompetitorItem
+        name="Toby"
+        link="https://www.gettoby.com/pricing"
+        price="$54 / year"
+        emoji="😱"
+      />
+    </Card>
+  );
+}
+
+function CompetitorItem({ name, price, link, emoji }) {
+  return (
+    <Typography.Paragraph style={{ marginBottom: '1rem' }}>
+      You need to pay{' '}
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontSize: '1.5rem',
+          color: 'var(--semi-color-warning)',
+        }}
+      >
+        {price}
+      </a>{' '}
+      (!!) for {name} {emoji}
+    </Typography.Paragraph>
+  );
+}
