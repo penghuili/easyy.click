@@ -10,19 +10,13 @@ import { Link } from '../shared/semi/Link.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
   isDeletingLinkCat,
-  isDeletingLinksCat,
   isLoadingLinksCat,
   isMovingLinkCat,
   useLinkGroups,
 } from '../store/link/linkCats.js';
-import {
-  deleteLinkEffect,
-  deleteLinksEffect,
-  moveLinkEffect,
-  moveLinksEffect,
-  updateLinkEffect,
-} from '../store/link/linkEffect.js';
+import { deleteLinkEffect, moveLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
 import { inboxSpaceId } from '../store/space/spaceCats.js';
+import { BulkUpdateLinks } from './BulkUpdateLinks.jsx';
 import { Confirm } from './Confirm.jsx';
 import { ExtensionIntro } from './ExtensionIntro.jsx';
 import { Favicon } from './Favicon.jsx';
@@ -31,7 +25,6 @@ import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
 export const InboxLinkItems = fastMemo(() => {
   const { links } = useLinkGroups(false, inboxSpaceId);
   const isDeletingLink = useCat(isDeletingLinkCat);
-  const isDeletingLinks = useCat(isDeletingLinksCat);
   const isMoving = useCat(isMovingLinkCat);
   const isLoading = useCat(isLoadingLinksCat);
 
@@ -44,18 +37,14 @@ export const InboxLinkItems = fastMemo(() => {
 
   const [linksToUpdateObj, setLinksToUpdateObj] = useState({});
 
-  const linksToMove = useMemo(() => {
-    return Object.keys(linksToUpdateObj)
-      .filter(key => linksToUpdateObj[key])
-      .map(key => linksToUpdateObj[key]);
-  }, [linksToUpdateObj]);
-  const [showSelectGroupForMoveMultiple, setShowSelectGroupForMoveMultiple] = useState(false);
-
-  const [showDeleteMultipleConfirm, setShowDeleteMultipleConfirm] = useState(false);
-
-  const linksToDeleteSortKeys = useMemo(() => {
-    return Object.keys(linksToUpdateObj).filter(key => linksToUpdateObj[key]);
-  }, [linksToUpdateObj]);
+  const allCheckboxValue = useMemo(() => {
+    const selectedCount = Object.values(linksToUpdateObj).filter(Boolean).length;
+    const allCount = links?.length;
+    return {
+      all: !!allCount && selectedCount === allCount,
+      some: selectedCount > 0 && selectedCount < allCount,
+    };
+  }, [links?.length, linksToUpdateObj]);
 
   if (!links.length) {
     return <>{isLoading ? <PageLoading /> : <ExtensionIntro />}</>;
@@ -63,24 +52,28 @@ export const InboxLinkItems = fastMemo(() => {
 
   return (
     <>
-      <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
-        <Button
-          onClick={() => setShowSelectGroupForMoveMultiple(true)}
-          icon={<RiCornerUpRightLine />}
-          disabled={!linksToMove?.length}
-        >
-          Move links
-        </Button>
+      <BulkUpdateLinks
+        spaceId={inboxSpaceId}
+        linksObj={linksToUpdateObj}
+        onReset={() => setLinksToUpdateObj({})}
+        showCancel={false}
+      />
 
-        <Button
-          type="danger"
-          onClick={() => setShowDeleteMultipleConfirm(true)}
-          icon={<RiDeleteBinLine />}
-          disabled={!linksToDeleteSortKeys?.length}
+      {!!links.length && (
+        <Checkbox
+          checked={allCheckboxValue.all}
+          onChange={e => {
+            if (e.target.checked) {
+              setLinksToUpdateObj(Object.fromEntries(links.map(link => [link.sortKey, link])));
+            } else {
+              setLinksToUpdateObj({});
+            }
+          }}
+          style={{ marginBottom: '1rem' }}
         >
-          Delete links
-        </Button>
-      </Flex>
+          <Typography.Text strong>Select all</Typography.Text>
+        </Checkbox>
+      )}
 
       {links.map(link => (
         <Flex key={link.sortKey} direction="row" m="0 0 0.5rem">
@@ -182,44 +175,6 @@ export const InboxLinkItems = fastMemo(() => {
           setNewSpaceId(null);
         }}
         isSaving={isMoving}
-      />
-
-      <GroupSelectorForMove
-        excludeSpaceId={inboxSpaceId}
-        open={showSelectGroupForMoveMultiple}
-        onOpenChange={setShowSelectGroupForMoveMultiple}
-        groupId={newSpaceGroupId}
-        onSelectGroup={setNewSpaceGroupId}
-        spaceId={newSpaceId}
-        onSelectSpace={setNewSpaceId}
-        onConfirm={async () => {
-          if (!linksToMove?.length || !newSpaceId) {
-            return;
-          }
-
-          await moveLinksEffect(linksToMove, inboxSpaceId, newSpaceId, newSpaceGroupId);
-
-          setShowSelectGroupForMoveMultiple(false);
-          setLinksToUpdateObj({});
-          setNewSpaceId(null);
-        }}
-        isSaving={isMoving}
-      />
-
-      <Confirm
-        message={'Are you sure to delete selected links?'}
-        open={showDeleteMultipleConfirm}
-        onOpenChange={setShowDeleteMultipleConfirm}
-        onConfirm={async () => {
-          if (!linksToDeleteSortKeys?.length) {
-            return;
-          }
-
-          await deleteLinksEffect(linksToDeleteSortKeys, { showMessage: true }, inboxSpaceId);
-          setShowDeleteMultipleConfirm(false);
-          setLinksToUpdateObj({});
-        }}
-        isSaving={isDeletingLinks}
       />
 
       <Confirm

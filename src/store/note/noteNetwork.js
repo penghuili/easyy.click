@@ -85,18 +85,22 @@ export async function createNotes({ notes, moved }, spaceId) {
       return await encryptNote({ title, text, groupId, timestamp: timestamp + index }, space);
     });
 
-    const data = await HTTP.post(
-      appName,
-      space ? `/v1/notes-bulk?spaceId=${space.sortKey}` : `/v1/notes-bulk`,
-      { notes: encryptedNotes, moved }
-    );
+    let created = [];
+    for (let i = 0; i < encryptedNotes.length; i += 50) {
+      const data = await HTTP.post(
+        appName,
+        space ? `/v1/notes-bulk?spaceId=${space.sortKey}` : `/v1/notes-bulk`,
+        { notes: encryptedNotes.slice(i, i + 50), moved }
+      );
+      created = created.concat(data);
+    }
 
     const updated = hasSpacePassword(space)
-      ? data.map(item => ({
+      ? created.map(item => ({
           ...item,
           encryptedPassword: space.encryptedPassword,
         }))
-      : data;
+      : created;
 
     const decrypted = await asyncMap(updated, async item => {
       const { data } = await decryptNote(item, LocalStorage.get(sharedLocalStorageKeys.privateKey));
@@ -165,13 +169,15 @@ export async function deleteNotes(noteIds, spaceId) {
   try {
     const space = getSpace(spaceId);
 
-    const data = await HTTP.post(
-      appName,
-      space ? `/v1/notes-delete-bulk?spaceId=${spaceId}` : `/v1/notes-delete-bulk`,
-      { noteIds }
-    );
+    for (let i = 0; i < noteIds.length; i += 50) {
+      await HTTP.post(
+        appName,
+        space ? `/v1/notes-delete-bulk?spaceId=${spaceId}` : `/v1/notes-delete-bulk`,
+        { noteIds: noteIds.slice(i, i + 50) }
+      );
+    }
 
-    return { data, error: null };
+    return { data: noteIds, error: null };
   } catch (error) {
     return { data: null, error };
   }

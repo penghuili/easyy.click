@@ -14,7 +14,18 @@ const aligns = {
   stretch: 'stretch',
 };
 
-export function Flex({ children, style, direction = 'column', justify, align, wrap, gap, m, p }) {
+export function Flex({
+  children,
+  style,
+  direction = 'column',
+  justify,
+  align,
+  wrap,
+  gap,
+  m,
+  p,
+  onClick,
+}) {
   return (
     <div
       style={{
@@ -28,6 +39,7 @@ export function Flex({ children, style, direction = 'column', justify, align, wr
         padding: p || '0',
         ...(style || {}),
       }}
+      onClick={onClick}
     >
       {children}
     </div>

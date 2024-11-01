@@ -11,18 +11,13 @@ import { Flex } from '../shared/semi/Flex.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
   isDeletingNoteCat,
-  isDeletingNotesCat,
   isLoadingNotesCat,
   isMovingNoteCat,
   useNoteGroups,
 } from '../store/note/noteCats.js';
-import {
-  deleteNoteEffect,
-  deleteNotesEffect,
-  moveNoteEffect,
-  moveNotesEffect,
-} from '../store/note/noteEffect.js';
+import { deleteNoteEffect, moveNoteEffect } from '../store/note/noteEffect.js';
 import { inboxSpaceId } from '../store/space/spaceCats.js';
+import { BulkUpdateNotes } from './BulkUpdateNotes.jsx';
 import { Confirm } from './Confirm.jsx';
 import { ExtensionIntro } from './ExtensionIntro.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
@@ -30,7 +25,6 @@ import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
 export const InboxNoteItems = fastMemo(() => {
   const { notes } = useNoteGroups(inboxSpaceId);
   const isDeletingNote = useCat(isDeletingNoteCat);
-  const isDeletingNotes = useCat(isDeletingNotesCat);
   const isMoving = useCat(isMovingNoteCat);
   const isLoading = useCat(isLoadingNotesCat);
 
@@ -43,18 +37,14 @@ export const InboxNoteItems = fastMemo(() => {
 
   const [notesToUpdateObj, setNotesToUpdateObj] = useState({});
 
-  const notesToMove = useMemo(() => {
-    return Object.keys(notesToUpdateObj)
-      .filter(key => notesToUpdateObj[key])
-      .map(key => notesToUpdateObj[key]);
-  }, [notesToUpdateObj]);
-  const [showSelectGroupForMoveMultiple, setShowSelectGroupForMoveMultiple] = useState(false);
-
-  const [showDeleteMultipleConfirm, setShowDeleteMultipleConfirm] = useState(false);
-
-  const notesToDeleteSortKeys = useMemo(() => {
-    return Object.keys(notesToUpdateObj).filter(key => notesToUpdateObj[key]);
-  }, [notesToUpdateObj]);
+  const allCheckboxValue = useMemo(() => {
+    const selectedCount = Object.values(notesToUpdateObj).filter(Boolean).length;
+    const allCount = notes?.length;
+    return {
+      all: !!allCount && selectedCount === allCount,
+      some: selectedCount > 0 && selectedCount < allCount,
+    };
+  }, [notes?.length, notesToUpdateObj]);
 
   if (!notes.length) {
     return <>{isLoading ? <PageLoading /> : <ExtensionIntro />}</>;
@@ -62,24 +52,28 @@ export const InboxNoteItems = fastMemo(() => {
 
   return (
     <>
-      <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
-        <Button
-          onClick={() => setShowSelectGroupForMoveMultiple(true)}
-          icon={<RiCornerUpRightLine />}
-          disabled={!notesToMove?.length}
-        >
-          Move notes
-        </Button>
+      <BulkUpdateNotes
+        spaceId={inboxSpaceId}
+        notesObj={notesToUpdateObj}
+        onReset={() => setNotesToUpdateObj({})}
+        showCancel={false}
+      />
 
-        <Button
-          type="danger"
-          onClick={() => setShowDeleteMultipleConfirm(true)}
-          icon={<RiDeleteBinLine />}
-          disabled={!notesToDeleteSortKeys?.length}
+      {!!notes.length && (
+        <Checkbox
+          checked={allCheckboxValue.all}
+          onChange={e => {
+            if (e.target.checked) {
+              setNotesToUpdateObj(Object.fromEntries(notes.map(note => [note.sortKey, note])));
+            } else {
+              setNotesToUpdateObj({});
+            }
+          }}
+          style={{ marginBottom: '1rem' }}
         >
-          Delete notes
-        </Button>
-      </Flex>
+          <Typography.Text strong>Select all</Typography.Text>
+        </Checkbox>
+      )}
 
       {notes.map(note => (
         <Flex key={note.sortKey} direction="row" m="0 0 0.5rem">
@@ -177,44 +171,6 @@ export const InboxNoteItems = fastMemo(() => {
           setNewSpaceId(null);
         }}
         isSaving={isMoving}
-      />
-
-      <GroupSelectorForMove
-        excludeSpaceId={inboxSpaceId}
-        open={showSelectGroupForMoveMultiple}
-        onOpenChange={setShowSelectGroupForMoveMultiple}
-        groupId={newSpaceGroupId}
-        onSelectGroup={setNewSpaceGroupId}
-        spaceId={newSpaceId}
-        onSelectSpace={setNewSpaceId}
-        onConfirm={async () => {
-          if (!notesToMove?.length || !newSpaceId) {
-            return;
-          }
-
-          await moveNotesEffect(notesToMove, inboxSpaceId, newSpaceId, newSpaceGroupId);
-
-          setShowSelectGroupForMoveMultiple(false);
-          setNotesToUpdateObj({});
-          setNewSpaceId(null);
-        }}
-        isSaving={isMoving}
-      />
-
-      <Confirm
-        message={'Are you sure to delete selected notes?'}
-        open={showDeleteMultipleConfirm}
-        onOpenChange={setShowDeleteMultipleConfirm}
-        onConfirm={async () => {
-          if (!notesToDeleteSortKeys?.length) {
-            return;
-          }
-
-          await deleteNotesEffect(notesToDeleteSortKeys, { showMessage: true }, inboxSpaceId);
-          setShowDeleteMultipleConfirm(false);
-          setNotesToUpdateObj({});
-        }}
-        isSaving={isDeletingNotes}
       />
 
       <Confirm

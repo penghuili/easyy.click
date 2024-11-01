@@ -3,17 +3,17 @@ import React, { useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { CreateLinksForm } from '../components/CreateLinksForm.jsx';
 import { FilePicker } from '../components/FilePicker.jsx';
-import { SpaceHint } from '../components/SpaceHint.jsx';
+import { ImportLinksForm } from '../components/ImportLinksForm.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { Link } from '../shared/semi/Link.jsx';
 import { PageHeader } from '../shared/semi/PageHeader.jsx';
+import { RouteLink } from '../shared/semi/RouteLink.jsx';
 import { importedGroupSortKey } from '../store/group/groupCats.js';
 import { isCreatingLinksCat, isLoadingPageInfoCat } from '../store/link/linkCats.js';
 
-export const LinksImport = fastMemo(({ queryParams: { spaceId } }) => {
+export const LinksImport = fastMemo(() => {
   const isCreating = useCat(isCreatingLinksCat);
   const isLoadingPageInfo = useCat(isLoadingPageInfoCat);
 
@@ -27,7 +27,9 @@ export const LinksImport = fastMemo(({ queryParams: { spaceId } }) => {
         hasBack
       />
 
-      <SpaceHint spaceId={spaceId} />
+      <Typography.Paragraph strong mark style={{ marginBottom: '1rem' }}>
+        The imported links will be added to <RouteLink to="/inbox">Inbox</RouteLink>.
+      </Typography.Paragraph>
 
       <Typography.Title heading={3} style={{ marginBottom: '1rem' }}>
         1. Export your bookmarks
@@ -73,7 +75,7 @@ export const LinksImport = fastMemo(({ queryParams: { spaceId } }) => {
       </Typography.Title>
 
       <Typography.Paragraph style={{ marginBottom: '1rem' }}>
-        Select the bookmarks file that you exported to upload:
+        Select the bookmarks file that you get in step 1:
       </Typography.Paragraph>
 
       <FilePicker
@@ -115,13 +117,7 @@ export const LinksImport = fastMemo(({ queryParams: { spaceId } }) => {
             Delete links you don't need, or give it a new name, or tag it.
           </Typography.Paragraph>
 
-          <CreateLinksForm
-            initLinks={links}
-            spaceId={spaceId}
-            firstOneDeletable
-            showImportedGroup
-            createLabel="Import bookmarks"
-          />
+          <ImportLinksForm initLinks={links} />
         </div>
       )}
     </PageContent>

@@ -55,7 +55,7 @@ export async function fetchLink(linkId, spaceId) {
 async function encryptLink({ link, title, groupId, count, timestamp }, space) {
   let password;
   let encryptedPassword;
-  if (space) {
+  if (hasSpacePassword(space)) {
     password = await decryptMessageAsymmetric(
       LocalStorage.get(sharedLocalStorageKeys.privateKey),
       space.encryptedPassword
@@ -118,18 +118,22 @@ export async function createLinks({ links, moved }, spaceId) {
       );
     });
 
-    const data = await HTTP.post(
-      appName,
-      space ? `/v1/links-bulk?spaceId=${space.sortKey}` : `/v1/links-bulk`,
-      { links: encryptedLinks, moved }
-    );
+    let created = [];
+    for (let i = 0; i < encryptedLinks.length; i += 50) {
+      const data = await HTTP.post(
+        appName,
+        space ? `/v1/links-bulk?spaceId=${space.sortKey}` : `/v1/links-bulk`,
+        { links: encryptedLinks.slice(i, i + 50), moved }
+      );
+      created = created.concat(data);
+    }
 
     const updated = hasSpacePassword(space)
-      ? data.map(item => ({
+      ? created.map(item => ({
           ...item,
           encryptedPassword: space.encryptedPassword,
         }))
-      : data;
+      : created;
 
     const decrypted = await asyncMap(updated, async item => {
       const { data } = await decryptLink(item, LocalStorage.get(sharedLocalStorageKeys.privateKey));
@@ -199,13 +203,15 @@ export async function deleteLinks(linkIds, spaceId) {
   try {
     const space = getSpace(spaceId);
 
-    const data = await HTTP.post(
-      appName,
-      space ? `/v1/links-delete-bulk?spaceId=${spaceId}` : `/v1/links-delete-bulk`,
-      { linkIds }
-    );
+    for (let i = 0; i < linkIds.length; i += 50) {
+      await HTTP.post(
+        appName,
+        space ? `/v1/links-delete-bulk?spaceId=${spaceId}` : `/v1/links-delete-bulk`,
+        { linkIds: linkIds.slice(i, i + 50) }
+      );
+    }
 
-    return { data, error: null };
+    return { data: linkIds, error: null };
   } catch (error) {
     return { data: null, error };
   }

@@ -1,36 +1,12 @@
-import { Button, Checkbox, Col, Dropdown, Row, Typography } from '@douyinfe/semi-ui';
-import {
-  RiAddLine,
-  RiCornerUpRightLine,
-  RiDeleteBinLine,
-  RiDragMoveLine,
-  RiEdit2Line,
-  RiExportLine,
-  RiExternalLinkLine,
-  RiImportLine,
-  RiLockLine,
-  RiMore2Line,
-  RiShareLine,
-} from '@remixicon/react';
+import { Row, Typography } from '@douyinfe/semi-ui';
 import React, { useMemo, useState } from 'react';
-import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { Flex } from '../shared/semi/Flex.jsx';
-import { Link } from '../shared/semi/Link.jsx';
 import { PageEmpty } from '../shared/semi/PageEmpty.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
-import {
-  isDeletingGroupCat,
-  isUpdatingGroupCat,
-  noGroupSortKey,
-} from '../store/group/groupCats.js';
-import {
-  deleteGroupEffect,
-  shareGroupLinksEffect,
-  unshareGroupLinksEffect,
-} from '../store/group/groupEffect.js';
+import { isUpdatingGroupCat } from '../store/group/groupCats.js';
+import { shareGroupLinksEffect } from '../store/group/groupEffect.js';
 import {
   isDeletingLinkCat,
   isDeletingLinksCat,
@@ -43,14 +19,15 @@ import {
   deleteLinksEffect,
   moveLinkEffect,
   moveLinksEffect,
-  updateLinkEffect,
 } from '../store/link/linkEffect.js';
 import { isUpdatingSpaceCat, useSpace, useSpaces } from '../store/space/spaceCats.js';
-import { shareSpaceLinksEffect, unshareSpaceLinksEffect } from '../store/space/spaceEffect.js';
+import { shareSpaceLinksEffect } from '../store/space/spaceEffect.js';
+import { BulkUpdateLinks } from './BulkUpdateLinks.jsx';
 import { Confirm } from './Confirm.jsx';
-import { Favicon } from './Favicon.jsx';
-import { confirmDeleteGroupMessage } from './GroupItems.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
+import { LinkItemsActions } from './LinkItemsActions.jsx';
+import { LinkItemsGroupTitle } from './LinkItemsGroupTitle.jsx';
+import { LinkItemsItem } from './LinkItemsItem.jsx';
 import { Top10Links } from './Top10Links.jsx';
 
 export const LinkItems = fastMemo(({ spaceId }) => {
@@ -59,7 +36,6 @@ export const LinkItems = fastMemo(({ spaceId }) => {
   const isUpdatingSpace = useCat(isUpdatingSpaceCat);
   const isDeletingLink = useCat(isDeletingLinkCat);
   const isDeletingLinks = useCat(isDeletingLinksCat);
-  const isDeletingGroup = useCat(isDeletingGroupCat);
   const isMoving = useCat(isMovingLinkCat);
   const isLoading = useCat(isLoadingLinksCat);
   const spaces = useSpaces();
@@ -73,174 +49,31 @@ export const LinkItems = fastMemo(({ spaceId }) => {
   const [activeLink, setActiveLink] = useState(null);
   const [showDeleteLinkConfirm, setShowDeleteLinkConfirm] = useState(false);
   const [activeGroup, setActiveGroup] = useState(null);
-  const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
+  const [showDeleteGroupLinksConfirm, setShowDeleteGroupLinksConfirm] = useState(false);
 
   const [newSpaceId, setNewSpaceId] = useState(null);
   const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
   const [showMoveLinkModal, setShowMoveLinkModal] = useState(false);
   const [showMoveLinksModal, setShowMoveLinksModal] = useState(false);
 
-  const [showDeleteMultiple, setShowDeleteMultiple] = useState(false);
-  const [linksToDelete, setLinksToDelete] = useState({});
-  const [showDeleteMultipleConfirm, setShowDeleteMultipleConfirm] = useState(false);
+  const [showBulkActions, setShowBulkActions] = useState(false);
+  const [linksToUpdateObj, setLinksToUpdateObj] = useState({});
 
   const [showPublicGroupConfirm, setShowPublicGroupConfirm] = useState(false);
-
   const [showPublicSpaceConfirm, setShowPublicSpaceConfirm] = useState(false);
 
-  const linksToDeleteSortKeys = useMemo(() => {
-    if (!showDeleteMultiple) {
-      return [];
-    }
-
-    return Object.keys(linksToDelete).filter(key => linksToDelete[key]);
-  }, [linksToDelete, showDeleteMultiple]);
-
-  function renderSpaceShare() {
-    if (!space) {
-      return null;
-    }
-
-    if (space.linksShareId) {
-      return (
-        <>
-          <Dropdown.Item icon={<RiExternalLinkLine />}>
-            <a
-              href={`https://easyy.click/s/?id=${space.linksShareId}`}
-              target="_blank"
-              style={{
-                color: 'var(--semi-color-text-0)',
-                textDecoration: 'none',
-              }}
-            >
-              Open shared page
-            </a>
-          </Dropdown.Item>
-
-          <Dropdown.Item
-            onClick={() => {
-              setShowPublicSpaceConfirm(true);
-            }}
-            icon={<RiShareLine />}
-          >
-            Public space again
-          </Dropdown.Item>
-
-          <Dropdown.Item
-            onClick={() => {
-              unshareSpaceLinksEffect(spaceId);
-            }}
-            icon={<RiLockLine />}
-          >
-            Make space private
-          </Dropdown.Item>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <Dropdown.Item
-          onClick={() => {
-            setShowPublicSpaceConfirm(true);
-          }}
-          icon={<RiShareLine />}
-        >
-          Make space public
-        </Dropdown.Item>
-      </>
-    );
-  }
-
-  function renderActions() {
-    return (
-      <Flex direction="row" wrap="wrap" gap="1rem" m="0.5rem 0 1.5rem">
-        <Button
-          theme="solid"
-          onClick={() => navigateTo(`/links/add?spaceId=${spaceId}`)}
-          icon={<RiAddLine />}
-        >
-          Add links
-        </Button>
-
-        {links.length > 1 && (
-          <Button
-            onClick={() => navigateTo(`/links/reorder?spaceId=${spaceId}`)}
-            icon={<RiDragMoveLine />}
-          >
-            Reorder links
-          </Button>
-        )}
-
-        <Dropdown
-          trigger="click"
-          position={'bottomLeft'}
-          clickToHide
-          render={
-            <Dropdown.Menu>
-              <Dropdown.Item
-                icon={<RiImportLine />}
-                onClick={() => navigateTo(`/links/import?spaceId=${spaceId}`)}
-              >
-                Import browser bookmarks
-              </Dropdown.Item>
-
-              <Dropdown.Item
-                icon={<RiExportLine />}
-                onClick={() => navigateTo(`/spaces/export?spaceId=${spaceId}`)}
-              >
-                Export links
-              </Dropdown.Item>
-
-              {links?.length > 1 && (
-                <>
-                  <Dropdown.Divider />
-
-                  {renderSpaceShare()}
-
-                  <Dropdown.Divider />
-
-                  <Dropdown.Item
-                    type="danger"
-                    icon={<RiDeleteBinLine />}
-                    onClick={() => setShowDeleteMultiple(true)}
-                  >
-                    Delete multiple links
-                  </Dropdown.Item>
-                </>
-              )}
-            </Dropdown.Menu>
-          }
-        >
-          <Button
-            theme="borderless"
-            icon={<RiMore2Line />}
-            style={{
-              marginRight: 2,
-            }}
-          />
-        </Dropdown>
-
-        {!!space?.linksShareId && (
-          <Link
-            href={`https://easyy.click/s/?id=${space.linksShareId}`}
-            target="_blank"
-            style={{
-              top: '2px',
-              position: 'relative',
-            }}
-          >
-            <RiExternalLinkLine />
-          </Link>
-        )}
-      </Flex>
-    );
-  }
+  const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
 
   if (!links.length) {
     return (
       <>
-        {renderActions()}
+        <LinkItemsActions
+          spaceId={spaceId}
+          onPublicSpace={() => setShowPublicGroupConfirm(true)}
+          onBulk={() => setShowBulkActions(true)}
+          onDeleteAll={() => setShowDeleteAllConfirm(true)}
+        />
+
         {isLoading ? <PageLoading /> : <PageEmpty>Which webites do you visit regularly?</PageEmpty>}
       </>
     );
@@ -248,256 +81,95 @@ export const LinkItems = fastMemo(({ spaceId }) => {
 
   return (
     <>
-      {renderActions()}
+      <LinkItemsActions
+        spaceId={spaceId}
+        onPublicSpace={() => setShowPublicGroupConfirm(true)}
+        onBulk={() => setShowBulkActions(true)}
+        onDeleteAll={() => setShowDeleteAllConfirm(true)}
+      />
 
       <Top10Links spaceId={spaceId} />
 
+      {showBulkActions && (
+        <BulkUpdateLinks
+          spaceId={spaceId}
+          linksObj={linksToUpdateObj}
+          onReset={() => {
+            setLinksToUpdateObj({});
+            setShowBulkActions(false);
+          }}
+        />
+      )}
+
       {linkGroups.map(group => (
         <div key={group.sortKey} style={{ marginBottom: '2rem' }}>
-          <Flex direction="row" justify="between" align="center">
-            {group.linksShareId ? (
-              <Flex direction="row" align="center" gap="0.5rem">
-                <Typography.Title heading={5}>{group.title}</Typography.Title>
-                <Link
-                  href={`https://easyy.click/s/?id=${group.linksShareId}`}
-                  target="_blank"
-                  style={{
-                    top: '2px',
-                    position: 'relative',
-                  }}
-                >
-                  <RiExternalLinkLine />
-                </Link>
-              </Flex>
-            ) : (
-              <Typography.Title heading={5}>{group.title}</Typography.Title>
-            )}
-
-            <Flex direction="row" gap="1rem" align="center">
-              <Button
-                theme="borderless"
-                icon={<RiAddLine />}
-                onClick={() =>
-                  navigateTo(
-                    group.sortKey === noGroupSortKey
-                      ? `/links/add?spaceId=${spaceId}`
-                      : `/links/add?groupId=${group.sortKey}&spaceId=${spaceId}`
-                  )
-                }
-              />
-              <Dropdown
-                trigger="click"
-                position={'bottomLeft'}
-                clickToHide
-                render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => {
-                        navigateTo(`/groups/details?groupId=${group.sortKey}&spaceId=${spaceId}`);
-                      }}
-                      icon={<RiEdit2Line />}
-                    >
-                      Edit tag
-                    </Dropdown.Item>
-
-                    <Dropdown.Divider />
-
-                    {group.linksShareId ? (
-                      <>
-                        <Dropdown.Item icon={<RiExternalLinkLine />}>
-                          <a
-                            href={`https://easyy.click/s/?id=${group.linksShareId}`}
-                            target="_blank"
-                            style={{
-                              color: 'var(--semi-color-text-0)',
-                              textDecoration: 'none',
-                            }}
-                          >
-                            Open shared page
-                          </a>
-                        </Dropdown.Item>
-
-                        <Dropdown.Item
-                          onClick={() => {
-                            setActiveGroup(group);
-                            setShowPublicGroupConfirm(true);
-                          }}
-                          icon={<RiShareLine />}
-                        >
-                          Public tag again
-                        </Dropdown.Item>
-
-                        <Dropdown.Item
-                          onClick={() => {
-                            unshareGroupLinksEffect(group.sortKey, spaceId);
-                          }}
-                          icon={<RiLockLine />}
-                        >
-                          Make tag private
-                        </Dropdown.Item>
-                      </>
-                    ) : (
-                      <Dropdown.Item
-                        onClick={() => {
-                          setActiveGroup(group);
-                          setShowPublicGroupConfirm(true);
-                        }}
-                        icon={<RiShareLine />}
-                      >
-                        Make tag public
-                      </Dropdown.Item>
-                    )}
-
-                    <Dropdown.Divider />
-
-                    {otherSpaces.length > 0 && (
-                      <>
-                        <Dropdown.Item
-                          key={space.sortKey}
-                          icon={<RiCornerUpRightLine />}
-                          onClick={() => {
-                            setActiveGroup(group);
-                            setShowMoveLinksModal(true);
-                          }}
-                          disabled={isMoving}
-                        >
-                          Move to ...
-                        </Dropdown.Item>
-
-                        <Dropdown.Divider />
-                      </>
-                    )}
-
-                    <Dropdown.Item
-                      type="danger"
-                      onClick={() => {
-                        setActiveGroup(group);
-                        setShowDeleteGroupConfirm(true);
-                      }}
-                      icon={<RiDeleteBinLine />}
-                    >
-                      Delete tag
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                }
-              >
-                <Button
-                  theme="borderless"
-                  icon={<RiMore2Line />}
-                  style={{
-                    marginRight: 2,
-                  }}
-                />
-              </Dropdown>
-            </Flex>
-          </Flex>
+          <LinkItemsGroupTitle
+            spaceId={spaceId}
+            group={group}
+            hasOtherSpaces={!!otherSpaces.length}
+            showCheckbox={showBulkActions}
+            selectedLinks={linksToUpdateObj}
+            onCheckboxChange={checked => {
+              if (checked) {
+                const obj = {};
+                group.items.forEach(item => {
+                  obj[item.sortKey] = item;
+                });
+                setLinksToUpdateObj({
+                  ...linksToUpdateObj,
+                  ...obj,
+                });
+              } else {
+                const obj = {};
+                group.items.forEach(item => {
+                  obj[item.sortKey] = null;
+                });
+                setLinksToUpdateObj({
+                  ...linksToUpdateObj,
+                  ...obj,
+                });
+              }
+            }}
+            onPublic={() => {
+              setActiveGroup(group);
+              setShowPublicGroupConfirm(true);
+            }}
+            onDelete={() => {
+              setActiveGroup(group);
+              setShowDeleteGroupLinksConfirm(true);
+            }}
+            onMove={() => {
+              setActiveGroup(group);
+              setShowMoveLinksModal(true);
+            }}
+          />
 
           {group.items?.length ? (
             <>
               <Row type="flex">
                 {group.items.map(link => (
-                  <Col
+                  <LinkItemsItem
                     key={link.sortKey}
-                    span={12}
-                    md={8}
-                    style={{
-                      display: 'flex',
-                      gap: '0.5rem',
-                      alignItems: 'center',
-
-                      overflow: 'hidden',
-                      position: 'relative',
-                      padding: '0.5rem 1.5rem 0.5rem 0',
+                    spaceId={spaceId}
+                    link={link}
+                    selectedLinks={linksToUpdateObj}
+                    showCheckbox={showBulkActions}
+                    onCheckboxChange={checked => {
+                      setLinksToUpdateObj({
+                        ...linksToUpdateObj,
+                        [link.sortKey]: checked ? link : null,
+                      });
                     }}
-                  >
-                    <Link
-                      href={link.link}
-                      target="_blank"
-                      onClick={() => {
-                        updateLinkEffect(
-                          link.sortKey,
-                          {
-                            count: (link.count || 0) + 1,
-                          },
-                          spaceId
-                        );
-                      }}
-                    >
-                      <Favicon url={link.link} />
-                      {link.title}
-                    </Link>
-
-                    {showDeleteMultiple ? (
-                      <Checkbox
-                        checked={!!linksToDelete[link.sortKey]}
-                        onChange={e => {
-                          setLinksToDelete({ ...linksToDelete, [link.sortKey]: e.target.checked });
-                        }}
-                      />
-                    ) : (
-                      <Dropdown
-                        trigger="click"
-                        position={'bottomLeft'}
-                        clickToHide
-                        render={
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              icon={<RiEdit2Line />}
-                              onClick={() => {
-                                navigateTo(
-                                  `/links/details?linkId=${link.sortKey}&spaceId=${spaceId}`
-                                );
-                              }}
-                            >
-                              Edit link
-                            </Dropdown.Item>
-
-                            {otherSpaces.length > 0 && (
-                              <>
-                                <Dropdown.Divider />
-
-                                <Dropdown.Item
-                                  key={space.sortKey}
-                                  icon={<RiCornerUpRightLine />}
-                                  onClick={() => {
-                                    setActiveLink(link);
-                                    setShowMoveLinkModal(true);
-                                  }}
-                                  disabled={isMoving}
-                                >
-                                  Move to ...
-                                </Dropdown.Item>
-
-                                <Dropdown.Divider />
-                              </>
-                            )}
-
-                            <Dropdown.Item
-                              type="danger"
-                              icon={<RiDeleteBinLine />}
-                              onClick={() => {
-                                setActiveLink(link);
-                                setShowDeleteLinkConfirm(true);
-                              }}
-                            >
-                              Delete link
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        }
-                      >
-                        <Button
-                          theme="borderless"
-                          icon={<RiMore2Line width="20" height="20" />}
-                          size="small"
-                          style={{
-                            position: 'absolute',
-                            top: '0.5rem',
-                            right: '0.5rem',
-                          }}
-                        />
-                      </Dropdown>
-                    )}
-                  </Col>
+                    hasOtherSpaces={!!otherSpaces.length}
+                    onMove={() => {
+                      setActiveLink(link);
+                      setShowMoveLinkModal(true);
+                    }}
+                    onDelete={() => {
+                      setActiveLink(link);
+                      setShowDeleteLinkConfirm(true);
+                    }}
+                  />
                 ))}
               </Row>
             </>
@@ -506,32 +178,6 @@ export const LinkItems = fastMemo(({ spaceId }) => {
           )}
         </div>
       ))}
-
-      {showDeleteMultiple && (
-        <Flex direction="row" justify="between">
-          <Button
-            onClick={() => {
-              setLinksToDelete({});
-              setShowDeleteMultiple(false);
-              setShowDeleteMultipleConfirm(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="danger"
-            theme="solid"
-            onClick={() => {
-              setShowDeleteMultipleConfirm(true);
-            }}
-            disabled={!linksToDeleteSortKeys?.length}
-          >
-            {linksToDeleteSortKeys?.length
-              ? `Delete ${linksToDeleteSortKeys?.length} ${linksToDeleteSortKeys?.length === 1 ? 'link' : 'links'}`
-              : 'Delete links'}
-          </Button>
-        </Flex>
-      )}
 
       <GroupSelectorForMove
         excludeSpaceId={spaceId}
@@ -575,23 +221,6 @@ export const LinkItems = fastMemo(({ spaceId }) => {
           setNewSpaceId(null);
         }}
         isSaving={isMoving}
-      />
-
-      <Confirm
-        message={'Are you sure to delete selected links?'}
-        open={showDeleteMultipleConfirm}
-        onOpenChange={setShowDeleteMultipleConfirm}
-        onConfirm={async () => {
-          if (!linksToDeleteSortKeys?.length) {
-            return;
-          }
-
-          await deleteLinksEffect(linksToDeleteSortKeys, { showMessage: true }, spaceId);
-          setShowDeleteMultipleConfirm(false);
-          setShowDeleteMultiple(false);
-          setLinksToDelete({});
-        }}
-        isSaving={isDeletingLinks}
       />
 
       <Confirm
@@ -669,19 +298,42 @@ export const LinkItems = fastMemo(({ spaceId }) => {
       />
 
       <Confirm
-        message={confirmDeleteGroupMessage}
-        open={showDeleteGroupConfirm}
-        onOpenChange={setShowDeleteGroupConfirm}
+        message="All links with this tag will be deleted. Are you sure?"
+        open={showDeleteGroupLinksConfirm}
+        onOpenChange={setShowDeleteGroupLinksConfirm}
         onConfirm={async () => {
-          if (!activeGroup) {
+          if (!activeGroup?.items?.length) {
             return;
           }
 
-          await deleteGroupEffect(activeGroup.sortKey, spaceId);
-          setShowDeleteGroupConfirm(false);
+          await deleteLinksEffect(
+            activeGroup.items.map(link => link.sortKey),
+            { showMessage: true },
+            spaceId
+          );
+          setShowDeleteGroupLinksConfirm(false);
           setActiveGroup(null);
         }}
-        isSaving={isDeletingGroup}
+        isSaving={isDeletingLinks}
+      />
+
+      <Confirm
+        message="All links in this space will be deleted. Are you sure?"
+        open={showDeleteAllConfirm}
+        onOpenChange={setShowDeleteAllConfirm}
+        onConfirm={async () => {
+          if (!links?.length) {
+            return;
+          }
+
+          await deleteLinksEffect(
+            links.map(link => link.sortKey),
+            { showMessage: true },
+            spaceId
+          );
+          setShowDeleteAllConfirm(false);
+        }}
+        isSaving={isDeletingLinks}
       />
     </>
   );

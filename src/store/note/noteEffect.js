@@ -177,7 +177,7 @@ export async function updateNoteEffect(
 }
 
 export async function deleteNoteEffect(noteId, { showMessage }, spaceId) {
-  isDeletingNotesCat.set(true);
+  isDeletingNoteCat.set(true);
 
   const { data } = await deleteNote(noteId, spaceId);
 
@@ -190,11 +190,11 @@ export async function deleteNoteEffect(noteId, { showMessage }, spaceId) {
     fetchSettingsEffect(false);
   }
 
-  isDeletingNotesCat.set(false);
+  isDeletingNoteCat.set(false);
 }
 
 export async function deleteNotesEffect(noteIds, { showMessage }, spaceId) {
-  isDeletingNoteCat.set(true);
+  isDeletingNotesCat.set(true);
 
   const { data } = await deleteNotes(noteIds, spaceId);
 
@@ -207,7 +207,7 @@ export async function deleteNotesEffect(noteIds, { showMessage }, spaceId) {
     fetchSettingsEffect(false);
   }
 
-  isDeletingNoteCat.set(false);
+  isDeletingNotesCat.set(false);
 
   return data;
 }
