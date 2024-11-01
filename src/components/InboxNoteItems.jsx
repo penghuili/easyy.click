@@ -10,12 +10,17 @@ import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { Flex } from '../shared/semi/Flex.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
+  inboxNotesStartKeyCat,
   isDeletingNoteCat,
-  isLoadingNotesCat,
+  isLoadingInboxNotesCat,
   isMovingNoteCat,
-  useNoteGroups,
+  useNotes,
 } from '../store/note/noteCats.js';
-import { deleteNoteEffect, moveNoteEffect } from '../store/note/noteEffect.js';
+import {
+  deleteNoteEffect,
+  fetchInboxNotesEffect,
+  moveNoteEffect,
+} from '../store/note/noteEffect.js';
 import { inboxSpaceId } from '../store/space/spaceCats.js';
 import { BulkUpdateNotes } from './BulkUpdateNotes.jsx';
 import { Confirm } from './Confirm.jsx';
@@ -23,10 +28,11 @@ import { ExtensionIntro } from './ExtensionIntro.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
 
 export const InboxNoteItems = fastMemo(() => {
-  const { notes } = useNoteGroups(inboxSpaceId);
+  const notes = useNotes(inboxSpaceId);
+  const startKey = useCat(inboxNotesStartKeyCat);
   const isDeletingNote = useCat(isDeletingNoteCat);
   const isMoving = useCat(isMovingNoteCat);
-  const isLoading = useCat(isLoadingNotesCat);
+  const isLoading = useCat(isLoadingInboxNotesCat);
 
   const [activeNote, setActiveNote] = useState(null);
   const [showDeleteNoteConfirm, setShowDeleteNoteConfirm] = useState(false);
@@ -150,6 +156,22 @@ export const InboxNoteItems = fastMemo(() => {
           </Dropdown>
         </Flex>
       ))}
+
+      {!!startKey && (
+        <Button
+          theme="solid"
+          onClick={() => {
+            fetchInboxNotesEffect(startKey);
+          }}
+          disabled={isLoading}
+          loading={isLoading}
+          style={{
+            marginTop: '1rem',
+          }}
+        >
+          Load more
+        </Button>
+      )}
 
       <GroupSelectorForMove
         excludeSpaceId={inboxSpaceId}

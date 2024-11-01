@@ -5,7 +5,9 @@ import { importedGroupSortKey, noGroupSortKey, useGroups } from '../group/groupC
 
 export const linksCat = createCat({});
 export const linkCat = createCat(null);
+export const inboxLinksStartKeyCat = createCat(null);
 export const isLoadingLinksCat = createCat(false);
+export const isLoadingInboxLinksCat = createCat(false);
 export const isLoadingLinkCat = createCat(false);
 export const isCreatingLinkCat = createCat(false);
 export const isCreatingLinksCat = createCat(false);
@@ -16,9 +18,7 @@ export const isDeletingLinksCat = createCat(false);
 export const isLoadingPageInfoCat = createCat(false);
 
 export function useLinks(spaceId) {
-  const links = useCat(linksCat);
-
-  return useMemo(() => links[spaceId] || [], [links, spaceId]);
+  return useCat(linksCat, data => data[spaceId] || []);
 }
 
 export function useLinkGroups(showEmptyGroups = false, spaceId) {

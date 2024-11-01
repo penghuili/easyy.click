@@ -2,13 +2,16 @@ import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { fetchSettingsEffect, setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
+import { inboxSpaceId } from '../space/spaceCats';
 import { workerActionTypes } from '../worker/workerHelpers';
 import { myWorker } from '../worker/workerListeners';
 import {
+  inboxLinksStartKeyCat,
   isCreatingLinkCat,
   isCreatingLinksCat,
   isDeletingLinkCat,
   isDeletingLinksCat,
+  isLoadingInboxLinksCat,
   isLoadingLinkCat,
   isLoadingLinksCat,
   isLoadingPageInfoCat,
@@ -22,6 +25,7 @@ import {
   createLinks,
   deleteLink,
   deleteLinks,
+  fetchInboxLinks,
   fetchLink,
   fetchLinks,
   getPageInfo,
@@ -61,6 +65,30 @@ async function forceFetchLinksEffect(spaceId) {
   }
 }
 
+export async function fetchInboxLinksEffect(startKey) {
+  if (!startKey && !linksCat.get()[inboxSpaceId]?.length) {
+    const cachedLinks = LocalStorage.get(`${localStorageKeys.links}-${inboxSpaceId}`);
+    if (cachedLinks?.length) {
+      linksCat.set({ ...linksCat.get(), [inboxSpaceId]: cachedLinks });
+    }
+  }
+
+  isLoadingInboxLinksCat.set(true);
+
+  const { data } = await fetchInboxLinks(startKey);
+  if (data) {
+    myWorker.postMessage({
+      type: workerActionTypes.DECRYPT_INBOX_LINKS,
+      links: data?.items,
+      startKey,
+      newStartKey: data?.startKey,
+      privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
+    });
+  } else {
+    isLoadingInboxLinksCat.set(false);
+  }
+}
+
 export async function fetchLinkEffect(linkId, spaceId) {
   isLoadingLinkCat.set(true);
 
@@ -91,14 +119,14 @@ export async function createLinkEffect(
   isCreatingLinkCat.set(false);
 }
 
-export async function createLinksEffect({ links, moved, showMessage }, spaceId) {
+export async function createLinksEffect({ links, moved, imported, showMessage, message }, spaceId) {
   isCreatingLinksCat.set(true);
 
-  const { data } = await createLinks({ links, moved }, spaceId);
+  const { data } = await createLinks({ links, moved, imported }, spaceId);
   if (data) {
     updateLinksState(data, 'create-bulk', spaceId);
     if (showMessage) {
-      setToastEffect('Encrypted and saved safely in Frankfurt!');
+      setToastEffect(message || 'Encrypted and saved safely in Frankfurt!');
     }
 
     fetchSettingsEffect(false);
@@ -266,8 +294,13 @@ export function updateLinksState(data, type, spaceId) {
     newItems = [...newItems, ...data];
   } else if (type === 'fetch') {
     newItems = data;
+  } else if (type === 'fetch-inbox') {
+    newItems = data.startKey ? [...linksInState, ...data.items] : data.items;
+    inboxLinksStartKeyCat.set(data.newStartKey);
   }
 
   linksCat.set({ ...linksCat.get(), [spaceId]: newItems });
-  LocalStorage.set(`${localStorageKeys.links}-${spaceId}`, newItems);
+  if (spaceId !== inboxSpaceId || !data?.startKey) {
+    LocalStorage.set(`${localStorageKeys.links}-${spaceId}`, newItems);
+  }
 }

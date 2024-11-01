@@ -2,13 +2,16 @@ import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { fetchSettingsEffect, setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
+import { inboxSpaceId } from '../space/spaceCats';
 import { workerActionTypes } from '../worker/workerHelpers';
 import { myWorker } from '../worker/workerListeners';
 import {
+  inboxNotesStartKeyCat,
   isCreatingNoteCat,
   isCreatingNotesCat,
   isDeletingNoteCat,
   isDeletingNotesCat,
+  isLoadingInboxNotesCat,
   isLoadingNoteCat,
   isLoadingNotesCat,
   isMovingNoteCat,
@@ -21,6 +24,7 @@ import {
   createNotes,
   deleteNote,
   deleteNotes,
+  fetchInboxNotes,
   fetchNote,
   fetchNotes,
   updateNote,
@@ -56,6 +60,30 @@ async function forceFetchNotesEffect(spaceId) {
     });
   } else {
     isLoadingNotesCat.set(false);
+  }
+}
+
+export async function fetchInboxNotesEffect(startKey) {
+  if (!startKey && !notesCat.get()[inboxSpaceId]?.length) {
+    const cachedNotes = LocalStorage.get(`${localStorageKeys.notes}-${inboxSpaceId}`);
+    if (cachedNotes?.length) {
+      notesCat.set({ ...notesCat.get(), [inboxSpaceId]: cachedNotes });
+    }
+  }
+
+  isLoadingInboxNotesCat.set(true);
+
+  const { data } = await fetchInboxNotes(startKey);
+  if (data) {
+    myWorker.postMessage({
+      type: workerActionTypes.DECRYPT_INBOX_NOTES,
+      notes: data?.items,
+      startKey,
+      newStartKey: data?.startKey,
+      privateKey: LocalStorage.get(sharedLocalStorageKeys.privateKey),
+    });
+  } else {
+    isLoadingInboxNotesCat.set(false);
   }
 }
 
@@ -235,8 +263,13 @@ export function updateNotesState(data, type, spaceId) {
     newItems = [...newItems, ...data];
   } else if (type === 'fetch') {
     newItems = data;
+  } else if (type === 'fetch-inbox') {
+    newItems = data.startKey ? [...notesInState, ...data.items] : data.items;
+    inboxNotesStartKeyCat.set(data.newStartKey);
   }
 
   notesCat.set({ ...notesCat.get(), [spaceId]: newItems });
-  LocalStorage.set(`${localStorageKeys.notes}-${spaceId}`, newItems);
+  if (spaceId !== inboxSpaceId || !data?.startKey) {
+    LocalStorage.set(`${localStorageKeys.notes}-${spaceId}`, newItems);
+  }
 }

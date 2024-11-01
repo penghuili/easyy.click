@@ -51,6 +51,19 @@ export async function fetchNote(noteId, spaceId) {
   }
 }
 
+export async function fetchInboxNotes(startKey) {
+  try {
+    const data = await HTTP.get(
+      appName,
+      startKey ? `/v1/notes-inbox?startKey=${startKey}` : `/v1/notes-inbox`
+    );
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function createNote({ title, text, groupId, moved }, spaceId) {
   try {
     const space = getSpace(spaceId);

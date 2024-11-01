@@ -3,9 +3,9 @@ import { eventEmitter, eventEmitterEvents } from '../../shared/browser/eventEmit
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/browser/LocalStorage';
 import { setToastEffect } from '../../shared/browser/store/sharedEffects';
 import { orderByPosition } from '../../shared/js/position';
-import { updateGroupsState } from '../group/groupEffect';
-import { updateLinksState } from '../link/linkEffect';
-import { updateNotesState } from '../note/noteEffect';
+import { groupsCat } from '../group/groupCats';
+import { linksCat } from '../link/linkCats';
+import { notesCat } from '../note/noteCats';
 import { workerActionTypes } from '../worker/workerHelpers';
 import { myWorker } from '../worker/workerListeners';
 import {
@@ -70,13 +70,15 @@ export async function fetchSpaceEffect(spaceId) {
   isLoadingSpaceCat.set(false);
 }
 
-export async function createSpaceEffect(title, color) {
+export async function createSpaceEffect(title, color, { showMessage }) {
   isCreatingSpaceCat.set(true);
 
   const { data } = await createSpace({ title, color });
   if (data) {
     updateSpacesState(data, 'create');
-    setToastEffect('Created!');
+    if (showMessage) {
+      setToastEffect('Created!');
+    }
   }
 
   isCreatingSpaceCat.set(false);
@@ -153,9 +155,15 @@ export function updateSpacesState(data, type) {
     );
   } else if (type === 'delete') {
     newItems = newItems.filter(item => item.sortKey !== data.sortKey);
-    updateLinksState(null, 'delete', data.sortKey);
-    updateNotesState(null, 'delete', data.sortKey);
-    updateGroupsState(null, 'delete', data.sortKey);
+
+    linksCat.set({ ...linksCat.get(), [data.sortKey]: [] });
+    LocalStorage.remove(`${localStorageKeys.links}-${data.sortKey}`);
+
+    notesCat.set({ ...notesCat.get(), [data.sortKey]: [] });
+    LocalStorage.remove(`${localStorageKeys.notes}-${data.sortKey}`);
+
+    groupsCat.set({ ...groupsCat.get(), [data.sortKey]: [] });
+    LocalStorage.remove(`${localStorageKeys.groups}-${data.sortKey}`);
   } else if (type === 'create') {
     newItems = [...newItems, data];
   } else if (type === 'fetch') {

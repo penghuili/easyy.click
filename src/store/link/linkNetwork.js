@@ -33,6 +33,19 @@ export async function fetchLinks(spaceId) {
   }
 }
 
+export async function fetchInboxLinks(startKey) {
+  try {
+    const data = await HTTP.get(
+      appName,
+      startKey ? `/v1/links-inbox?startKey=${startKey}` : `/v1/links-inbox`
+    );
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function fetchLink(linkId, spaceId) {
   try {
     const space = getSpace(spaceId);
@@ -105,7 +118,7 @@ export async function createLink({ title, link, count, groupId, moved }, spaceId
   }
 }
 
-export async function createLinks({ links, moved }, spaceId) {
+export async function createLinks({ links, moved, imported }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
@@ -123,7 +136,7 @@ export async function createLinks({ links, moved }, spaceId) {
       const data = await HTTP.post(
         appName,
         space ? `/v1/links-bulk?spaceId=${space.sortKey}` : `/v1/links-bulk`,
-        { links: encryptedLinks.slice(i, i + 50), moved }
+        { links: encryptedLinks.slice(i, i + 50), moved, imported }
       );
       created = created.concat(data);
     }

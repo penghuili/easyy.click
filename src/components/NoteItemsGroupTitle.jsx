@@ -69,7 +69,7 @@ export const NoteItemsGroupTitle = fastMemo(
                   {hasOtherSpaces && (
                     <>
                       <Dropdown.Item icon={<RiCornerUpRightLine />} onClick={onMove}>
-                        Move links to ...
+                        Move notes to ...
                       </Dropdown.Item>
 
                       <Dropdown.Divider />
@@ -77,7 +77,7 @@ export const NoteItemsGroupTitle = fastMemo(
                   )}
 
                   <Dropdown.Item type="danger" onClick={onDelete} icon={<RiDeleteBinLine />}>
-                    Delete links
+                    Delete notes
                   </Dropdown.Item>
                 </Dropdown.Menu>
               }

@@ -13,7 +13,7 @@ export function GroupSelector({ groupId, onSelect, spaceId }) {
   const [title, setTitle] = useState('');
 
   const handleCreate = useCallback(async () => {
-    const newGroup = await createGroupEffect(title, spaceId);
+    const newGroup = await createGroupEffect(title, spaceId, { showMessage: true });
     if (newGroup) {
       onSelect(newGroup.sortKey);
       setTitle('');

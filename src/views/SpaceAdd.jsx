@@ -17,7 +17,7 @@ export const SpaceAdd = fastMemo(() => {
   const [color, setColor] = useState(spaceColors[0]);
 
   const handleSave = useCallback(async () => {
-    await createSpaceEffect(title, color);
+    await createSpaceEffect(title, color, { showMessage: true });
     goBack();
   }, [color, title]);
 

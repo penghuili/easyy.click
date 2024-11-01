@@ -1,5 +1,10 @@
 import { Button, Descriptions, Typography } from '@douyinfe/semi-ui';
-import { RiSettings3Line, RiShieldCheckLine, RiVipCrown2Line } from '@remixicon/react';
+import {
+  RiImportLine,
+  RiSettings3Line,
+  RiShieldCheckLine,
+  RiVipCrown2Line,
+} from '@remixicon/react';
 import React, { useMemo } from 'react';
 import { BabyLink } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -34,6 +39,12 @@ export const Account = fastMemo(() => {
 
         <ItemsWrapper align="start">
           <UpgradeLink />
+
+          <BabyLink to="/links/import">
+            <Button theme="light" icon={<RiImportLine />}>
+              Import browser bookmarks
+            </Button>
+          </BabyLink>
 
           <BabyLink to="/security">
             <Button theme="outline" icon={<RiShieldCheckLine />}>

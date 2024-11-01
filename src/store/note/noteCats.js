@@ -5,7 +5,9 @@ import { noGroupSortKey, useGroups } from '../group/groupCats';
 
 export const notesCat = createCat({});
 export const noteCat = createCat(null);
+export const inboxNotesStartKeyCat = createCat(null);
 export const isLoadingNotesCat = createCat(false);
+export const isLoadingInboxNotesCat = createCat(false);
 export const isLoadingNoteCat = createCat(false);
 export const isCreatingNoteCat = createCat(false);
 export const isCreatingNotesCat = createCat(false);
@@ -15,9 +17,7 @@ export const isDeletingNoteCat = createCat(false);
 export const isDeletingNotesCat = createCat(false);
 
 export function useNotes(spaceId) {
-  const notes = useCat(notesCat);
-
-  return useMemo(() => notes[spaceId] || [], [notes, spaceId]);
+  return useCat(notesCat, notes => notes[spaceId] || []);
 }
 
 export function useNoteGroups(spaceId) {

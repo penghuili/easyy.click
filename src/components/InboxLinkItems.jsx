@@ -9,12 +9,18 @@ import { Flex } from '../shared/semi/Flex.jsx';
 import { Link } from '../shared/semi/Link.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
+  inboxLinksStartKeyCat,
   isDeletingLinkCat,
-  isLoadingLinksCat,
+  isLoadingInboxLinksCat,
   isMovingLinkCat,
-  useLinkGroups,
+  useLinks,
 } from '../store/link/linkCats.js';
-import { deleteLinkEffect, moveLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
+import {
+  deleteLinkEffect,
+  fetchInboxLinksEffect,
+  moveLinkEffect,
+  updateLinkEffect,
+} from '../store/link/linkEffect.js';
 import { inboxSpaceId } from '../store/space/spaceCats.js';
 import { BulkUpdateLinks } from './BulkUpdateLinks.jsx';
 import { Confirm } from './Confirm.jsx';
@@ -23,10 +29,11 @@ import { Favicon } from './Favicon.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
 
 export const InboxLinkItems = fastMemo(() => {
-  const { links } = useLinkGroups(false, inboxSpaceId);
+  const links = useLinks(inboxSpaceId);
+  const startKey = useCat(inboxLinksStartKeyCat);
   const isDeletingLink = useCat(isDeletingLinkCat);
   const isMoving = useCat(isMovingLinkCat);
-  const isLoading = useCat(isLoadingLinksCat);
+  const isLoading = useCat(isLoadingInboxLinksCat);
 
   const [activeLink, setActiveLink] = useState(null);
   const [showDeleteLinkConfirm, setShowDeleteLinkConfirm] = useState(false);
@@ -154,6 +161,22 @@ export const InboxLinkItems = fastMemo(() => {
           </Dropdown>
         </Flex>
       ))}
+
+      {!!startKey && (
+        <Button
+          theme="solid"
+          onClick={() => {
+            fetchInboxLinksEffect(startKey);
+          }}
+          disabled={isLoading}
+          loading={isLoading}
+          style={{
+            marginTop: '1rem',
+          }}
+        >
+          Load more
+        </Button>
+      )}
 
       <GroupSelectorForMove
         excludeSpaceId={inboxSpaceId}

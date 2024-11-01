@@ -5,7 +5,6 @@ import {
   RiDragMoveLine,
   RiExportLine,
   RiExternalLinkLine,
-  RiImportLine,
   RiLockLine,
   RiMore2Line,
   RiShareLine,
@@ -95,13 +94,6 @@ export const LinkItemsActions = fastMemo(({ spaceId, onBulk, onPublicSpace, onDe
         clickToHide
         render={
           <Dropdown.Menu>
-            <Dropdown.Item
-              icon={<RiImportLine />}
-              onClick={() => navigateTo(`/links/import?spaceId=${spaceId}`)}
-            >
-              Import browser bookmarks
-            </Dropdown.Item>
-
             <Dropdown.Item
               icon={<RiExportLine />}
               onClick={() => navigateTo(`/spaces/export?spaceId=${spaceId}`)}

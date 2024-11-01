@@ -1,10 +1,10 @@
 import { isLoadingGroupsCat } from '../group/groupCats';
 import { updateGroupsState } from '../group/groupEffect';
-import { isLoadingLinksCat } from '../link/linkCats';
+import { isLoadingInboxLinksCat, isLoadingLinksCat } from '../link/linkCats';
 import { updateLinksState } from '../link/linkEffect';
-import { isLoadingNotesCat } from '../note/noteCats';
+import { isLoadingInboxNotesCat, isLoadingNotesCat } from '../note/noteCats';
 import { updateNotesState } from '../note/noteEffect';
-import { isLoadingSpacesCat } from '../space/spaceCats';
+import { inboxSpaceId, isLoadingSpacesCat } from '../space/spaceCats';
 import { updateSpacesState } from '../space/spaceEffect';
 import { workerActionTypes } from './workerHelpers';
 
@@ -20,12 +20,24 @@ myWorker.onmessage = event => {
     updateLinksState(decryptedItems, 'fetch', spaceId);
 
     isLoadingLinksCat.set(false);
+  } else if (type === workerActionTypes.DECRYPT_INBOX_LINKS) {
+    const { decryptedItems, startKey, newStartKey } = event.data;
+
+    updateLinksState({ items: decryptedItems, startKey, newStartKey }, 'fetch-inbox', inboxSpaceId);
+
+    isLoadingInboxLinksCat.set(false);
   } else if (type === workerActionTypes.DECRYPT_NOTES) {
     const { decryptedItems, spaceId } = event.data;
 
     updateNotesState(decryptedItems, 'fetch', spaceId);
 
     isLoadingNotesCat.set(false);
+  } else if (type === workerActionTypes.DECRYPT_INBOX_NOTES) {
+    const { decryptedItems, startKey, newStartKey } = event.data;
+
+    updateNotesState({ items: decryptedItems, startKey, newStartKey }, 'fetch-inbox', inboxSpaceId);
+
+    isLoadingInboxNotesCat.set(false);
   } else if (type === workerActionTypes.DECRYPT_GROUPS) {
     const { decryptedItems, spaceId } = event.data;
 

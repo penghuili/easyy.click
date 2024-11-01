@@ -11,17 +11,14 @@ import { settingsCat } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
 import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
-import { fetchGroupsEffect } from '../store/group/groupEffect.js';
 import { isLoadingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
-import { fetchLinksEffect } from '../store/link/linkEffect.js';
+import { fetchInboxLinksEffect } from '../store/link/linkEffect.js';
 import { isLoadingNotesCat, isMovingNoteCat } from '../store/note/noteCats.js';
-import { fetchNotesEffect } from '../store/note/noteEffect.js';
-import { inboxSpaceId } from '../store/space/spaceCats.js';
+import { fetchInboxNotesEffect } from '../store/note/noteEffect.js';
 
-async function load(force) {
-  fetchLinksEffect(force, true, inboxSpaceId);
-  fetchNotesEffect(force, true, inboxSpaceId);
-  fetchGroupsEffect(force, true, inboxSpaceId);
+async function load() {
+  fetchInboxLinksEffect();
+  fetchInboxNotesEffect();
   fetchSettingsEffect(false);
 }
 
@@ -35,7 +32,7 @@ export const Inbox = fastMemo(() => {
   }, []);
 
   useEffect(() => {
-    load(false);
+    load();
   }, []);
 
   return (
@@ -85,7 +82,7 @@ const Header = fastMemo(() => {
     isLoadingNotes || isLoadingLinks || isLoadingGroups || isMovingLink || isMovingNote;
 
   const handleRefresh = useCallback(() => {
-    load(true);
+    load();
   }, []);
 
   return (

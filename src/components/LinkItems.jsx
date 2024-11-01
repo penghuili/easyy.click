@@ -5,6 +5,7 @@ import { useCat } from 'usecat';
 
 import { PageEmpty } from '../shared/semi/PageEmpty.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
+import { RouteLink } from '../shared/semi/RouteLink.jsx';
 import { isUpdatingGroupCat } from '../store/group/groupCats.js';
 import { shareGroupLinksEffect } from '../store/group/groupEffect.js';
 import {
@@ -74,7 +75,17 @@ export const LinkItems = fastMemo(({ spaceId }) => {
           onDeleteAll={() => setShowDeleteAllConfirm(true)}
         />
 
-        {isLoading ? <PageLoading /> : <PageEmpty>Which webites do you visit regularly?</PageEmpty>}
+        {isLoading ? (
+          <PageLoading />
+        ) : (
+          <PageEmpty>
+            <Typography.Paragraph>Which webites do you visit regularly?</Typography.Paragraph>
+
+            <RouteLink to="/links/import" m="1rem 0 0">
+              or Import browser bookmarks
+            </RouteLink>
+          </PageEmpty>
+        )}
       </>
     );
   }

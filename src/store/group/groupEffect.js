@@ -67,13 +67,15 @@ export async function fetchGroupEffect(groupId, spaceId) {
   isLoadingGroupCat.set(false);
 }
 
-export async function createGroupEffect(title, spaceId) {
+export async function createGroupEffect(title, spaceId, { showMessage }) {
   isCreatingGroupCat.set(true);
 
   const { data } = await createGroup({ title }, spaceId);
   if (data) {
     updateGroupsState(data, 'create', spaceId);
-    setToastEffect('Created!');
+    if (showMessage) {
+      setToastEffect('Created!');
+    }
   }
 
   isCreatingGroupCat.set(false);

@@ -182,7 +182,7 @@ const CreateGroup = fastMemo(({ spaceId }) => {
   const [title, setTitle] = useState('');
 
   const handleCreate = useCallback(async () => {
-    const newGroup = await createGroupEffect(title, spaceId);
+    const newGroup = await createGroupEffect(title, spaceId, { showMessage: true });
     if (newGroup) {
       setTitle('');
     }

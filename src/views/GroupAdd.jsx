@@ -16,7 +16,7 @@ export const GroupAdd = fastMemo(({ queryParams: { spaceId } }) => {
   const [title, setTitle] = useState('');
 
   const handleSave = useCallback(async () => {
-    await createGroupEffect(title, spaceId);
+    await createGroupEffect(title, spaceId, { showMessage: true });
     goBack();
   }, [spaceId, title]);
 
