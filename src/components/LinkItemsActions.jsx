@@ -5,6 +5,8 @@ import {
   RiDragMoveLine,
   RiExportLine,
   RiExternalLinkLine,
+  RiLayoutGrid2Line,
+  RiListCheck,
   RiLockLine,
   RiMore2Line,
   RiShareLine,
@@ -13,15 +15,18 @@ import React from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 
+import { linksLayout } from '../lib/constants.js';
 import { Flex } from '../shared/semi/Flex.jsx';
 import { Link } from '../shared/semi/Link.jsx';
 import { useLinkGroups } from '../store/link/linkCats.js';
-import { useSpace } from '../store/space/spaceCats.js';
-import { unshareSpaceLinksEffect } from '../store/space/spaceEffect.js';
+import { updateSettingsEffect } from '../store/settings/settingsEffects.js';
+import { defaultSpaceId, useLinksLayout, useSpace } from '../store/space/spaceCats.js';
+import { unshareSpaceLinksEffect, updateSpaceEffect } from '../store/space/spaceEffect.js';
 
 export const LinkItemsActions = fastMemo(({ spaceId, onBulk, onPublicSpace, onDeleteAll }) => {
   const { links } = useLinkGroups(false, spaceId);
   const space = useSpace(spaceId);
+  const layout = useLinksLayout(spaceId);
 
   const renderShareActions = () => {
     if (!space) {
@@ -94,6 +99,34 @@ export const LinkItemsActions = fastMemo(({ spaceId, onBulk, onPublicSpace, onDe
         clickToHide
         render={
           <Dropdown.Menu>
+            {layout === linksLayout.LIST ? (
+              <Dropdown.Item
+                icon={<RiLayoutGrid2Line />}
+                onClick={() => {
+                  if (spaceId === defaultSpaceId) {
+                    updateSettingsEffect({ linksLayout: linksLayout.GRID });
+                  } else {
+                    updateSpaceEffect(spaceId, { linksLayout: linksLayout.GRID });
+                  }
+                }}
+              >
+                Grid layout
+              </Dropdown.Item>
+            ) : (
+              <Dropdown.Item
+                icon={<RiListCheck />}
+                onClick={() => {
+                  if (spaceId === defaultSpaceId) {
+                    updateSettingsEffect({ linksLayout: linksLayout.LIST });
+                  } else {
+                    updateSpaceEffect(spaceId, { linksLayout: linksLayout.LIST });
+                  }
+                }}
+              >
+                List layout
+              </Dropdown.Item>
+            )}
+
             <Dropdown.Item
               icon={<RiExportLine />}
               onClick={() => navigateTo(`/spaces/export?spaceId=${spaceId}`)}

@@ -146,8 +146,8 @@ const UpgradeAction = fastMemo(() => {
 
 function Competitors() {
   return (
-    <Card style={{ margin: '2rem 0' }}>
-      <Typography.Title heading={3} style={{ marginBottom: '2rem', textAlign: 'center' }}>
+    <Card style={{ margin: '2rem 0', textAlign: 'center' }}>
+      <Typography.Title heading={3} style={{ marginBottom: '2rem' }}>
         In comparison
       </Typography.Title>
       <CompetitorItem

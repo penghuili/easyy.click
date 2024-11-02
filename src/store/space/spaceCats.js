@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
 import { createCat, useCat } from 'usecat';
 
+import { linksLayout } from '../../lib/constants';
+import { settingsCat } from '../../shared/browser/store/sharedCats';
+
 export const spacesCat = createCat([]);
 export const spaceCat = createCat(null);
 export const isLoadingSpacesCat = createCat(false);
@@ -65,4 +68,17 @@ export function getSpace(spaceId) {
 
 export function hasSpacePassword(space) {
   return space && space.encryptedPassword;
+}
+
+export function useLinksLayout(spaceId) {
+  const settings = useCat(settingsCat);
+  const space = useSpace(spaceId);
+
+  return useMemo(() => {
+    if (spaceId === defaultSpaceId) {
+      return settings?.linksLayout || linksLayout.GRID;
+    }
+
+    return space?.linksLayout || linksLayout.GRID;
+  }, [settings?.linksLayout, space?.linksLayout, spaceId]);
 }

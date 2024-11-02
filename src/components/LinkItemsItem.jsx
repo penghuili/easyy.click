@@ -5,6 +5,7 @@ import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { linksLayout } from '../lib/constants.js';
 import { Link } from '../shared/semi/Link.jsx';
 import { isMovingLinkCat } from '../store/link/linkCats.js';
 import { updateLinkEffect } from '../store/link/linkEffect.js';
@@ -14,6 +15,7 @@ export const LinkItemsItem = fastMemo(
   ({
     spaceId,
     link,
+    layout,
     showCheckbox,
     selectedLinks,
     onCheckboxChange,
@@ -30,8 +32,8 @@ export const LinkItemsItem = fastMemo(
     return (
       <Col
         key={link.sortKey}
-        span={12}
-        md={8}
+        span={layout === linksLayout.LIST ? 24 : 12}
+        md={layout === linksLayout.LIST ? 24 : 8}
         style={{
           display: 'flex',
           gap: '0.5rem',

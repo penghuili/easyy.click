@@ -41,18 +41,26 @@ export const PaymentStatus = fastMemo(() => {
     );
   }
 
+  const typeMessage = isFreeTrial ? 'Free trial until' : '';
   if (willBeExpiredSoon) {
+    if (validDays === 0) {
+      return (
+        <Typography.Text type="warning">
+          {typeMessage} {formattedExpiresDate} (today is the last day)
+        </Typography.Text>
+      );
+    }
     return (
       <Typography.Text type="warning">
-        {isFreeTrial ? 'Free trial until' : ''} {formattedExpiresDate} ({validDays}{' '}
-        {validDays > 1 ? 'days' : 'day'} left)
+        {typeMessage} {formattedExpiresDate} (
+        {validDays > 1 ? `${validDays} days left` : '1 day left'})
       </Typography.Text>
     );
   }
 
   return (
     <Typography.Text>
-      {isFreeTrial ? 'Free trial until' : ''} {formattedExpiresDate} ({validDays} days left)
+      {typeMessage} {formattedExpiresDate} ({validDays} days left)
     </Typography.Text>
   );
 });

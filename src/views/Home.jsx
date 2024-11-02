@@ -26,7 +26,8 @@ import { isLoadingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
 import { fetchLinksEffect } from '../store/link/linkEffect.js';
 import { isLoadingNotesCat, isMovingNoteCat } from '../store/note/noteCats.js';
 import { fetchNotesEffect } from '../store/note/noteEffect.js';
-import { defaultSpaceId } from '../store/space/spaceCats.js';
+import { isUpdatingSettingsCat } from '../store/settings/settingsCats.js';
+import { defaultSpaceId, isUpdatingSpaceCat } from '../store/space/spaceCats.js';
 
 async function load(force, spaceId) {
   fetchLinksEffect(force, true, spaceId);
@@ -88,9 +89,17 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
   const isLoadingGroups = useCat(isLoadingGroupsCat);
   const isMovingLink = useCat(isMovingLinkCat);
   const isMovingNote = useCat(isMovingNoteCat);
+  const isUpdatingSpace = useCat(isUpdatingSpaceCat);
+  const isUpdatingSettings = useCat(isUpdatingSettingsCat);
 
   const isLoading =
-    isLoadingNotes || isLoadingLinks || isLoadingGroups || isMovingLink || isMovingNote;
+    isLoadingNotes ||
+    isLoadingLinks ||
+    isLoadingGroups ||
+    isMovingLink ||
+    isMovingNote ||
+    isUpdatingSpace ||
+    isUpdatingSettings;
 
   const handleRefresh = useCallback(() => {
     load(true, spaceId);

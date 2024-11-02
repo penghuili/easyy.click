@@ -21,7 +21,12 @@ import {
   moveLinkEffect,
   moveLinksEffect,
 } from '../store/link/linkEffect.js';
-import { isUpdatingSpaceCat, useSpace, useSpaces } from '../store/space/spaceCats.js';
+import {
+  isUpdatingSpaceCat,
+  useLinksLayout,
+  useSpace,
+  useSpaces,
+} from '../store/space/spaceCats.js';
 import { shareSpaceLinksEffect } from '../store/space/spaceEffect.js';
 import { BulkUpdateLinks } from './BulkUpdateLinks.jsx';
 import { Confirm } from './Confirm.jsx';
@@ -41,6 +46,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
   const isLoading = useCat(isLoadingLinksCat);
   const spaces = useSpaces();
   const space = useSpace(spaceId);
+  const linksLayout = useLinksLayout(spaceId);
 
   const otherSpaces = useMemo(
     () => spaces.filter(space => space.sortKey !== spaceId),
@@ -162,6 +168,7 @@ export const LinkItems = fastMemo(({ spaceId }) => {
                   <LinkItemsItem
                     key={link.sortKey}
                     spaceId={spaceId}
+                    layout={linksLayout}
                     link={link}
                     selectedLinks={linksToUpdateObj}
                     showCheckbox={showBulkActions}

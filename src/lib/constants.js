@@ -10,3 +10,8 @@ export const localStorageKeys = {
 
 export const browserExtensionLink =
   'https://chromewebstore.google.com/detail/easyyclick/jmkopbdehmakhbgfbelcpnhhlnpdamem';
+
+export const linksLayout = {
+  GRID: 'GRID',
+  LIST: 'LIST',
+};

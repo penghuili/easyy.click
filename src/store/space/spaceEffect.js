@@ -88,7 +88,7 @@ export async function createSpaceEffect(title, color, { showMessage }) {
 
 export async function updateSpaceEffect(
   spaceId,
-  { encryptedPassword, title, position, color, archived, successMessage }
+  { encryptedPassword, title, position, color, archived, linksLayout, successMessage }
 ) {
   isUpdatingSpaceCat.set(true);
 
@@ -98,6 +98,7 @@ export async function updateSpaceEffect(
     position,
     color,
     archived,
+    linksLayout,
   });
   if (data) {
     updateSpacesState(data, 'update');
