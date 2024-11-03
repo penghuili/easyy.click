@@ -41,7 +41,7 @@ export const Account = fastMemo(() => {
           <UpgradeLink />
 
           <BabyLink to="/links/import">
-            <Button theme="light" icon={<RiImportLine />}>
+            <Button theme="outline" icon={<RiImportLine />}>
               Import browser bookmarks
             </Button>
           </BabyLink>
@@ -111,8 +111,18 @@ const AccountInfo = fastMemo(() => {
 const UpgradeLink = fastMemo(() => {
   const expiresAt = useExpiresAt();
 
-  if (expiresAt) {
+  if (expiresAt === 'forever') {
     return null;
+  }
+
+  if (expiresAt) {
+    return (
+      <a href="https://billing.stripe.com/p/login/aEUbKYaKO6H2aiYeUU" target="_blank">
+        <Button theme="outline" icon={<RiVipCrown2Line />}>
+          Manage subscription
+        </Button>
+      </a>
+    );
   }
 
   return (

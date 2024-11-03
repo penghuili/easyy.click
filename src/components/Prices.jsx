@@ -1,96 +1,186 @@
-import { Typography } from '@douyinfe/semi-ui';
+import { Card, Typography } from '@douyinfe/semi-ui';
 import { RiCheckLine } from '@remixicon/react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useCat } from 'usecat';
 
-import { useEarlyUser } from '../lib/useEarlyUser.js';
 import { classNames } from '../shared/browser/classNames.js';
-import { Countdown } from '../shared/browser/CountDown.jsx';
+import { useIsMobileSize } from '../shared/browser/hooks/useIsMobileSize.js';
+import { Shine } from '../shared/browser/Shine.jsx';
+import { userCat } from '../shared/browser/store/sharedCats.js';
+import { themeCssColor } from '../shared/semi/AppWrapper.jsx';
 import { Flex } from '../shared/semi/Flex.jsx';
+import { paymentStatsCat } from '../store/settings/settingsCats.js';
+import { fetchPaymentStats } from '../store/settings/settingsNetwork.js';
 import styles from './Prices.module.css';
 
 export const Prices = React.memo(() => {
-  const isEarlyUser = useEarlyUser();
+  const isMobile = useIsMobileSize();
+  const user = useCat(userCat);
+  const stats = useCat(paymentStatsCat);
+
+  useEffect(() => {
+    fetchPaymentStats();
+  }, []);
 
   return (
-    <div
-      className={classNames({
-        [styles.priceCard]: true,
-        [styles.accent]: true,
-        [styles.shine]: true,
-      })}
-    >
-      <Typography.Title heading={4} style={{ color: 'white' }}>
-        Lifetime deal
-      </Typography.Title>
-      <Typography.Text style={{ color: 'white' }}>Pay once, use forever</Typography.Text>
+    <>
+      <Flex
+        direction={isMobile ? 'column' : 'row'}
+        justify="between"
+        gap="0.5rem"
+        m="2rem 0"
+        style={{ width: '100%' }}
+      >
+        <Card
+          title="Monthly"
+          headerLine
+          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch' }}
+        >
+          <Flex gap="1rem">
+            <div>
+              <Typography.Paragraph>$1 / month</Typography.Paragraph>
+              <Typography.Paragraph>☕</Typography.Paragraph>
+            </div>
 
-      {isEarlyUser ? (
-        <>
-          <Flex direction="row" align="center" m="1rem 0 0">
-            <span
-              style={{
-                fontSize: '2rem',
-                display: 'inline-block',
-                marginRight: '0.5rem',
-              }}
-            >
-              $9
-            </span>
-            <span
-              style={{
-                fontSize: '2rem',
-                display: 'inline-block',
-                marginRight: '0.5rem',
-              }}
-            >
-              <del>$15</del> for early users
-            </span>
+            <PayNowLink
+              link={
+                user?.email
+                  ? `${import.meta.env.VITE_PAY_MONTHLY}?prefilled_email=${user.email}`
+                  : import.meta.env.VITE_PAY_MONTHLY
+              }
+            />
           </Flex>
+        </Card>
+        <Card
+          title="Yearly"
+          headerLine
+          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch' }}
+        >
+          <Flex gap="1rem">
+            <div>
+              <Typography.Paragraph>$10 / year</Typography.Paragraph>
+              <Typography.Paragraph>🍔</Typography.Paragraph>
+            </div>
 
-          <Flex m="1rem 0 1.5rem" align="center">
-            Ends in:
-            <Countdown targetDate="2024-10-13T00:00:00.000Z" />
+            <PayNowLink
+              link={
+                user?.email
+                  ? `${import.meta.env.VITE_PAY_YEARLY}?prefilled_email=${user.email}`
+                  : import.meta.env.VITE_PAY_YEARLY
+              }
+            />
           </Flex>
-        </>
-      ) : (
-        <Flex direction="row" align="center" m="1rem 0">
-          <span
-            style={{
-              fontSize: '2rem',
-              display: 'inline-block',
-              marginRight: '0.5rem',
-            }}
-          >
-            $15
-          </span>
-        </Flex>
-      )}
+        </Card>
+        <Card
+          title={stats?.payments ? `Lifetime (${20 - stats.payments} left)` : 'Lifetime'}
+          headerLine
+          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch' }}
+        >
+          <Flex gap="1rem">
+            <div>
+              <Typography.Paragraph>$15, once</Typography.Paragraph>
+              <Typography.Paragraph>🍱</Typography.Paragraph>
+            </div>
 
-      <Flex direction="column" align="start" m="0">
-        {[
-          { text: 'Unlimited links', enabled: true },
-          { text: 'Unlimited notes', enabled: true },
-          { text: 'Unlimited tags', enabled: true },
-          { text: 'Unlimited spaces', enabled: true },
-          {
-            text: 'All links, notes, tags, spaces are encrypted',
-            enabled: true,
-          },
-          { text: 'Import your browser bookmarks', enabled: true },
-          { text: 'Export your links and notes', enabled: true },
-          { text: 'Bulk add links', enabled: true },
-          { text: 'Bulk delete links', enabled: true },
-          { text: 'Share your links', enabled: true },
-          { text: 'Browser extension', enabled: true },
-        ].map(benifit => (
-          <Flex key={benifit.text} direction="row" justify="start" align="start" gap="0.5rem" m="0">
-            <RiCheckLine color="white" />{' '}
-            <Typography.Text style={{ color: 'white' }}>
-              {benifit.enabled ? benifit.text : <del>{benifit.text}</del>}
-            </Typography.Text>
+            <PayNowLink
+              link={
+                user?.email
+                  ? `${import.meta.env.VITE_PAY_LIFETIME}?prefilled_email=${user.email}`
+                  : import.meta.env.VITE_PAY_LIFETIME
+              }
+              shine
+            />
           </Flex>
-        ))}
+        </Card>
       </Flex>
-    </div>
+
+      <div
+        className={classNames({
+          [styles.priceCard]: true,
+        })}
+      >
+        <Flex direction="column" align="start" m="0">
+          {[
+            { text: 'Unlimited links' },
+            { text: 'Unlimited notes' },
+            { text: 'Unlimited tags' },
+            { text: 'Unlimited spaces' },
+            {
+              text: 'All links, notes, tags, spaces are encrypted',
+            },
+            { text: 'Import your browser bookmarks' },
+            { text: 'Export your links and notes' },
+            { text: 'Bulk add links' },
+            { text: 'Bulk delete links' },
+            { text: 'Share your links' },
+            { text: 'Browser extension' },
+          ].map(benifit => (
+            <Flex
+              key={benifit.text}
+              direction="row"
+              justify="start"
+              align="start"
+              gap="0.5rem"
+              m="0"
+            >
+              <RiCheckLine /> <Typography.Text>{benifit.text}</Typography.Text>
+            </Flex>
+          ))}
+        </Flex>
+      </div>
+
+      <Competitors />
+    </>
   );
 });
+
+function PayNowLink({ link, shine, white }) {
+  return (
+    <a
+      href={link}
+      target="_blank"
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        textDecoration: 'none',
+        color: white ? themeCssColor : 'white',
+        backgroundColor: white ? 'white' : themeCssColor,
+        padding: '0.5rem 1rem',
+        borderRadius: '2rem',
+        textAlign: 'center',
+      }}
+    >
+      Pay now
+      {shine && <Shine />}
+    </a>
+  );
+}
+
+function Competitors() {
+  return (
+    <Card style={{ margin: '2rem 0' }}>
+      You need to pay{' '}
+      <CompetitorItem name="start.me" link="https://about.start.me/pricing" price="$24 / year" />,{' '}
+      <CompetitorItem name="raindrop.io" link="https://raindrop.io/pro/buy" price="$28 / year" />,{' '}
+      <CompetitorItem name="Toby" link="https://www.gettoby.com/pricing" price="$54 / year" />.
+    </Card>
+  );
+}
+
+function CompetitorItem({ name, price, link }) {
+  return (
+    <>
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: 'var(--semi-color-warning)',
+        }}
+      >
+        {price}
+      </a>{' '}
+      for {name}
+    </>
+  );
+}
