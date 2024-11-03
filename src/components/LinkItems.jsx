@@ -88,7 +88,11 @@ export const LinkItems = fastMemo(({ spaceId }) => {
             <Typography.Paragraph>Which webites do you visit regularly?</Typography.Paragraph>
 
             <RouteLink to="/links/import" m="1rem 0 0">
-              or Import browser bookmarks
+              Import browser bookmarks
+            </RouteLink>
+
+            <RouteLink to="/extension" m="1rem 0 0">
+              Install browser extension
             </RouteLink>
           </PageEmpty>
         )}

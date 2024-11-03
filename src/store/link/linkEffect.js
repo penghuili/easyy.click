@@ -101,12 +101,12 @@ export async function fetchLinkEffect(linkId, spaceId) {
 }
 
 export async function createLinkEffect(
-  { title, link, count, groupId, moved, showMessage },
+  { title, link, fromUrl, count, groupId, moved, showMessage },
   spaceId
 ) {
   isCreatingLinkCat.set(true);
 
-  const { data } = await createLink({ title, link, count, groupId, moved }, spaceId);
+  const { data } = await createLink({ title, link, fromUrl, count, groupId, moved }, spaceId);
   if (data) {
     updateLinksState(data, 'create', spaceId);
     if (showMessage) {
@@ -144,6 +144,7 @@ export async function moveLinkEffect(link, fromSpaceId, toSpaceId, toGroupId) {
     {
       title: link.title,
       link: link.link,
+      fromUrl: link.fromUrl,
       groupId: toGroupId,
       count: link.count,
       moved: true,
@@ -168,6 +169,7 @@ export async function moveLinksEffect(links, fromSpaceId, toSpaceId, toGroupId) 
       links: links.map(link => ({
         title: link.title,
         link: link.link,
+        fromUrl: link.fromUrl,
         groupId: toGroupId,
         count: link.count,
         moved: true,

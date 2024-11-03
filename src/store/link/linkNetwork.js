@@ -65,7 +65,7 @@ export async function fetchLink(linkId, spaceId) {
   }
 }
 
-async function encryptLink({ link, title, groupId, count, timestamp }, space) {
+async function encryptLink({ link, title, fromUrl, groupId, count, timestamp }, space) {
   let password;
   let encryptedPassword;
   if (hasSpacePassword(space)) {
@@ -83,6 +83,7 @@ async function encryptLink({ link, title, groupId, count, timestamp }, space) {
 
   const encryptedTitle = title ? await encryptMessageSymmetric(password, title) : title;
   const encryptedLink = link ? await encryptMessageSymmetric(password, link) : link;
+  const encryptedFromUrl = fromUrl ? await encryptMessageSymmetric(password, fromUrl) : fromUrl;
 
   return {
     sortKey: generateLinkSortKey(timestamp),
@@ -90,17 +91,18 @@ async function encryptLink({ link, title, groupId, count, timestamp }, space) {
     encryptedPassword,
     title: encryptedTitle,
     link: encryptedLink,
+    fromUrl: encryptedFromUrl,
     count,
     groupId,
   };
 }
 
-export async function createLink({ title, link, count, groupId, moved }, spaceId) {
+export async function createLink({ title, link, fromUrl, count, groupId, moved }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
     const timestamp = Date.now();
-    const payload = await encryptLink({ link, title, groupId, count, timestamp }, space);
+    const payload = await encryptLink({ link, title, fromUrl, groupId, count, timestamp }, space);
 
     const data = await HTTP.post(
       appName,
@@ -124,12 +126,15 @@ export async function createLinks({ links, moved, imported }, spaceId) {
 
     const timestamp = Date.now();
 
-    const encryptedLinks = await asyncMap(links, async ({ title, link, count, groupId }, index) => {
-      return await encryptLink(
-        { link, title, groupId, count, timestamp: timestamp + index },
-        space
-      );
-    });
+    const encryptedLinks = await asyncMap(
+      links,
+      async ({ title, link, fromUrl, count, groupId }, index) => {
+        return await encryptLink(
+          { link, title, fromUrl, groupId, count, timestamp: timestamp + index },
+          space
+        );
+      }
+    );
 
     let created = [];
     for (let i = 0; i < encryptedLinks.length; i += 50) {

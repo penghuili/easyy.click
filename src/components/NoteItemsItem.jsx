@@ -1,5 +1,11 @@
 import { Button, Checkbox, Col, Dropdown, Typography } from '@douyinfe/semi-ui';
-import { RiCornerUpRightLine, RiDeleteBinLine, RiEdit2Line, RiMore2Line } from '@remixicon/react';
+import {
+  RiCornerUpRightLine,
+  RiDeleteBinLine,
+  RiEdit2Line,
+  RiExternalLinkLine,
+  RiMore2Line,
+} from '@remixicon/react';
 import React, { useCallback } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -7,6 +13,7 @@ import { useCat } from 'usecat';
 
 import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { Link } from '../shared/semi/Link.jsx';
 import { isMovingNoteCat } from '../store/note/noteCats.js';
 
 export const NoteItemsItem = fastMemo(
@@ -98,6 +105,17 @@ export const NoteItemsItem = fastMemo(
                 <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDelete}>
                   Delete note
                 </Dropdown.Item>
+
+                {note.fromUrl && (
+                  <>
+                    <Dropdown.Divider />
+                    <Dropdown.Item icon={<RiExternalLinkLine />}>
+                      <Link href={note.fromUrl} target="_blank">
+                        Source page
+                      </Link>
+                    </Dropdown.Item>
+                  </>
+                )}
               </Dropdown.Menu>
             }
           >

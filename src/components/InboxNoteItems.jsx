@@ -1,13 +1,22 @@
 import { Button, Checkbox, Dropdown, Typography } from '@douyinfe/semi-ui';
-import { RiCornerUpRightLine, RiDeleteBinLine, RiEdit2Line, RiMore2Line } from '@remixicon/react';
+import {
+  RiCornerUpRightLine,
+  RiDeleteBinLine,
+  RiEdit2Line,
+  RiExternalLinkLine,
+  RiMore2Line,
+} from '@remixicon/react';
 import React, { useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { useItemsDates } from '../lib/useItemsDates.js';
 import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
+import { formatDateTime } from '../shared/js/date.js';
 import { Flex } from '../shared/semi/Flex.jsx';
+import { Link } from '../shared/semi/Link.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
 import {
   inboxNotesStartKeyCat,
@@ -42,6 +51,8 @@ export const InboxNoteItems = fastMemo(() => {
   const [showMoveNoteModal, setShowMoveNoteModal] = useState(false);
 
   const [notesToUpdateObj, setNotesToUpdateObj] = useState({});
+
+  const dates = useItemsDates(notes);
 
   const allCheckboxValue = useMemo(() => {
     const selectedCount = Object.values(notesToUpdateObj).filter(Boolean).length;
@@ -82,79 +93,105 @@ export const InboxNoteItems = fastMemo(() => {
       )}
 
       {notes.map(note => (
-        <Flex key={note.sortKey} direction="row" m="0 0 0.5rem">
-          <Checkbox
-            checked={!!notesToUpdateObj[note.sortKey]}
-            onChange={e => {
-              setNotesToUpdateObj({
-                ...notesToUpdateObj,
-                [note.sortKey]: e.target.checked ? note : null,
-              });
-            }}
-            style={{ marginRight: '0.5rem' }}
-          />
+        <div key={note.sortKey}>
+          {!!dates[note.sortKey] && (
+            <Typography.Title heading={4} style={{ margin: '1rem 0 0.5rem' }}>
+              {dates[note.sortKey].day} ({dates[note.sortKey].count})
+            </Typography.Title>
+          )}
+          <Typography.Paragraph size="small" style={{ marginLeft: '1.5rem' }}>
+            {formatDateTime(note.createdAt)}
+          </Typography.Paragraph>
 
-          <Typography.Text
-            onClick={() => {
-              copyToClipboard(note.text);
-              setToastEffect(`Copied "${note.title}"!`);
-            }}
-            direction="end"
-            style={{
-              flex: 1,
-              cursor: 'pointer',
-              paddingRight: '1rem',
-            }}
-          >
-            {note.title}
-          </Typography.Text>
+          <Flex direction="row" m="0 0 0.5rem">
+            <Checkbox
+              checked={!!notesToUpdateObj[note.sortKey]}
+              onChange={e => {
+                setNotesToUpdateObj({
+                  ...notesToUpdateObj,
+                  [note.sortKey]: e.target.checked ? note : null,
+                });
+              }}
+              style={{ marginRight: '0.5rem' }}
+            />
 
-          <Dropdown
-            trigger="click"
-            position={'bottomLeft'}
-            clickToHide
-            render={
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  icon={<RiEdit2Line />}
-                  onClick={() => {
-                    navigateTo(`/notes/details?noteId=${note.sortKey}&spaceId=${inboxSpaceId}`);
-                  }}
-                >
-                  Edit note
-                </Dropdown.Item>
+            <Typography.Text
+              onClick={() => {
+                copyToClipboard(note.text);
+                setToastEffect(`Copied "${note.title}"!`);
+              }}
+              direction="end"
+              style={{
+                flex: 1,
+                cursor: 'pointer',
+                paddingRight: '1rem',
+              }}
+            >
+              {note.title}
+            </Typography.Text>
 
-                <Dropdown.Divider />
+            <Dropdown
+              trigger="click"
+              position={'bottomLeft'}
+              clickToHide
+              render={
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    icon={<RiEdit2Line />}
+                    onClick={() => {
+                      navigateTo(`/notes/details?noteId=${note.sortKey}&spaceId=${inboxSpaceId}`);
+                    }}
+                  >
+                    Edit note
+                  </Dropdown.Item>
 
-                <Dropdown.Item
-                  icon={<RiCornerUpRightLine />}
-                  onClick={() => {
-                    setActiveNote(note);
-                    setShowMoveNoteModal(true);
-                  }}
-                  disabled={isMoving}
-                >
-                  Move to ...
-                </Dropdown.Item>
+                  <Dropdown.Divider />
 
-                <Dropdown.Divider />
+                  <Dropdown.Item
+                    icon={<RiCornerUpRightLine />}
+                    onClick={() => {
+                      setActiveNote(note);
+                      setShowMoveNoteModal(true);
+                    }}
+                    disabled={isMoving}
+                  >
+                    Move to ...
+                  </Dropdown.Item>
 
-                <Dropdown.Item
-                  type="danger"
-                  icon={<RiDeleteBinLine />}
-                  onClick={() => {
-                    setActiveNote(note);
-                    setShowDeleteNoteConfirm(true);
-                  }}
-                >
-                  Delete note
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            }
-          >
-            <Button theme="borderless" icon={<RiMore2Line width="20" height="20" />} size="small" />
-          </Dropdown>
-        </Flex>
+                  <Dropdown.Divider />
+
+                  <Dropdown.Item
+                    type="danger"
+                    icon={<RiDeleteBinLine />}
+                    onClick={() => {
+                      setActiveNote(note);
+                      setShowDeleteNoteConfirm(true);
+                    }}
+                  >
+                    Delete note
+                  </Dropdown.Item>
+
+                  {note.fromUrl && (
+                    <>
+                      <Dropdown.Divider />
+                      <Dropdown.Item icon={<RiExternalLinkLine />}>
+                        <Link href={note.fromUrl} target="_blank">
+                          Source page
+                        </Link>
+                      </Dropdown.Item>
+                    </>
+                  )}
+                </Dropdown.Menu>
+              }
+            >
+              <Button
+                theme="borderless"
+                icon={<RiMore2Line width="20" height="20" />}
+                size="small"
+              />
+            </Dropdown>
+          </Flex>
+        </div>
       ))}
 
       {!!startKey && (

@@ -5,6 +5,7 @@ import { useCat } from 'usecat';
 
 import { PageEmpty } from '../shared/semi/PageEmpty.jsx';
 import { PageLoading } from '../shared/semi/PageLoading.jsx';
+import { RouteLink } from '../shared/semi/RouteLink.jsx';
 import {
   isDeletingNoteCat,
   isDeletingNotesCat,
@@ -68,7 +69,13 @@ export const NoteItems = fastMemo(({ spaceId }) => {
         {isLoading ? (
           <PageLoading />
         ) : (
-          <PageEmpty>Which notes do you copy paste regularly?</PageEmpty>
+          <PageEmpty>
+            <Typography.Paragraph>Which notes do you copy paste regularly?</Typography.Paragraph>
+
+            <RouteLink to="/extension" m="1rem 0 0">
+              Install browser extension
+            </RouteLink>
+          </PageEmpty>
         )}
       </>
     );

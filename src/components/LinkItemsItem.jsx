@@ -1,5 +1,11 @@
 import { Button, Checkbox, Col, Dropdown } from '@douyinfe/semi-ui';
-import { RiCornerUpRightLine, RiDeleteBinLine, RiEdit2Line, RiMore2Line } from '@remixicon/react';
+import {
+  RiCornerUpRightLine,
+  RiDeleteBinLine,
+  RiEdit2Line,
+  RiExternalLinkLine,
+  RiMore2Line,
+} from '@remixicon/react';
 import React from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -108,6 +114,17 @@ export const LinkItemsItem = fastMemo(
                 <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDelete}>
                   Delete link
                 </Dropdown.Item>
+
+                {link.fromUrl && (
+                  <>
+                    <Dropdown.Divider />
+                    <Dropdown.Item icon={<RiExternalLinkLine />}>
+                      <Link href={link.fromUrl} target="_blank">
+                        Source page
+                      </Link>
+                    </Dropdown.Item>
+                  </>
+                )}
               </Dropdown.Menu>
             }
           >

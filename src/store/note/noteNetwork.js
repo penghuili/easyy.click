@@ -64,13 +64,13 @@ export async function fetchInboxNotes(startKey) {
   }
 }
 
-export async function createNote({ title, text, groupId, moved }, spaceId) {
+export async function createNote({ title, text, fromUrl, groupId, moved }, spaceId) {
   try {
     const space = getSpace(spaceId);
 
     const timestamp = Date.now();
 
-    const payload = await encryptNote({ title, text, groupId, moved, timestamp }, space);
+    const payload = await encryptNote({ title, text, fromUrl, groupId, moved, timestamp }, space);
 
     const data = await HTTP.post(
       appName,
@@ -94,9 +94,15 @@ export async function createNotes({ notes, moved }, spaceId) {
 
     const timestamp = Date.now();
 
-    const encryptedNotes = await asyncMap(notes, async ({ title, text, groupId }, index) => {
-      return await encryptNote({ title, text, groupId, timestamp: timestamp + index }, space);
-    });
+    const encryptedNotes = await asyncMap(
+      notes,
+      async ({ title, text, fromUrl, groupId }, index) => {
+        return await encryptNote(
+          { title, text, fromUrl, groupId, timestamp: timestamp + index },
+          space
+        );
+      }
+    );
 
     let created = [];
     for (let i = 0; i < encryptedNotes.length; i += 50) {
@@ -212,7 +218,7 @@ export async function encryptMessageWithEncryptedPassword(encryptedPassword, mes
   return await encryptMessageSymmetric(password, message);
 }
 
-async function encryptNote({ title, text, groupId, moved, timestamp }, space) {
+async function encryptNote({ title, text, fromUrl, groupId, moved, timestamp }, space) {
   let password;
   let encryptedPassword;
   if (space) {
@@ -230,6 +236,7 @@ async function encryptNote({ title, text, groupId, moved, timestamp }, space) {
 
   const encryptedTitle = title ? await encryptMessageSymmetric(password, title) : title;
   const encryptedText = text ? await encryptMessageSymmetric(password, text) : text;
+  const encryptedFromUrl = fromUrl ? await encryptMessageSymmetric(password, fromUrl) : fromUrl;
 
   return {
     sortKey: generateNoteSortKey(timestamp),
@@ -237,6 +244,7 @@ async function encryptNote({ title, text, groupId, moved, timestamp }, space) {
     encryptedPassword,
     title: encryptedTitle,
     text: encryptedText,
+    fromUrl: encryptedFromUrl,
     groupId,
     moved,
   };
