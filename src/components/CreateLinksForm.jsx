@@ -18,6 +18,10 @@ const debouncedFetchInfo = debounce(async (pageLink, ref, linkIndex) => {
   }
 
   const data = await fetchPageInfoEffect(pageLink);
+  const titleValue = ref.current.formApi.getValue(`links[${linkIndex}][title]`);
+  if (titleValue) {
+    return;
+  }
   if (data?.title) {
     ref.current.formApi.setValue(`links[${linkIndex}][title]`, data.title);
   }

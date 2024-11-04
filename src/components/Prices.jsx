@@ -34,13 +34,10 @@ export const Prices = React.memo(() => {
         <Card
           title="Monthly"
           headerLine
-          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch' }}
+          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch', textAlign: 'center' }}
         >
           <Flex gap="1rem">
-            <div>
-              <Typography.Paragraph>$1 / month</Typography.Paragraph>
-              <Typography.Paragraph>☕</Typography.Paragraph>
-            </div>
+            <Typography.Paragraph>☕ $1 / month</Typography.Paragraph>
 
             <PayNowLink
               link={
@@ -54,13 +51,10 @@ export const Prices = React.memo(() => {
         <Card
           title="Yearly"
           headerLine
-          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch' }}
+          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch', textAlign: 'center' }}
         >
           <Flex gap="1rem">
-            <div>
-              <Typography.Paragraph>$10 / year</Typography.Paragraph>
-              <Typography.Paragraph>🍔</Typography.Paragraph>
-            </div>
+            <Typography.Paragraph>🍔 $10 / year</Typography.Paragraph>
 
             <PayNowLink
               link={
@@ -74,13 +68,10 @@ export const Prices = React.memo(() => {
         <Card
           title={stats?.payments ? `Lifetime (${20 - stats.payments} left)` : 'Lifetime'}
           headerLine
-          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch' }}
+          style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch', textAlign: 'center' }}
         >
           <Flex gap="1rem">
-            <div>
-              <Typography.Paragraph>$15, once</Typography.Paragraph>
-              <Typography.Paragraph>🍱</Typography.Paragraph>
-            </div>
+            <Typography.Paragraph>🍱 $15, once</Typography.Paragraph>
 
             <PayNowLink
               link={
