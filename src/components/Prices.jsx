@@ -9,14 +9,12 @@ import { Shine } from '../shared/browser/Shine.jsx';
 import { userCat } from '../shared/browser/store/sharedCats.js';
 import { themeCssColor } from '../shared/semi/AppWrapper.jsx';
 import { Flex } from '../shared/semi/Flex.jsx';
-import { paymentStatsCat } from '../store/settings/settingsCats.js';
 import { fetchPaymentStats } from '../store/settings/settingsNetwork.js';
 import styles from './Prices.module.css';
 
 export const Prices = React.memo(() => {
   const isMobile = useIsMobileSize();
   const user = useCat(userCat);
-  const stats = useCat(paymentStatsCat);
 
   useEffect(() => {
     fetchPaymentStats();
@@ -66,7 +64,7 @@ export const Prices = React.memo(() => {
           </Flex>
         </Card>
         <Card
-          title={stats?.payments ? `Lifetime (${20 - stats.payments} left)` : 'Lifetime'}
+          title="Lifetime"
           headerLine
           style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch', textAlign: 'center' }}
         >
