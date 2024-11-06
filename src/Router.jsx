@@ -3,8 +3,8 @@ import { BabyRoutes } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
-import { isMobileWidth } from './lib/device.js';
 import { hasValidFreeTrial } from './lib/hasValidFreeTrial.js';
+import { isMobileWidth } from './shared/browser/device.js';
 import {
   isLoadingSettingsCat,
   isLoggedInCat,
@@ -40,6 +40,7 @@ import { LinksReorder } from './views/LinksReorder.jsx';
 import { NoteAdd } from './views/NoteAdd.jsx';
 import { NoteDetails } from './views/NoteDetails.jsx';
 import { NotesReorder } from './views/NotesReorder.jsx';
+import { Shared } from './views/Shared.jsx';
 import { SpaceAdd } from './views/SpaceAdd.jsx';
 import { SpaceDetails } from './views/SpaceDetails.jsx';
 import { SpaceExport } from './views/SpaceExport.jsx';
@@ -97,6 +98,7 @@ const loggedInRoutes = {
   '/spaces': Spaces,
 
   '/inbox': Inbox,
+  '/shared': Shared,
 
   '/account': Account,
   '/security': Security,

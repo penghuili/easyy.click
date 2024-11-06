@@ -1,6 +1,6 @@
 import { Card, Typography } from '@douyinfe/semi-ui';
 import { RiCheckLine } from '@remixicon/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useCat } from 'usecat';
 
 import { classNames } from '../shared/browser/classNames.js';
@@ -9,16 +9,11 @@ import { Shine } from '../shared/browser/Shine.jsx';
 import { userCat } from '../shared/browser/store/sharedCats.js';
 import { themeCssColor } from '../shared/semi/AppWrapper.jsx';
 import { Flex } from '../shared/semi/Flex.jsx';
-import { fetchPaymentStats } from '../store/settings/settingsNetwork.js';
 import styles from './Prices.module.css';
 
 export const Prices = React.memo(() => {
   const isMobile = useIsMobileSize();
   const user = useCat(userCat);
-
-  useEffect(() => {
-    fetchPaymentStats();
-  }, []);
 
   return (
     <>

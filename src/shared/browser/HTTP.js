@@ -6,8 +6,6 @@ import { logOutEffect, setToastEffect } from './store/sharedEffects';
 import { toastTypes } from './Toast.jsx';
 
 const serverToUrl = {
-  [apps['100rejections'].name]: import.meta.env.VITE_100REJECTIONS_API_URL,
-  [apps.Puppeteer.name]: import.meta.env.VITE_PUPPETEER_API_URL,
   [apps['remiind.cc'].name]: import.meta.env.VITE_REMIINDCC_API_URL,
   [apps['notenote.cc'].name]: import.meta.env.VITE_SIMPLESTCAM_API_URL,
   [apps['easyy.click'].name]: import.meta.env.VITE_EASYY_API_URL,
@@ -58,7 +56,7 @@ export const HTTP = {
 
   async post(server, path, body, headers = {}) {
     try {
-      await HTTP.refreshTokenIfNecessary();
+      await HTTP.refreshTokenIfNecessary(0);
       const accessToken = LocalStorage.get(sharedLocalStorageKeys.accessToken);
       const response = await fetch(getFullUrl(server, path), {
         method: 'POST',
@@ -77,7 +75,7 @@ export const HTTP = {
   },
   async get(server, path) {
     try {
-      await HTTP.refreshTokenIfNecessary();
+      await HTTP.refreshTokenIfNecessary(0);
       const accessToken = LocalStorage.get(sharedLocalStorageKeys.accessToken);
       const response = await fetch(getFullUrl(server, path), {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -90,7 +88,7 @@ export const HTTP = {
   },
   async put(server, path, body) {
     try {
-      await HTTP.refreshTokenIfNecessary();
+      await HTTP.refreshTokenIfNecessary(0);
       const accessToken = LocalStorage.get(sharedLocalStorageKeys.accessToken);
       const response = await fetch(getFullUrl(server, path), {
         method: 'PUT',
@@ -108,7 +106,7 @@ export const HTTP = {
   },
   async delete(server, path) {
     try {
-      await HTTP.refreshTokenIfNecessary();
+      await HTTP.refreshTokenIfNecessary(0);
       const accessToken = LocalStorage.get(sharedLocalStorageKeys.accessToken);
       const response = await fetch(getFullUrl(server, path), {
         method: 'DELETE',
@@ -142,9 +140,9 @@ export const HTTP = {
       return;
     }
 
-    const expiresAt = LocalStorage.get(sharedLocalStorageKeys.accessTokenExpiresAt);
-    const refreshToken = LocalStorage.get(sharedLocalStorageKeys.refreshToken);
     const accessToken = LocalStorage.get(sharedLocalStorageKeys.accessToken);
+    const refreshToken = LocalStorage.get(sharedLocalStorageKeys.refreshToken);
+    const expiresAt = LocalStorage.get(sharedLocalStorageKeys.accessTokenExpiresAt);
     if (!refreshToken || !accessToken || !expiresAt) {
       throw { response: { status: 401 } };
     }
@@ -163,6 +161,6 @@ export const HTTP = {
   },
 
   async waitForRefresh() {
-    await eventEmitter.wait(eventEmitterEvents.refreshed);
+    await eventEmitter.once(eventEmitterEvents.refreshed);
   },
 };

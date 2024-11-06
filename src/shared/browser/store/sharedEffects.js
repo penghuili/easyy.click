@@ -66,6 +66,10 @@ export function setToastEffect(message, type) {
   });
 }
 
+eventEmitter.on(eventEmitterEvents.toast, ({ message, type }) => {
+  setToastEffect(message, type);
+});
+
 export function clearAuthErrorEffect() {
   authErrorCat.set(null);
 }
@@ -234,6 +238,8 @@ export async function logOutEffect() {
 
   location.reload();
 }
+
+eventEmitter.on(eventEmitterEvents.logout, logOutEffect);
 
 export async function logOutFromAllDevicesEffect() {
   isLoggingOutFromAllDevicesCat.set(true);

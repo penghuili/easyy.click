@@ -29,6 +29,8 @@ function deployApp(bucket) {
 
   uploadIndex(bucket);
 
+  uploadSW(bucket);
+
   deleteOldVersion(bucket);
 
   console.log(`Deploy app to ${bucket} completed.`);
@@ -77,6 +79,15 @@ function uploadIndex(bucket) {
   console.log('Uploading index.html to S3...');
   execSync(`aws s3 cp dist/index.html ${bucket}/index.html --cache-control max-age=0,no-store`);
   console.log('Upload index.html to S3 completed.');
+}
+
+function uploadSW(bucket) {
+  console.log('Uploading sw.js to S3...');
+  execSync(`aws s3 cp dist-sw/sw.js ${bucket}/sw.js --cache-control max-age=0,no-store`);
+  execSync(
+    `aws s3 cp dist/manifest.json ${bucket}/manifest.json --cache-control max-age=0,no-store`
+  );
+  console.log('Upload sw.js to S3 completed.');
 }
 
 function deleteOldVersion(bucket) {

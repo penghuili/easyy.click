@@ -37,7 +37,7 @@ export const LinksImport = fastMemo(() => {
     let currentSpaceIndex = 1;
     let currentSpaceCount = 0;
 
-    const timestamp = format(new Date(), 'yyMMddHHmm');
+    const timestamp = format(new Date(), 'MMddHHmm');
     groups.forEach(group => {
       if (!currentSpace) {
         currentSpace = {

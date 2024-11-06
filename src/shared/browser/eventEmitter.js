@@ -1,36 +1,48 @@
-export const eventEmitter = {
-  emit: (type, data) => {
-    document.dispatchEvent(new CustomEvent(type, { detail: data }));
-  },
-  once: (type, callback) => {
-    const handleEvent = event => {
-      callback(event.detail);
-      document.removeEventListener(type, handleEvent);
-    };
-    document.addEventListener(type, handleEvent);
-  },
-  on: (type, callback) => {
-    const handleEvent = event => {
-      callback(event.detail);
-    };
-    document.addEventListener(type, handleEvent);
-  },
-  off: (type, callback) => {
-    document.removeEventListener(type, callback);
-  },
-  wait: async type => {
+class EventEmitter {
+  constructor() {
+    this.events = {};
+  }
+
+  // Register an event listener
+  on(event, listener) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(listener);
+  }
+
+  // Emit an event and call all listeners
+  emit(event, ...args) {
+    if (this.events[event]) {
+      this.events[event].forEach(listener => listener(...args));
+    }
+  }
+
+  // Wait for an event to be emitted once
+  once(event) {
     return new Promise(resolve => {
-      const handleEvent = event => {
-        resolve(event.detail);
-        document.removeEventListener(type, handleEvent);
+      const listener = (...args) => {
+        this.off(event, listener); // Remove listener after it's called
+        resolve(...args);
       };
-      document.addEventListener(type, handleEvent);
+      this.on(event, listener);
     });
-  },
-};
+  }
+
+  // Remove a listener from an event
+  off(event, listenerToRemove) {
+    if (this.events[event]) {
+      this.events[event] = this.events[event].filter(listener => listener !== listenerToRemove);
+    }
+  }
+}
+
+export const eventEmitter = new EventEmitter();
 
 export const eventEmitterEvents = {
   refreshed: 'refreshed',
   settingsFetched: 'settingsFetched',
   loggedIn: 'loggedIn',
+  logout: 'logout',
+  toast: 'toast',
 };

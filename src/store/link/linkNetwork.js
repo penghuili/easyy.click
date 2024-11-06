@@ -237,7 +237,9 @@ export async function deleteLinks(linkIds, spaceId) {
 
 export async function getPageInfo(link) {
   try {
-    const data = await HTTP.post(appName, `/v1/link-info`, { link });
+    const data = await HTTP.post(appName, `/v1/link-info`, {
+      link,
+    });
 
     return { data, error: null };
   } catch (error) {

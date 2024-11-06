@@ -1,4 +1,5 @@
 import { accessTokenThreshold } from '../js/constants';
+import { idbStorage } from './indexDB';
 
 export const sharedLocalStorageKeys = {
   accessToken: 'accessToken',
@@ -48,18 +49,37 @@ export const LocalStorage = {
     LocalStorage.remove(sharedLocalStorageKeys.accessTokenExpiresAt);
     LocalStorage.remove(sharedLocalStorageKeys.publicKey);
     LocalStorage.remove(sharedLocalStorageKeys.privateKey);
+
+    idbStorage.removeItems([
+      sharedLocalStorageKeys.accessToken,
+      sharedLocalStorageKeys.refreshToken,
+      sharedLocalStorageKeys.accessTokenExpiresAt,
+      sharedLocalStorageKeys.publicKey,
+      sharedLocalStorageKeys.privateKey,
+    ]);
   },
   saveTokens({ accessToken, refreshToken, expiresIn, tempToken, publicKey, privateKey }) {
     LocalStorage.set(sharedLocalStorageKeys.accessToken, accessToken);
     LocalStorage.set(sharedLocalStorageKeys.refreshToken, refreshToken);
-    LocalStorage.set(
-      sharedLocalStorageKeys.accessTokenExpiresAt,
-      Date.now() + (expiresIn - accessTokenThreshold) * 1000
-    );
+    const expiresAt = Date.now() + (expiresIn - accessTokenThreshold) * 1000;
+    LocalStorage.set(expiresAt);
+
+    idbStorage.setItem(sharedLocalStorageKeys.accessToken, accessToken);
+    idbStorage.setItem(sharedLocalStorageKeys.refreshToken, refreshToken);
+    idbStorage.setItem(sharedLocalStorageKeys.accessTokenExpiresAt, expiresAt);
+
     LocalStorage.set(sharedLocalStorageKeys.tempToken, tempToken);
+
     if (publicKey && privateKey) {
       LocalStorage.set(sharedLocalStorageKeys.publicKey, publicKey);
       LocalStorage.set(sharedLocalStorageKeys.privateKey, privateKey);
+    }
+
+    const savedPublicKey = LocalStorage.get(sharedLocalStorageKeys.publicKey);
+    const savedPrivateKey = LocalStorage.get(sharedLocalStorageKeys.privateKey);
+    if (savedPublicKey && savedPrivateKey) {
+      idbStorage.setItem(sharedLocalStorageKeys.publicKey, savedPublicKey);
+      idbStorage.setItem(sharedLocalStorageKeys.privateKey, savedPrivateKey);
     }
   },
 };
