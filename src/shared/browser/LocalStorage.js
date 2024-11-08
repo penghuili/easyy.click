@@ -62,7 +62,7 @@ export const LocalStorage = {
     LocalStorage.set(sharedLocalStorageKeys.accessToken, accessToken);
     LocalStorage.set(sharedLocalStorageKeys.refreshToken, refreshToken);
     const expiresAt = Date.now() + (expiresIn - accessTokenThreshold) * 1000;
-    LocalStorage.set(expiresAt);
+    LocalStorage.set(sharedLocalStorageKeys.accessTokenExpiresAt, expiresAt);
 
     idbStorage.setItem(sharedLocalStorageKeys.accessToken, accessToken);
     idbStorage.setItem(sharedLocalStorageKeys.refreshToken, refreshToken);

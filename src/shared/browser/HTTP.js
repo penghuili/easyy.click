@@ -120,8 +120,10 @@ export const HTTP = {
   },
 
   async handleError(error) {
-    const status = error.status;
-    const errorCode = await error.json();
+    const status = error?.status;
+    const textErrorCode = await error?.text?.()?.catch(() => null);
+    const jsonErrorCode = await error?.json?.()?.catch(() => null);
+    const errorCode = textErrorCode || jsonErrorCode;
     if (status === 401) {
       LocalStorage.resetTokens();
       logOutEffect();
@@ -144,7 +146,7 @@ export const HTTP = {
     const refreshToken = LocalStorage.get(sharedLocalStorageKeys.refreshToken);
     const expiresAt = LocalStorage.get(sharedLocalStorageKeys.accessTokenExpiresAt);
     if (!refreshToken || !accessToken || !expiresAt) {
-      throw { response: { status: 401 } };
+      throw { status: 401 };
     }
 
     if (expiresAt > Date.now() + validWindow) {

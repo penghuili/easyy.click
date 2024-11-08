@@ -129,14 +129,20 @@ export async function resendVerificationCodeEffect() {
 
 export async function verifyEmailEffect(code) {
   isVerifyingEmailCat.set(true);
-  const { data } = await verifyEmail(code);
+  const { data, error } = await verifyEmail(code);
 
   if (data) {
     userCat.set(data);
     setToastEffect('Your email is verified!');
     navigateTo('/');
   } else {
-    setToastEffect('Something is wrong', toastTypes.error);
+    if (error?.errorCode === httpErrorCodes.INVALID_CODE) {
+      authErrorCat.set(
+        'Your code is invalid anymore, please click the resend code below to get a new one.'
+      );
+    } else {
+      authErrorCat.set('Something is wrong, please click the resend code below to get a new one.');
+    }
   }
 
   isVerifyingEmailCat.set(false);

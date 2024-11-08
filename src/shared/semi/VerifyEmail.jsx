@@ -1,17 +1,19 @@
 import { Avatar, Button, Form, Typography } from '@douyinfe/semi-ui';
 import { RiMailLine, RiRestartLine } from '@remixicon/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { appName, logo } from '../browser/initShared.js';
 import { PageContent } from '../browser/PageContent.jsx';
 import {
+  authErrorCat,
   isResendingVerificationCodeCat,
   isVerifyingEmailCat,
   userCat,
 } from '../browser/store/sharedCats';
 import {
+  clearAuthErrorEffect,
   copyContactEmailEffect,
   resendVerificationCodeEffect,
   verifyEmailEffect,
@@ -26,12 +28,17 @@ export const VerifyEmail = fastMemo(() => {
   const user = useCat(userCat);
   const isVerifying = useCat(isVerifyingEmailCat);
   const isResending = useCat(isResendingVerificationCodeCat);
+  const errorMessage = useCat(authErrorCat);
 
   const [code, setCode] = useState('');
 
   function handleVerify() {
     verifyEmailEffect(code.trim());
   }
+
+  useEffect(() => {
+    return clearAuthErrorEffect;
+  }, []);
 
   return (
     <PageContent>
@@ -63,11 +70,13 @@ export const VerifyEmail = fastMemo(() => {
         >
           Verify
         </Button>
+
+        {!!errorMessage && <Typography.Text type="danger">{errorMessage}</Typography.Text>}
       </Form>
 
       <Flex gap="1rem" align="start" m="2rem 0 0">
         <Button
-          theme="borderless"
+          theme="outline"
           icon={<RiRestartLine />}
           onClick={resendVerificationCodeEffect}
           disabled={isResending || isVerifying}
@@ -77,7 +86,7 @@ export const VerifyEmail = fastMemo(() => {
 
         <LogoutLink />
 
-        <Button theme="borderless" icon={<RiMailLine />} onClick={copyContactEmailEffect}>
+        <Button theme="outline" icon={<RiMailLine />} onClick={copyContactEmailEffect}>
           Contact: {contactEmail}
         </Button>
 

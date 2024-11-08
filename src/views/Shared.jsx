@@ -1,7 +1,7 @@
 import { Avatar, Button, Typography } from '@douyinfe/semi-ui';
 import { RiCheckLine, RiHomeLine, RiInbox2Line } from '@remixicon/react';
 import React from 'react';
-import { BabyLink } from 'react-baby-router';
+import { replaceTo } from 'react-baby-router';
 
 import { logo } from '../shared/browser/initShared';
 import { PageContent } from '../shared/browser/PageContent.jsx';
@@ -31,15 +31,17 @@ export function Shared({ queryParams: { shared } }) {
             <Typography.Paragraph>Please share a link or note.</Typography.Paragraph>
           )}
 
-          <BabyLink to="/inbox">
-            <Button theme="solid" icon={<RiInbox2Line />}>
-              Check inbox
-            </Button>
-          </BabyLink>
+          <Button theme="solid" icon={<RiInbox2Line />} onClick={() => window.close()}>
+            Close window
+          </Button>
 
-          <BabyLink to="/">
-            <Button icon={<RiHomeLine />}>Back to home</Button>
-          </BabyLink>
+          <Button icon={<RiInbox2Line />} onClick={() => replaceTo('/inbox')}>
+            Check inbox
+          </Button>
+
+          <Button icon={<RiHomeLine />} onClick={() => replaceTo('/')}>
+            Back to home
+          </Button>
         </Flex>
       </ItemsWrapper>
     </PageContent>
