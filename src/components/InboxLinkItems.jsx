@@ -5,12 +5,14 @@ import {
   RiEdit2Line,
   RiExternalLinkLine,
   RiMore2Line,
+  RiShare2Line,
 } from '@remixicon/react';
 import React, { useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { canShare, share } from '../lib/share.js';
 import { useItemsDates } from '../lib/useItemsDates.js';
 import { formatDateTime } from '../shared/js/date.js';
 import { Flex } from '../shared/semi/Flex.jsx';
@@ -148,8 +150,6 @@ export const InboxLinkItems = fastMemo(() => {
                     Edit link
                   </Dropdown.Item>
 
-                  <Dropdown.Divider />
-
                   <Dropdown.Item
                     icon={<RiCornerUpRightLine />}
                     onClick={() => {
@@ -161,7 +161,19 @@ export const InboxLinkItems = fastMemo(() => {
                     Move to ...
                   </Dropdown.Item>
 
-                  <Dropdown.Divider />
+                  {canShare() && (
+                    <Dropdown.Item
+                      icon={<RiShare2Line />}
+                      onClick={() => {
+                        share({
+                          title: link.title,
+                          url: link.link,
+                        });
+                      }}
+                    >
+                      Share
+                    </Dropdown.Item>
+                  )}
 
                   <Dropdown.Item
                     type="danger"

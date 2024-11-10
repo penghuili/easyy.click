@@ -1,4 +1,5 @@
 import { truncateString } from '../extension/lib/truncateString';
+import { extractLinks } from './lib/extractLinks';
 import { generateLinkSortKey, generateNoteSortKey } from './lib/generateSortKey';
 import { eventEmitter, eventEmitterEvents } from './shared/browser/eventEmitter';
 import { idbStorage } from './shared/browser/indexDB';
@@ -6,7 +7,6 @@ import { sharedLocalStorageKeys } from './shared/browser/LocalStorage';
 import { accessTokenThreshold } from './shared/js/constants';
 import { encryptMessageAsymmetric, encryptMessageSymmetric } from './shared/js/encryption';
 import { generatePassword } from './shared/js/generatePassword';
-import { isValidUrl } from './shared/js/isValidUrl';
 import { inboxSpaceId } from './store/space/spaceCats';
 
 const api = 'https://api.peng37.com/easyy';
@@ -34,17 +34,19 @@ async function handleShare(request) {
 
   saveContent(title, content);
 
-  return Response.redirect(`/shared?shared=${isValidUrl(content) ? 'link' : 'text'}`, 303);
+  const link = extractLinks(content)[0];
+  return Response.redirect(`/shared?shared=${link ? 'link' : 'text'}`, 303);
 }
 
 async function saveContent(title, content) {
-  if (isValidUrl(content)) {
+  const link = extractLinks(content)[0];
+  if (link) {
     let linkTitle = title;
     if (!linkTitle) {
-      const { data: pageInfo } = await getPageInfo(content);
-      linkTitle = pageInfo?.title || new URL(content).hostname;
+      const { data: pageInfo } = await getPageInfo(link);
+      linkTitle = pageInfo?.title || new URL(link).hostname;
     }
-    await createLink({ title: linkTitle, link: content });
+    await createLink({ title: linkTitle, link });
   } else {
     await createNote({ title: title || truncateString(content, 25), text: content });
   }

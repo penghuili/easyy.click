@@ -5,12 +5,14 @@ import {
   RiEdit2Line,
   RiExternalLinkLine,
   RiMore2Line,
+  RiShare2Line,
 } from '@remixicon/react';
 import React, { useCallback } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { canShare, share } from '../lib/share.js';
 import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { Link } from '../shared/semi/Link.jsx';
@@ -87,19 +89,27 @@ export const NoteItemsItem = fastMemo(
                 </Dropdown.Item>
 
                 {hasOtherSpaces && (
-                  <>
-                    <Dropdown.Divider />
+                  <Dropdown.Item
+                    icon={<RiCornerUpRightLine />}
+                    onClick={onMove}
+                    disabled={isMoving}
+                  >
+                    Move to ...
+                  </Dropdown.Item>
+                )}
 
-                    <Dropdown.Item
-                      icon={<RiCornerUpRightLine />}
-                      onClick={onMove}
-                      disabled={isMoving}
-                    >
-                      Move to ...
-                    </Dropdown.Item>
-
-                    <Dropdown.Divider />
-                  </>
+                {canShare() && (
+                  <Dropdown.Item
+                    icon={<RiShare2Line />}
+                    onClick={() => {
+                      share({
+                        title: note.title,
+                        text: note.text,
+                      });
+                    }}
+                  >
+                    Share
+                  </Dropdown.Item>
                 )}
 
                 <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDelete}>

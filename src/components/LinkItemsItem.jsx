@@ -5,6 +5,7 @@ import {
   RiEdit2Line,
   RiExternalLinkLine,
   RiMore2Line,
+  RiShare2Line,
 } from '@remixicon/react';
 import React from 'react';
 import { navigateTo } from 'react-baby-router';
@@ -12,6 +13,7 @@ import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
 import { linksLayout } from '../lib/constants.js';
+import { canShare, share } from '../lib/share.js';
 import { Link } from '../shared/semi/Link.jsx';
 import { isMovingLinkCat } from '../store/link/linkCats.js';
 import { updateLinkEffect } from '../store/link/linkEffect.js';
@@ -96,19 +98,27 @@ export const LinkItemsItem = fastMemo(
                 </Dropdown.Item>
 
                 {hasOtherSpaces && (
-                  <>
-                    <Dropdown.Divider />
+                  <Dropdown.Item
+                    icon={<RiCornerUpRightLine />}
+                    onClick={onMove}
+                    disabled={isMoving}
+                  >
+                    Move to ...
+                  </Dropdown.Item>
+                )}
 
-                    <Dropdown.Item
-                      icon={<RiCornerUpRightLine />}
-                      onClick={onMove}
-                      disabled={isMoving}
-                    >
-                      Move to ...
-                    </Dropdown.Item>
-
-                    <Dropdown.Divider />
-                  </>
+                {canShare() && (
+                  <Dropdown.Item
+                    icon={<RiShare2Line />}
+                    onClick={() => {
+                      share({
+                        title: link.title,
+                        url: link.link,
+                      });
+                    }}
+                  >
+                    Share
+                  </Dropdown.Item>
                 )}
 
                 <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDelete}>

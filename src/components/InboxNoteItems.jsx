@@ -5,12 +5,14 @@ import {
   RiEdit2Line,
   RiExternalLinkLine,
   RiMore2Line,
+  RiShare2Line,
 } from '@remixicon/react';
 import React, { useMemo, useState } from 'react';
 import { navigateTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { canShare, share } from '../lib/share.js';
 import { useItemsDates } from '../lib/useItemsDates.js';
 import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
@@ -145,8 +147,6 @@ export const InboxNoteItems = fastMemo(() => {
                     Edit note
                   </Dropdown.Item>
 
-                  <Dropdown.Divider />
-
                   <Dropdown.Item
                     icon={<RiCornerUpRightLine />}
                     onClick={() => {
@@ -158,7 +158,19 @@ export const InboxNoteItems = fastMemo(() => {
                     Move to ...
                   </Dropdown.Item>
 
-                  <Dropdown.Divider />
+                  {canShare() && (
+                    <Dropdown.Item
+                      icon={<RiShare2Line />}
+                      onClick={() => {
+                        share({
+                          title: note.title,
+                          text: note.text,
+                        });
+                      }}
+                    >
+                      Share
+                    </Dropdown.Item>
+                  )}
 
                   <Dropdown.Item
                     type="danger"
