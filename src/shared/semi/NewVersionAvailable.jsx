@@ -15,7 +15,7 @@ export function NewVersionAvailable() {
       try {
         const response = await fetch(`${location.origin}/version.json`);
         const json = await response.json();
-        if (json?.version && +json.version - +import.meta.env.VITE_VERSION > 500) {
+        if (json?.version && json.version > import.meta.env.VITE_VERSION) {
           setNewVersion(json.version);
           setChanges(json.changes);
           setLink(json.link);

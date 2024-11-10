@@ -172,6 +172,8 @@ export const InboxNoteItems = fastMemo(() => {
                     </Dropdown.Item>
                   )}
 
+                  <Dropdown.Divider />
+
                   <Dropdown.Item
                     type="danger"
                     icon={<RiDeleteBinLine />}

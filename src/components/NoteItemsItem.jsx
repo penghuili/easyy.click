@@ -112,6 +112,8 @@ export const NoteItemsItem = fastMemo(
                   </Dropdown.Item>
                 )}
 
+                <Dropdown.Divider />
+
                 <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDelete}>
                   Delete note
                 </Dropdown.Item>

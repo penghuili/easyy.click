@@ -2,6 +2,16 @@ const fs = require('fs');
 const path = require('path');
 
 const env = process.argv[2];
+const timestamp = new Date()
+  .toISOString()
+  .replace(/[^0-9]/g, '')
+  .slice(0, 14);
+const version = timestamp.slice(2, 12);
+
+updateOrAddEnvVariable('.env', 'TIMESTAMP', timestamp);
+updateOrAddEnvVariable('.env', 'VERSION', version);
+updateOrAddEnvVariable('.env.production', 'TIMESTAMP', timestamp);
+updateOrAddEnvVariable('.env.production', 'VITE_VERSION', version);
 
 updateOrAddEnvVariable('.env', 'DEPLOY_ENV', env);
 updateOrAddEnvVariable(

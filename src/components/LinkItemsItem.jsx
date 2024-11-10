@@ -121,6 +121,8 @@ export const LinkItemsItem = fastMemo(
                   </Dropdown.Item>
                 )}
 
+                <Dropdown.Divider />
+
                 <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDelete}>
                   Delete link
                 </Dropdown.Item>
