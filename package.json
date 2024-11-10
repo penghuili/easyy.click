@@ -15,6 +15,7 @@
     "jwt-decode": "4.0.0",
     "lodash.uniqby": "4.7.0",
     "openpgp": "5.11.2",
+    "parse-html-bookmarks": "1.0.1",
     "qrcode.react": "3.1.0",
     "ramda": "0.30.1",
     "react": "18.3.1",

@@ -11,9 +11,9 @@ import { settingsCat } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
 import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
-import { isLoadingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
+import { isLoadingInboxLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
 import { fetchInboxLinksEffect } from '../store/link/linkEffect.js';
-import { isLoadingNotesCat, isMovingNoteCat } from '../store/note/noteCats.js';
+import { isLoadingInboxNotesCat, isMovingNoteCat } from '../store/note/noteCats.js';
 import { fetchInboxNotesEffect } from '../store/note/noteEffect.js';
 
 async function load() {
@@ -72,8 +72,8 @@ export const Inbox = fastMemo(() => {
 });
 
 const Header = fastMemo(() => {
-  const isLoadingNotes = useCat(isLoadingNotesCat);
-  const isLoadingLinks = useCat(isLoadingLinksCat);
+  const isLoadingNotes = useCat(isLoadingInboxNotesCat);
+  const isLoadingLinks = useCat(isLoadingInboxLinksCat);
   const isLoadingGroups = useCat(isLoadingGroupsCat);
   const isMovingLink = useCat(isMovingLinkCat);
   const isMovingNote = useCat(isMovingNoteCat);
