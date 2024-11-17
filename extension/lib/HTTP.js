@@ -114,8 +114,10 @@ export const HTTP = {
   },
 
   async handleError(error) {
-    const status = error.status;
-    const errorCode = await error.json();
+    const status = error?.status;
+    const textErrorCode = await error?.text?.()?.catch(() => null);
+    const jsonErrorCode = await error?.json?.()?.catch(() => null);
+    const errorCode = textErrorCode || jsonErrorCode;
     if (status === 401) {
       await extStorage.resetTokens();
     }

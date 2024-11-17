@@ -41,11 +41,29 @@ export async function signIn(email, password) {
       signinChallenge: challenge,
     });
 
-    extStorage.saveTokens({ ...tokens, publicKey, privateKey });
+    await extStorage.saveTokens({ ...tokens, publicKey, privateKey });
 
     return { data: { id: tokens.id, tempToken: tokens.tempToken }, error: null };
   } catch (error) {
     console.log(error);
+    return { data: null, error };
+  }
+}
+
+export async function verify2FA(code, tempToken) {
+  try {
+    const { id, accessToken, refreshToken, expiresIn } = await HTTP.publicPost(
+      `/v1/user/sign-in/2fa`,
+      {
+        tempToken,
+        code,
+      }
+    );
+
+    await extStorage.saveTokens({ accessToken, refreshToken, expiresIn });
+
+    return { data: { id }, error: null };
+  } catch (error) {
     return { data: null, error };
   }
 }

@@ -8,8 +8,15 @@ import { Flex } from '../src/shared/semi/Flex';
 import { Link } from '../src/shared/semi/Link';
 import { PageLoading } from '../src/shared/semi/PageLoading';
 import { bgActions } from './lib/constants';
-import { authErrorCat, isInitingCat, isLoggedInCat, isSigningInCat } from './store/auth/authCats';
-import { initEffect, logoutEffect, signInEffect } from './store/auth/authEffects';
+import {
+  authErrorCat,
+  isInitingCat,
+  isLoggedInCat,
+  isSigningInCat,
+  isVerifying2FACat,
+  twoFATempCodeCat,
+} from './store/auth/authCats';
+import { initEffect, logoutEffect, signInEffect, verify2FAEffect } from './store/auth/authEffects';
 import { isCreateLinkSuccessfulCat, isCreatingLinkCat } from './store/link/linkCats';
 
 async function getCurrentTab() {
@@ -22,6 +29,8 @@ function Popup() {
   const isIniting = useCat(isInitingCat);
   const isSigningIn = useCat(isSigningInCat);
   const errorMessage = useCat(authErrorCat);
+  const twoFATempCode = useCat(twoFATempCodeCat);
+  const isVerifying2FA = useCat(isVerifying2FACat);
   const isLoggedIn = useCat(isLoggedInCat);
   const isCreatingLink = useCat(isCreatingLinkCat);
   const isCreationgSuccessful = useCat(isCreateLinkSuccessfulCat);
@@ -30,10 +39,12 @@ function Popup() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [twoFACode, setTwoFACode] = useState('');
 
   const [tabTitle, setTabTitle] = useState('');
 
   const isDisabled = !email || !password || isSigningIn;
+  const isDisabled2FA = !twoFACode || isVerifying2FA;
 
   function handleSignin() {
     if (isDisabled) {
@@ -41,6 +52,14 @@ function Popup() {
     }
 
     signInEffect(email, password);
+  }
+
+  function handleVerifyCode() {
+    if (isDisabled2FA) {
+      return;
+    }
+
+    verify2FAEffect(twoFACode);
   }
 
   function handleCreateLink() {
@@ -78,6 +97,42 @@ function Popup() {
     }
 
     if (!isLoggedIn) {
+      if (twoFATempCode) {
+        return (
+          <>
+            <Typography.Paragraph>Enter the code from your authenticator app</Typography.Paragraph>
+
+            <Form onSubmit={handleVerifyCode} style={{ marginTop: '1rem' }}>
+              <Form.Input
+                type="text"
+                field="code"
+                label="Code"
+                placeholder="Code"
+                value={twoFACode}
+                onChange={setTwoFACode}
+              />
+
+              <Flex m="1rem 0 0">
+                <Button htmlType="submit" theme="solid" disabled={isDisabled2FA}>
+                  Verify
+                </Button>
+
+                {!!errorMessage && <Typography.Text type="danger">{errorMessage}</Typography.Text>}
+
+                <Button
+                  onClick={() => {
+                    twoFATempCodeCat.set('');
+                  }}
+                  style={{ marginTop: '1rem' }}
+                >
+                  Cancel
+                </Button>
+              </Flex>
+            </Form>
+          </>
+        );
+      }
+
       return (
         <>
           <Image

@@ -4,6 +4,21 @@ export const apps = {
     color: '#E64C2E',
     api: '100rejections',
   },
+  ['easyy.click']: {
+    name: 'easyy.click',
+    color: '#006400',
+    api: 'easyyclick',
+  },
+  moon: {
+    name: 'Where is moon?',
+    color: '#FF7737',
+    api: 'moon',
+  },
+  ['notenote.cc']: {
+    name: 'notenote.cc',
+    color: '#5474EC',
+    api: 'simplestcam',
+  },
   Puppeteer: {
     name: 'Puppeteer',
     color: '#CFB53B',
@@ -14,14 +29,9 @@ export const apps = {
     color: '#FF7737',
     api: 'lifereminder',
   },
-  ['notenote.cc']: {
-    name: 'notenote.cc',
-    color: '#5474EC',
-    api: 'simplestcam',
-  },
-  ['easyy.click']: {
-    name: 'easyy.click',
-    color: '#006400',
-    api: 'easyyclick',
+  soundice: {
+    name: 'Soundice',
+    color: '#FF7737',
+    api: 'soundice',
   },
 };
