@@ -78,17 +78,17 @@ export function AlsoBuilt({ showBeer }) {
             }
             theme="outline"
           >
-            Soundice (Free)
+            Soundice
           </Button>
         </a>
       )}
 
       {appName !== apps.moon.name && (
-        <a href="https://moon.peng37.com" target="_blank">
+        <a href="https://moonfinder.live" target="_blank">
           <Button
             icon={
               <Image
-                src="https://moon.peng37.com/icons/icon-192.png"
+                src="https://moonfinder.live/icons/icon-192.png"
                 width={24}
                 height={24}
                 preview={false}
@@ -96,7 +96,7 @@ export function AlsoBuilt({ showBeer }) {
             }
             theme="outline"
           >
-            Where is moon? (Free)
+            moon finder
           </Button>
         </a>
       )}

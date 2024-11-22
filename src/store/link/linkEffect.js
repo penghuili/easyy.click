@@ -278,10 +278,8 @@ export function updateLinksState(data, type, spaceId) {
 
   let newItems = linksInState;
   if (type === 'update') {
-    newItems = orderByPosition(
-      newItems.map(item => (item.sortKey === data.sortKey ? data : item)),
-      true
-    );
+    const updated = newItems.map(item => (item.sortKey === data.sortKey ? data : item));
+    newItems = spaceId === inboxSpaceId ? updated : orderByPosition(updated, true);
   } else if (type === 'delete') {
     newItems = newItems.filter(item => item.sortKey !== data.sortKey);
   } else if (type === 'delete-bulk') {
