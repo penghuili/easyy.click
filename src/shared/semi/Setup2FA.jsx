@@ -1,9 +1,9 @@
 import { Button, Input, Typography } from '@douyinfe/semi-ui';
 import { QRCodeSVG } from 'qrcode.react';
 import React, { useState } from 'react';
-import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { fastMemo } from '../browser/fastMemo';
 import {
   isDisabling2FACat,
   isEnabling2FACat,

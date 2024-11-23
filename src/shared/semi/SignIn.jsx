@@ -1,8 +1,8 @@
 import { Button, Form, Typography } from '@douyinfe/semi-ui';
 import React, { useEffect, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { fastMemo } from '../browser/fastMemo';
 import { resetPassword } from '../browser/initShared.js';
 import { PageContent } from '../browser/PageContent.jsx';
 import { authErrorCat, isSigningInCat } from '../browser/store/sharedCats';

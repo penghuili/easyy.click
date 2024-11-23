@@ -6,8 +6,8 @@ import {
 } from '@remixicon/react';
 import { format } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from '../browser/fastMemo';
 import styles from './AccountIcon.module.css';
 
 const iconSize = 25;

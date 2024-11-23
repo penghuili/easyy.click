@@ -2,10 +2,10 @@ import './ReorderGroupItems.css';
 
 import { RiDraggable } from '@remixicon/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 
 import { addItem, calculateItemPosition, moveItem } from '../js/position';
 import { isMobileWidth } from './device';
+import { fastMemo } from './fastMemo';
 
 const ITEMS_PER_ROW = isMobileWidth() ? 2 : 3; // Number of items per row
 const ELEMENT_HEIGHT = 48;

@@ -1,8 +1,8 @@
 import { Button, Form, Typography } from '@douyinfe/semi-ui';
 import React, { useEffect, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { fastMemo } from '../browser/fastMemo';
 import { PageContent } from '../browser/PageContent.jsx';
 import { authErrorCat, isVerifying2FACat } from '../browser/store/sharedCats';
 import { clearAuthErrorEffect, verify2FAEffect } from '../browser/store/sharedEffects';

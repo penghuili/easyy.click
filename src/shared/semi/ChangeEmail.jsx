@@ -1,8 +1,8 @@
 import { Button, Form, Typography } from '@douyinfe/semi-ui';
 import React, { useState } from 'react';
-import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { fastMemo } from '../browser/fastMemo';
 import { PageContent } from '../browser/PageContent.jsx';
 import { isChangingEmailCat, userCat } from '../browser/store/sharedCats.js';
 import { changeEmailEffect, setToastEffect } from '../browser/store/sharedEffects.js';

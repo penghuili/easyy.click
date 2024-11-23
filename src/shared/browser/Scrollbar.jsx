@@ -1,7 +1,8 @@
 import './Scrollbar.css';
 
 import { useEffect } from 'react';
-import fastMemo from 'react-fast-memo';
+
+import { fastMemo } from './fastMemo';
 
 export const Scrollbar = fastMemo(({ thumbColor, trackColor }) => {
   useEffect(() => {

@@ -1,8 +1,8 @@
 import './PageContent.css';
 
 import React, { useEffect, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from './fastMemo';
 import { getScrollbarWidth } from './getScrollbarWidth';
 
 export const PageContent = fastMemo(({ children, paddingBottom = '5rem' }) => {

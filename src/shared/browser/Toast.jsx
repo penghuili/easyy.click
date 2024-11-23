@@ -28,6 +28,14 @@ export const toastCat = createCat({
   duration: defaultDuration,
 });
 
+export function setToastEffect(message, type) {
+  toastCat.set({
+    ...toastCat.get(),
+    message,
+    type: type || toastTypes.success,
+  });
+}
+
 export const Toast = () => {
   const toast = useCat(toastCat);
 

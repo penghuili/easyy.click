@@ -1,7 +1,7 @@
 import { Typography } from '@douyinfe/semi-ui';
 import React, { useEffect, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from '../browser/fastMemo';
 import { PageEmpty } from './PageEmpty.jsx';
 import { PageLoading } from './PageLoading.jsx';
 

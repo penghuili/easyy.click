@@ -2,9 +2,9 @@ import { Button } from '@douyinfe/semi-ui';
 import { RiDeviceLine, RiLockPasswordLine, RiLockStarLine, RiMailLine } from '@remixicon/react';
 import React from 'react';
 import { BabyLink } from 'react-baby-router';
-import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { fastMemo } from '../browser/fastMemo';
 import { PageContent } from '../browser/PageContent.jsx';
 import { isDeletingAccountCat, isLoggingOutFromAllDevicesCat } from '../browser/store/sharedCats';
 import { logOutFromAllDevicesEffect } from '../browser/store/sharedEffects.js';

@@ -1,6 +1,6 @@
 import React from 'react';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from '../browser/fastMemo';
 import { PageContent } from '../browser/PageContent.jsx';
 import { DarkMode } from './DarkMode.jsx';
 import { PageHeader } from './PageHeader.jsx';

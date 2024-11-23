@@ -1,6 +1,7 @@
 import { Button } from '@douyinfe/semi-ui';
 import React, { forwardRef } from 'react';
-import fastMemo from 'react-fast-memo';
+
+import { fastMemo } from '../browser/fastMemo';
 
 export const IconButton = fastMemo(
   forwardRef(({ icon, size = 32, theme, type, round, disabled, onClick, style = {} }, ref) => {

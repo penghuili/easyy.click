@@ -1,6 +1,6 @@
 import React from 'react';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from '../browser/fastMemo';
 import { Flex } from './Flex.jsx';
 
 export const PageEmpty = fastMemo(({ children }) => {

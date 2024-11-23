@@ -1,8 +1,8 @@
 import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useState } from 'react';
 import { navigateTo } from 'react-baby-router';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from '../browser/fastMemo';
 import { PageContent } from '../browser/PageContent.jsx';
 import { setToastEffect } from '../browser/store/sharedEffects.js';
 import { resetPasswordSave, resetPasswordTrigger } from '../browser/store/sharedNetwork.js';

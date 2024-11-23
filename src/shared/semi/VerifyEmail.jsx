@@ -1,9 +1,9 @@
 import { Avatar, Button, Form, Typography } from '@douyinfe/semi-ui';
 import { RiMailLine, RiRestartLine } from '@remixicon/react';
 import React, { useEffect, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { fastMemo } from '../browser/fastMemo';
 import { appName, logo } from '../browser/initShared.js';
 import { PageContent } from '../browser/PageContent.jsx';
 import {

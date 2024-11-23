@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import fastMemo from 'react-fast-memo';
 
 import styles from './CountDown.module.css';
+import { fastMemo } from './fastMemo';
 
 export const Countdown = fastMemo(({ targetDate }) => {
   const calculateTimeLeft = useCallback(() => {

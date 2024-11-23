@@ -1,8 +1,8 @@
 import { Modal, Typography } from '@douyinfe/semi-ui';
 import React from 'react';
-import fastMemo from 'react-fast-memo';
 
 import { isMobileWidth } from '../browser/device';
+import { fastMemo } from '../browser/fastMemo';
 
 export const Confirm = fastMemo(({ open, onOpenChange, message, onConfirm, isSaving }) => {
   const handleClose = () => {

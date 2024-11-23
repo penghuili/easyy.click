@@ -1,8 +1,8 @@
 import { Button, Form } from '@douyinfe/semi-ui';
 import React, { useState } from 'react';
-import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { fastMemo } from '../browser/fastMemo';
 import { PageContent } from '../browser/PageContent.jsx';
 import { isChangingPasswordCat } from '../browser/store/sharedCats';
 import { changePasswordEffect } from '../browser/store/sharedEffects';

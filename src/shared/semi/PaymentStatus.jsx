@@ -1,8 +1,8 @@
 import { Typography } from '@douyinfe/semi-ui';
 import { differenceInCalendarDays } from 'date-fns';
 import React from 'react';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from '../browser/fastMemo';
 import { isTesting } from '../browser/isTesting.js';
 import { useExpiresAt, useFreeTrialsUntil } from '../browser/store/sharedCats.js';
 import { formatDate } from '../js/date';

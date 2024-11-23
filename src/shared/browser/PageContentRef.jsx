@@ -1,5 +1,6 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
-import fastMemo from 'react-fast-memo';
+
+import { fastMemo } from './fastMemo';
 
 export const PageContentRef = fastMemo(
   forwardRef((_, ref) => {

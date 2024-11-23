@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { navigateTo } from 'react-baby-router';
-import fastMemo from 'react-fast-memo';
 
+import { fastMemo } from '../browser/fastMemo';
 import { Link } from './Link.jsx';
 
 export const RouteLink = fastMemo(({ to, children, m }) => {
