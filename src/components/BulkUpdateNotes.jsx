@@ -1,9 +1,11 @@
 import { Button } from '@douyinfe/semi-ui';
-import { RiCornerUpRightLine, RiDeleteBinLine } from '@remixicon/react';
+import { RiCornerUpRightLine, RiDeleteBinLine, RiFileCopyLine } from '@remixicon/react';
 import React, { useMemo, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
+import { setToastEffect } from '../shared/browser/Toast.jsx';
 import { Flex } from '../shared/semi/Flex.jsx';
 import { isDeletingNotesCat, isMovingNoteCat } from '../store/note/noteCats.js';
 import { deleteNotesEffect, moveNotesEffect } from '../store/note/noteEffect.js';
@@ -40,7 +42,20 @@ export const BulkUpdateNotes = fastMemo(({ spaceId, notesObj, onReset, showCance
           icon={<RiCornerUpRightLine />}
           disabled={!selectedCount}
         >
-          Move notes
+          Move
+        </Button>
+
+        <Button
+          onClick={async () => {
+            const text = notesToMove.map(note => `${note.title}\n${note.text}`).join('\n\n');
+            await copyToClipboard(text);
+            setToastEffect('Copied!');
+            onReset();
+          }}
+          icon={<RiFileCopyLine />}
+          disabled={!selectedCount}
+        >
+          Copy
         </Button>
 
         <Button
@@ -49,7 +64,7 @@ export const BulkUpdateNotes = fastMemo(({ spaceId, notesObj, onReset, showCance
           icon={<RiDeleteBinLine />}
           disabled={!selectedCount}
         >
-          Delete notes
+          Delete
         </Button>
 
         {showCancel && (

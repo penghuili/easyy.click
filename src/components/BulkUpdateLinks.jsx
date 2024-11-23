@@ -1,9 +1,11 @@
 import { Button } from '@douyinfe/semi-ui';
-import { RiCornerUpRightLine, RiDeleteBinLine } from '@remixicon/react';
+import { RiCornerUpRightLine, RiDeleteBinLine, RiFileCopyLine } from '@remixicon/react';
 import React, { useMemo, useState } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
+import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
+import { setToastEffect } from '../shared/browser/Toast.jsx';
 import { Flex } from '../shared/semi/Flex.jsx';
 import { isDeletingLinksCat, isMovingLinkCat } from '../store/link/linkCats.js';
 import { deleteLinksEffect, moveLinksEffect } from '../store/link/linkEffect.js';
@@ -40,7 +42,20 @@ export const BulkUpdateLinks = fastMemo(({ spaceId, linksObj, onReset, showCance
           icon={<RiCornerUpRightLine />}
           disabled={!selectedCount}
         >
-          Move links
+          Move
+        </Button>
+
+        <Button
+          onClick={async () => {
+            const text = linksToMove.map(link => `${link.title}\n${link.link}`).join('\n\n');
+            await copyToClipboard(text);
+            setToastEffect('Copied!');
+            onReset();
+          }}
+          icon={<RiFileCopyLine />}
+          disabled={!selectedCount}
+        >
+          Copy
         </Button>
 
         <Button
@@ -49,7 +64,7 @@ export const BulkUpdateLinks = fastMemo(({ spaceId, linksObj, onReset, showCance
           icon={<RiDeleteBinLine />}
           disabled={!selectedCount}
         >
-          Delete links
+          Delete
         </Button>
 
         {showCancel && (

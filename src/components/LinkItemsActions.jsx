@@ -1,6 +1,7 @@
 import { Button, Dropdown } from '@douyinfe/semi-ui';
 import {
   RiAddLine,
+  RiCheckboxMultipleLine,
   RiDeleteBinLine,
   RiDragMoveLine,
   RiExportLine,
@@ -142,12 +143,8 @@ export const LinkItemsActions = fastMemo(({ spaceId, onBulk, onPublicSpace, onDe
 
                 <Dropdown.Divider />
 
-                <Dropdown.Item icon={<RiDragMoveLine />} onClick={onBulk}>
-                  Move multiple links
-                </Dropdown.Item>
-
-                <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onBulk}>
-                  Delete multiple links
+                <Dropdown.Item icon={<RiCheckboxMultipleLine />} onClick={onBulk}>
+                  Bulk actions
                 </Dropdown.Item>
 
                 <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDeleteAll}>

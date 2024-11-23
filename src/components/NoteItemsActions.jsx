@@ -1,6 +1,7 @@
 import { Button, Dropdown } from '@douyinfe/semi-ui';
 import {
   RiAddLine,
+  RiCheckboxMultipleLine,
   RiDeleteBinLine,
   RiDragMoveLine,
   RiExportLine,
@@ -51,12 +52,8 @@ export const NoteItemsActions = fastMemo(({ spaceId, onBulk, onDeleteAll }) => {
 
               <Dropdown.Divider />
 
-              <Dropdown.Item icon={<RiDragMoveLine />} onClick={onBulk}>
-                Move multiple notes
-              </Dropdown.Item>
-
-              <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onBulk}>
-                Delete multiple notes
+              <Dropdown.Item icon={<RiCheckboxMultipleLine />} onClick={onBulk}>
+                Bulk actions
               </Dropdown.Item>
 
               <Dropdown.Item type="danger" icon={<RiDeleteBinLine />} onClick={onDeleteAll}>
