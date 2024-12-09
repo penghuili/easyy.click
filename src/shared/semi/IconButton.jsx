@@ -4,9 +4,10 @@ import React, { forwardRef } from 'react';
 import { fastMemo } from '../browser/fastMemo';
 
 export const IconButton = fastMemo(
-  forwardRef(({ icon, size = 32, theme, type, round, disabled, onClick, style = {} }, ref) => {
+  forwardRef(({ id, icon, size = 32, theme, type, round, disabled, onClick, style = {} }, ref) => {
     return (
       <Button
+        id={id}
         ref={ref}
         icon={icon}
         theme={theme}

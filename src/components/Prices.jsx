@@ -74,6 +74,8 @@ export const Prices = React.memo(() => {
               }
               shine
             />
+
+            <Typography.Paragraph type="warning">$25 after 2025-01-01</Typography.Paragraph>
           </Flex>
         </Card>
       </Flex>

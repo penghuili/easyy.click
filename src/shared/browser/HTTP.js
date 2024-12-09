@@ -2,13 +2,14 @@ import { apps } from '../js/apps';
 import { eventEmitter, eventEmitterEvents } from './eventEmitter';
 import { appName } from './initShared';
 import { LocalStorage, sharedLocalStorageKeys } from './LocalStorage';
-import { logOutEffect, setToastEffect } from './store/sharedEffects';
-import { toastTypes } from './Toast.jsx';
+import { logOutEffect } from './store/logoutEffect.js';
+import { setToastEffect, toastTypes } from './Toast.jsx';
 
 const serverToUrl = {
-  [apps['remiind.cc'].name]: import.meta.env.VITE_REMIINDCC_API_URL,
-  [apps['notenote.cc'].name]: import.meta.env.VITE_SIMPLESTCAM_API_URL,
   [apps['easyy.click'].name]: import.meta.env.VITE_EASYY_API_URL,
+  [apps['mimiastudio.com'].name]: import.meta.env.VITE_MIMIASTUDIO_API_URL,
+  [apps['notenote.cc'].name]: import.meta.env.VITE_SIMPLESTCAM_API_URL,
+  [apps['remiind.cc'].name]: import.meta.env.VITE_REMIINDCC_API_URL,
 };
 
 function getFullUrl(server, path) {

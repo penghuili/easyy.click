@@ -15,6 +15,7 @@ const aligns = {
 };
 
 export function Flex({
+  id,
   children,
   style,
   direction = 'column',
@@ -28,6 +29,7 @@ export function Flex({
 }) {
   return (
     <div
+      id={id}
       style={{
         display: 'flex',
         flexDirection: direction === 'row' ? 'row' : 'column',

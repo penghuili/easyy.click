@@ -9,8 +9,13 @@ export const apps = {
     color: '#006400',
     api: 'easyyclick',
   },
+  ['mimiastudio.com']: {
+    name: 'mimiastudio.com',
+    color: '#FF7737',
+    api: 'mimiastudio',
+  },
   moon: {
-    name: 'Where is moon?',
+    name: 'moon finder',
     color: '#FF7737',
     api: 'moon',
   },
