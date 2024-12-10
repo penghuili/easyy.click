@@ -15,6 +15,9 @@ import { isFreeTryingCat } from '../store/pay/payCats.js';
 import { freeTrialEffect } from '../store/pay/payEffects.js';
 
 export const Upgrade = fastMemo(() => {
+  const freeTrialUntil = useFreeTrialsUntil();
+  const isTrying = useCat(isFreeTryingCat);
+
   return (
     <PageContent>
       <Header />
@@ -23,9 +26,21 @@ export const Upgrade = fastMemo(() => {
 
       <FreeTrialStatus />
 
+      {!freeTrialUntil && (
+        <Flex align="center" m="3rem 0">
+          <Button theme="solid" size="large" onClick={freeTrialEffect} disabled={isTrying}>
+            Try 14 days for free
+          </Button>
+        </Flex>
+      )}
+
       <Prices />
 
-      <UpgradeAction />
+      {!!freeTrialUntil && (
+        <Typography.Paragraph style={{ marginTop: '3rem', textAlign: 'center' }} strong>
+          Refresh the page after payment.
+        </Typography.Paragraph>
+      )}
     </PageContent>
   );
 });
@@ -85,29 +100,4 @@ export const FreeTrialStatus = fastMemo(() => {
   }
 
   return null;
-});
-
-const UpgradeAction = fastMemo(() => {
-  const isTrying = useCat(isFreeTryingCat);
-  const freeTrialUntil = useFreeTrialsUntil();
-
-  const hasFreeTrial = !!freeTrialUntil;
-
-  return (
-    <>
-      {!hasFreeTrial && (
-        <Flex align="center" m="3rem 0 0">
-          <Button theme="solid" size="large" onClick={freeTrialEffect} disabled={isTrying}>
-            Try 14 days for free
-          </Button>
-        </Flex>
-      )}
-
-      {hasFreeTrial && (
-        <Typography.Paragraph style={{ marginTop: '1rem', textAlign: 'center' }} strong>
-          Refresh the page after payment.
-        </Typography.Paragraph>
-      )}
-    </>
-  );
 });
