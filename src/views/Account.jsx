@@ -5,7 +5,7 @@ import {
   RiShieldCheckLine,
   RiVipCrown2Line,
 } from '@remixicon/react';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { BabyLink } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -83,27 +83,35 @@ const AccountInfo = fastMemo(() => {
   const freeTrialUntil = useFreeTrialsUntil();
   const expiresAt = useExpiresAt();
 
-  const data = useMemo(() => {
-    return [
-      { key: 'Email', value: account.email },
-      { key: 'User Id', value: <Typography.Text copyable>{account.id}</Typography.Text> },
-      { key: 'Created at', value: formatDateTime(account.createdAt) },
-      ...(freeTrialUntil
-        ? [
-            {
-              key: 'Payment',
-              value: expiresAt
-                ? 'Lifetime access'
-                : `Free trial until ${formatDate(freeTrialUntil)}`,
-            },
-          ]
-        : []),
-    ];
-  }, [account.createdAt, account.email, account.id, expiresAt, freeTrialUntil]);
-
   if (!account?.id) {
     return null;
   }
+
+  function getExpiresAt() {
+    if (expiresAt === 'forever') {
+      return 'Life time access';
+    }
+
+    if (expiresAt) {
+      return `Renew on ${formatDate(expiresAt)}`;
+    }
+
+    return `Free trial until ${formatDate(freeTrialUntil)}`;
+  }
+
+  const data = [
+    { key: 'Email', value: account.email },
+    { key: 'User Id', value: <Typography.Text copyable>{account.id}</Typography.Text> },
+    { key: 'Created at', value: formatDateTime(account.createdAt) },
+    ...(freeTrialUntil
+      ? [
+          {
+            key: 'Payment',
+            value: getExpiresAt(),
+          },
+        ]
+      : []),
+  ];
 
   return <Descriptions data={data} style={{ marginBottom: '1rem' }} />;
 });
