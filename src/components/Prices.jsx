@@ -64,7 +64,7 @@ export const Prices = React.memo(() => {
           style={{ width: isMobile ? '100%' : '30%', alignSelf: 'stretch', textAlign: 'center' }}
         >
           <Flex gap="1rem">
-            <Typography.Paragraph>🍱 $15, once</Typography.Paragraph>
+            <Typography.Paragraph>🍱 $25, once</Typography.Paragraph>
 
             <PayNowLink
               link={
@@ -74,8 +74,6 @@ export const Prices = React.memo(() => {
               }
               shine
             />
-
-            <Typography.Paragraph type="warning">$25 after 2025-01-01</Typography.Paragraph>
           </Flex>
         </Card>
       </Flex>
