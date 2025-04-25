@@ -9,6 +9,7 @@
     "date-fns": "4.1.0",
     "date-fns-tz": "3.2.0",
     "file-saver": "2.0.5",
+    "fuse.js": "7.1.0",
     "idb-keyval": "6.2.1",
     "inobounce": "0.2.1",
     "jwt-decode": "4.0.0",
