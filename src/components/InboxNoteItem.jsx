@@ -44,6 +44,10 @@ export const InboxNoteItem = fastMemo(({ note }) => {
   const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
   const [showMoveNoteModal, setShowMoveNoteModal] = useState(false);
 
+  if (!note) {
+    return null;
+  }
+
   return (
     <>
       <Typography.Text

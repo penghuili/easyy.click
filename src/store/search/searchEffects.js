@@ -2,6 +2,7 @@ import { useCat } from 'usecat';
 
 import { localStorageKeys } from '../../lib/constants';
 import { LocalStorage } from '../../shared/browser/LocalStorage';
+import { arrayToObject } from '../../shared/js/object';
 import { linksCat } from '../link/linkCats';
 import { fetchInboxLinksEffect, forceFetchLinksEffect } from '../link/linkEffect';
 import { notesCat } from '../note/noteCats';
@@ -28,11 +29,20 @@ export function useSearchContent() {
   const links = useCat(linksCat);
   const notes = useCat(notesCat);
 
-  const spaceIds = [defaultSpaceId, ...(spaces || []).map(space => space.sortKey), inboxSpaceId];
+  const allSpaces = [
+    { sortKey: defaultSpaceId, title: 'Personal' },
+    ...(spaces || []),
+    { sortKey: inboxSpaceId, title: 'Inbox' },
+  ];
+  const spaceIds = allSpaces.map(space => space.sortKey);
   const allLinks = spaceIds.reduce((acc, spaceId) => [...acc, ...(links[spaceId] || [])], []);
   const allNotes = spaceIds.reduce((acc, spaceId) => [...acc, ...(notes[spaceId] || [])], []);
 
-  return { links: allLinks, notes: allNotes };
+  return {
+    links: allLinks,
+    notes: allNotes,
+    spacesObj: arrayToObject(allSpaces, 'sortKey'),
+  };
 }
 
 function fetchOneSpace(spaceId) {

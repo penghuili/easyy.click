@@ -34,6 +34,10 @@ export const InboxLinkItem = fastMemo(({ link }) => {
   const [newSpaceGroupId, setNewSpaceGroupId] = useState(null);
   const [showMoveLinkModal, setShowMoveLinkModal] = useState(false);
 
+  if (!link) {
+    return null;
+  }
+
   return (
     <>
       <Typography.Paragraph ellipsis={{ rows: 1 }} style={{ flex: 1 }}>

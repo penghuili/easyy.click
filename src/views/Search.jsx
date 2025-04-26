@@ -1,11 +1,11 @@
-import { Input, Typography } from '@douyinfe/semi-ui';
+import { Input, Tag, Typography } from '@douyinfe/semi-ui';
 import { RiSearch2Line } from '@remixicon/react';
 import Fuse from 'fuse.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { useCat } from 'usecat';
 
 import { InboxLinkItem } from '../components/InboxLinkItem';
-import { InboxNoteItem } from '../components/InboxNoteItem';
+import { getSpaceId, InboxNoteItem } from '../components/InboxNoteItem';
 import { PageContent } from '../shared/browser/PageContent';
 import { Flex } from '../shared/semi/Flex';
 import { PageHeader } from '../shared/semi/PageHeader';
@@ -14,7 +14,7 @@ import { isLoadingInboxNotesCat, isLoadingNotesCat } from '../store/note/noteCat
 import { fetchForSearchEffect, useSearchContent } from '../store/search/searchEffects';
 
 export function Search() {
-  const { links, notes } = useSearchContent();
+  const { links, notes, spacesObj } = useSearchContent();
   const isLoadingLinks = useCat(isLoadingLinksCat);
   const isLoadingNotes = useCat(isLoadingNotesCat);
   const isLoadingInboxLinks = useCat(isLoadingInboxLinksCat);
@@ -80,11 +80,17 @@ export function Search() {
               Found notes:
             </Typography.Title>
 
-            {foundNotes.map(note => (
-              <Flex m="0.5rem 0" key={note.sortKey} align="center" direction="row">
-                <InboxNoteItem note={note} />
-              </Flex>
-            ))}
+            {foundNotes.map(note => {
+              const spaceId = getSpaceId(note);
+              const spaceTitle = spacesObj[spaceId]?.title;
+
+              return (
+                <Flex key={note.sortKey} m="0.5rem 0" align="center" direction="row">
+                  {!!spaceTitle && <Tag color="light-blue">#{spaceTitle}</Tag>}{' '}
+                  <InboxNoteItem note={note} />
+                </Flex>
+              );
+            })}
           </>
         )}
 
@@ -94,11 +100,17 @@ export function Search() {
               Found links:
             </Typography.Title>
 
-            {foundLinks.map(link => (
-              <Flex m="0.5rem 0" key={link.sortKey} align="center" direction="row">
-                <InboxLinkItem link={link} />
-              </Flex>
-            ))}
+            {foundLinks.map(link => {
+              const spaceId = getSpaceId(link);
+              const spaceTitle = spacesObj[spaceId]?.title;
+
+              return (
+                <Flex key={link.sortKey} m="0.5rem 0" align="center" direction="row">
+                  {!!spaceTitle && <Tag color="light-blue">#{spaceTitle}</Tag>}{' '}
+                  <InboxLinkItem link={link} />
+                </Flex>
+              );
+            })}
           </>
         )}
 
