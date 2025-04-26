@@ -16,12 +16,14 @@ import { canShare, share } from '../lib/share.js';
 import { Link } from '../shared/semi/Link.jsx';
 import { isDeletingLinkCat, isMovingLinkCat } from '../store/link/linkCats.js';
 import { deleteLinkEffect, moveLinkEffect, updateLinkEffect } from '../store/link/linkEffect.js';
-import { inboxSpaceId } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
 import { Favicon } from './Favicon.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
+import { getSpaceId } from './InboxNoteItem.jsx';
 
 export const InboxLinkItem = fastMemo(({ link }) => {
+  const spaceId = getSpaceId(link);
+
   const isMoving = useCat(isMovingLinkCat);
   const isDeletingLink = useCat(isDeletingLinkCat);
 
@@ -44,7 +46,7 @@ export const InboxLinkItem = fastMemo(({ link }) => {
               {
                 count: (link.count || 0) + 1,
               },
-              inboxSpaceId
+              spaceId
             );
           }}
         >
@@ -62,7 +64,7 @@ export const InboxLinkItem = fastMemo(({ link }) => {
             <Dropdown.Item
               icon={<RiEdit2Line />}
               onClick={() => {
-                navigateTo(`/links/details?linkId=${link.sortKey}&spaceId=${inboxSpaceId}`);
+                navigateTo(`/links/details?linkId=${link.sortKey}&spaceId=${spaceId}`);
               }}
             >
               Edit link
@@ -123,7 +125,7 @@ export const InboxLinkItem = fastMemo(({ link }) => {
       </Dropdown>
 
       <GroupSelectorForMove
-        excludeSpaceId={inboxSpaceId}
+        excludeSpaceId={spaceId}
         open={showMoveLinkModal}
         onOpenChange={setShowMoveLinkModal}
         groupId={newSpaceGroupId}
@@ -135,7 +137,7 @@ export const InboxLinkItem = fastMemo(({ link }) => {
             return;
           }
 
-          await moveLinkEffect(activeLink, inboxSpaceId, newSpaceId, newSpaceGroupId);
+          await moveLinkEffect(activeLink, spaceId, newSpaceId, newSpaceGroupId);
 
           setShowMoveLinkModal(false);
           setActiveLink(null);
@@ -153,7 +155,7 @@ export const InboxLinkItem = fastMemo(({ link }) => {
             return;
           }
 
-          await deleteLinkEffect(activeLink?.sortKey, { showMessage: true }, inboxSpaceId);
+          await deleteLinkEffect(activeLink?.sortKey, { showMessage: true }, spaceId);
           setShowDeleteLinkConfirm(false);
           setActiveLink(null);
         }}

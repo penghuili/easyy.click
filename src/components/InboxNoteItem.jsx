@@ -18,11 +18,22 @@ import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { Link } from '../shared/semi/Link.jsx';
 import { isDeletingNoteCat, isMovingNoteCat } from '../store/note/noteCats.js';
 import { deleteNoteEffect, moveNoteEffect } from '../store/note/noteEffect.js';
-import { inboxSpaceId } from '../store/space/spaceCats.js';
+import { defaultSpaceId, inboxSpaceId } from '../store/space/spaceCats.js';
 import { Confirm } from './Confirm.jsx';
 import { GroupSelectorForMove } from './GroupSelectorForMove.jsx';
 
+export function getSpaceId(note) {
+  if (note?.id?.startsWith('space')) {
+    return note.id;
+  }
+  if (note?.id?.startsWith('inbox')) {
+    return inboxSpaceId;
+  }
+  return defaultSpaceId;
+}
+
 export const InboxNoteItem = fastMemo(({ note }) => {
+  const spaceId = getSpaceId(note);
   const isDeletingNote = useCat(isDeletingNoteCat);
   const isMoving = useCat(isMovingNoteCat);
 
@@ -59,7 +70,7 @@ export const InboxNoteItem = fastMemo(({ note }) => {
             <Dropdown.Item
               icon={<RiEdit2Line />}
               onClick={() => {
-                navigateTo(`/notes/details?noteId=${note.sortKey}&spaceId=${inboxSpaceId}`);
+                navigateTo(`/notes/details?noteId=${note.sortKey}&spaceId=${spaceId}`);
               }}
             >
               Edit note
@@ -120,7 +131,7 @@ export const InboxNoteItem = fastMemo(({ note }) => {
       </Dropdown>
 
       <GroupSelectorForMove
-        excludeSpaceId={inboxSpaceId}
+        excludeSpaceId={spaceId}
         open={showMoveNoteModal}
         onOpenChange={setShowMoveNoteModal}
         groupId={newSpaceGroupId}
@@ -132,7 +143,7 @@ export const InboxNoteItem = fastMemo(({ note }) => {
             return;
           }
 
-          await moveNoteEffect(activeNote, inboxSpaceId, newSpaceId, newSpaceGroupId);
+          await moveNoteEffect(activeNote, spaceId, newSpaceId, newSpaceGroupId);
 
           setShowMoveNoteModal(false);
           setActiveNote(null);
@@ -150,7 +161,7 @@ export const InboxNoteItem = fastMemo(({ note }) => {
             return;
           }
 
-          await deleteNoteEffect(activeNote?.sortKey, { showMessage: true }, inboxSpaceId);
+          await deleteNoteEffect(activeNote?.sortKey, { showMessage: true }, spaceId);
           setShowDeleteNoteConfirm(false);
           setActiveNote(null);
         }}

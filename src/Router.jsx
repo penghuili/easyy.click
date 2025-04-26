@@ -40,6 +40,7 @@ import { LinksReorder } from './views/LinksReorder.jsx';
 import { NoteAdd } from './views/NoteAdd.jsx';
 import { NoteDetails } from './views/NoteDetails.jsx';
 import { NotesReorder } from './views/NotesReorder.jsx';
+import { Search } from './views/Search.jsx';
 import { Shared } from './views/Shared.jsx';
 import { SpaceAdd } from './views/SpaceAdd.jsx';
 import { SpaceDetails } from './views/SpaceDetails.jsx';
@@ -99,6 +100,7 @@ const loggedInRoutes = {
 
   '/inbox': Inbox,
   '/shared': Shared,
+  '/search': Search,
 
   '/account': Account,
   '/security': Security,

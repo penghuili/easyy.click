@@ -6,7 +6,6 @@ import { useCat } from 'usecat';
 
 import { InboxLinkItems } from '../components/InboxLinkItems.jsx';
 import { InboxNoteItems } from '../components/InboxNoteItems.jsx';
-import { SearchInbox } from '../components/SearchInbox.jsx';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { settingsCat } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
@@ -39,8 +38,6 @@ export const Inbox = fastMemo(() => {
   return (
     <PageContent>
       <Header />
-
-      <SearchInbox />
 
       <Tabs
         type="line"

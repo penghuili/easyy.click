@@ -75,15 +75,7 @@ export const ChangeEmail = fastMemo(() => {
             });
           }}
         >
-          <Form.Input
-            type="email"
-            field="newEmail"
-            label="New email"
-            placeholder="New email"
-            value={newEmail}
-            onChange={setNewEmail}
-            disabled
-          />
+          <Typography.Text>New email: {newEmail}</Typography.Text>
 
           <Form.Input
             field="code"

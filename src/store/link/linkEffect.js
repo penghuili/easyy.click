@@ -49,7 +49,7 @@ export async function fetchLinksEffect(force, alwaysFetchRemote = true, spaceId)
   }
 }
 
-async function forceFetchLinksEffect(spaceId) {
+export async function forceFetchLinksEffect(spaceId) {
   isLoadingLinksCat.set(true);
 
   const { data } = await fetchLinks(spaceId);

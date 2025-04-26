@@ -1,5 +1,5 @@
 import { Button, TabPane, Tabs } from '@douyinfe/semi-ui';
-import { RiRefreshLine } from '@remixicon/react';
+import { RiRefreshLine, RiSearch2Line } from '@remixicon/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { navigateTo, replaceTo } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
@@ -126,6 +126,17 @@ const Header = fastMemo(({ spaceId, onSpaceChange }) => {
       right={
         <>
           <UpgradeButton />
+
+          <RiSearch2Line
+            size={25}
+            color="var(--semi-color-primary)"
+            style={{
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              navigateTo('/search');
+            }}
+          />
 
           <InboxIcon />
 

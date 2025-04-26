@@ -47,7 +47,7 @@ export async function fetchNotesEffect(force, alwaysFetchRemote = true, spaceId)
   }
 }
 
-async function forceFetchNotesEffect(spaceId) {
+export async function forceFetchNotesEffect(spaceId) {
   isLoadingNotesCat.set(true);
 
   const { data } = await fetchNotes(spaceId);

@@ -24,7 +24,8 @@
     "react/no-unescaped-entities": 0,
     "react/display-name": 0,
     "sonarjs/no-duplicate-string": 0,
-    "react/jsx-no-target-blank": 0
+    "react/jsx-no-target-blank": 0,
+    "sonarjs/prefer-immediate-return": 0
   },
   "settings": {
     "import/resolver": {
