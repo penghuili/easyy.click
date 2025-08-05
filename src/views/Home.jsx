@@ -18,6 +18,7 @@ import { PageContent } from '../shared/browser/PageContent.jsx';
 import { Shine } from '../shared/browser/Shine.jsx';
 import { useExpiresAt } from '../shared/browser/store/sharedCats.js';
 import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
+import { formatDate } from '../shared/js/date.js';
 import { AccountIcon } from '../shared/semi/AccountIcon.jsx';
 import { PageHeader } from '../shared/semi/PageHeader.jsx';
 import { isLoadingGroupsCat } from '../store/group/groupCats.js';
@@ -155,6 +156,10 @@ const UpgradeButton = fastMemo(() => {
   const expiresAt = useExpiresAt();
 
   if (expiresAt === 'forever') {
+    return null;
+  }
+
+  if (expiresAt && expiresAt >= formatDate(new Date())) {
     return null;
   }
 
