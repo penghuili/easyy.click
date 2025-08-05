@@ -1,5 +1,5 @@
 import { Button, Typography } from '@douyinfe/semi-ui';
-import React from 'react';
+import React, { useEffect } from 'react';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
 
@@ -7,6 +7,7 @@ import { Prices } from '../components/Prices.jsx';
 import { hasValidFreeTrial } from '../lib/hasValidFreeTrial.js';
 import { PageContent } from '../shared/browser/PageContent.jsx';
 import { useExpiresAt, useFreeTrialsUntil } from '../shared/browser/store/sharedCats.js';
+import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
 import { formatDate } from '../shared/js/date.js';
 import { Flex } from '../shared/semi/Flex.jsx';
 import { Link } from '../shared/semi/Link.jsx';
@@ -18,13 +19,17 @@ export const Upgrade = fastMemo(() => {
   const freeTrialUntil = useFreeTrialsUntil();
   const isTrying = useCat(isFreeTryingCat);
 
+  useEffect(() => {
+    fetchSettingsEffect(true);
+  }, []);
+
   return (
     <PageContent>
       <Header />
 
       <Intro />
 
-      <FreeTrialStatus />
+      <PaymentStatus />
 
       {!freeTrialUntil && (
         <Flex align="center" m="3rem 0">
@@ -79,12 +84,18 @@ const Intro = fastMemo(() => {
   );
 });
 
-export const FreeTrialStatus = fastMemo(() => {
+export const PaymentStatus = fastMemo(() => {
   const expiresAt = useExpiresAt();
   const freeTrialUntil = useFreeTrialsUntil();
 
   if (expiresAt === 'forever') {
     return <Typography.Paragraph>You have lifetime access!</Typography.Paragraph>;
+  }
+
+  if (expiresAt) {
+    return (
+      <Typography.Paragraph>You have access until {formatDate(expiresAt)}.</Typography.Paragraph>
+    );
   }
 
   if (freeTrialUntil) {

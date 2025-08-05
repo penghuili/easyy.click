@@ -3,6 +3,7 @@ import {
   differenceInDays,
   differenceInMonths,
   differenceInYears,
+  endOfWeek,
   format,
   startOfMonth,
   startOfWeek,
@@ -89,6 +90,10 @@ export function getAgo(date) {
 
 export function weekStart(date) {
   return startOfWeek(new Date(date), { weekStartsOn: 1 });
+}
+
+export function weekEnd(date) {
+  return endOfWeek(new Date(date), { weekStartsOn: 1 });
 }
 
 export function monthStart(date) {

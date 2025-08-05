@@ -5,9 +5,9 @@ import React, { useEffect, useState } from 'react';
 import { fastMemo } from './fastMemo';
 import { getScrollbarWidth } from './getScrollbarWidth';
 
-export const PageContent = fastMemo(({ children, paddingBottom = '5rem' }) => {
+export const PageContent = fastMemo(({ children, width = 600, paddingBottom = '5rem' }) => {
   const [contentWidth, setContentWidth] = useState(
-    Math.min(window.innerWidth, 600) - getScrollbarWidth()
+    Math.min(window.innerWidth, width) - getScrollbarWidth()
   );
 
   useEffect(() => {
