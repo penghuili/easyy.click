@@ -5,7 +5,7 @@ import {
   RiShieldCheckLine,
   RiVipCrown2Line,
 } from '@remixicon/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BabyLink } from 'react-baby-router';
 import fastMemo from 'react-fast-memo';
 import { useCat } from 'usecat';
@@ -19,6 +19,7 @@ import {
   useFreeTrialsUntil,
   userCat,
 } from '../shared/browser/store/sharedCats.js';
+import { fetchSettingsEffect } from '../shared/browser/store/sharedEffects.js';
 import { formatDate, formatDateTime } from '../shared/js/date';
 import { AlsoBuilt } from '../shared/semi/AlsoBuilt.jsx';
 import { ItemsWrapper } from '../shared/semi/ItemsWrapper.jsx';
@@ -82,6 +83,10 @@ const AccountInfo = fastMemo(() => {
   const account = useCat(userCat);
   const freeTrialUntil = useFreeTrialsUntil();
   const expiresAt = useExpiresAt();
+
+  useEffect(() => {
+    fetchSettingsEffect(true);
+  }, []);
 
   if (!account?.id) {
     return null;
