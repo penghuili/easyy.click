@@ -173,14 +173,6 @@ function Popup() {
               </Button>
 
               {!!errorMessage && <Typography.Text type="danger">{errorMessage}</Typography.Text>}
-
-              <Link
-                href="https://app.easyy.click/sign-up"
-                target="_blank"
-                style={{ marginTop: '1rem' }}
-              >
-                No account? Sign up
-              </Link>
             </Flex>
           </Form>
         </>

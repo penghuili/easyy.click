@@ -27,11 +27,8 @@ export function Welcome() {
       </ItemsWrapper>
 
       <ItemsWrapper align="start">
-        <BabyLink to="/sign-up">
-          <Button theme="solid">Sign up</Button>
-        </BabyLink>
         <BabyLink to="/sign-in">
-          <Button>Sign in</Button>
+          <Button theme="solid">Sign in</Button>
         </BabyLink>
       </ItemsWrapper>
 

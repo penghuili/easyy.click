@@ -18,12 +18,9 @@ import { ChangeEmail } from './shared/semi/ChangeEmail.jsx';
 import { ChangePassword } from './shared/semi/ChangePassword.jsx';
 import { PageLoading } from './shared/semi/PageLoading.jsx';
 import { PrepareData } from './shared/semi/PrepareData.jsx';
-import { ResetPassword } from './shared/semi/ResetPassword.jsx';
 import { Security } from './shared/semi/Security.jsx';
 import { Settings } from './shared/semi/Settings.jsx';
 import { Setup2FA } from './shared/semi/Setup2FA.jsx';
-import { SignIn } from './shared/semi/SignIn.jsx';
-import { SignUp } from './shared/semi/SignUp.jsx';
 import { Verify2FA } from './shared/semi/Verify2FA.jsx';
 import { VerifyEmail } from './shared/semi/VerifyEmail.jsx';
 import { Account } from './views/Account.jsx';
@@ -40,8 +37,10 @@ import { LinksReorder } from './views/LinksReorder.jsx';
 import { NoteAdd } from './views/NoteAdd.jsx';
 import { NoteDetails } from './views/NoteDetails.jsx';
 import { NotesReorder } from './views/NotesReorder.jsx';
+import { ResetPassword } from './views/ResetPassword.jsx';
 import { Search } from './views/Search.jsx';
 import { Shared } from './views/Shared.jsx';
+import { SignIn } from './views/SignIn.jsx';
 import { SpaceAdd } from './views/SpaceAdd.jsx';
 import { SpaceDetails } from './views/SpaceDetails.jsx';
 import { SpaceExport } from './views/SpaceExport.jsx';
@@ -63,7 +62,6 @@ export function Router() {
 }
 
 const publicRoutes = {
-  '/sign-up': SignUp,
   '/sign-in': SignIn,
   '/sign-in/2fa': Verify2FA,
   '/reset-password': ResetPassword,
